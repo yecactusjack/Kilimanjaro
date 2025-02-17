@@ -1,6 +1,3 @@
-// node --version # Should be >= 18
-// npm install @google/generative-ai
-
 import {
 	GoogleGenerativeAI,
 	HarmCategory,
@@ -10,9 +7,12 @@ import {
 const MODEL_NAME = "gemini-2.0-flash"; 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
-async function runChat(prompt) {
-	try {
-		console.log("🟢 Starting chat request...");
+let chatSession = null;
+let chatHistory = []; // Stores conversation history
+
+async function initializeChat() {
+	if (!chatSession) {
+		console.log("🟢 Initializing new chat session...");
 
 		const genAI = new GoogleGenerativeAI(API_KEY);
 		const model = genAI.getGenerativeModel({ model: MODEL_NAME });
@@ -43,32 +43,50 @@ async function runChat(prompt) {
 			},
 		];
 
-		// System Instructions for AI behavior
+		// Remove system role and send instructions as the first message
 		const systemInstructions = `
 			You are Gemini, an AI assistant specializing in physiotherapy patient history intake.
 			You will ask patients structured questions step by step.
 		`;
 
-		console.log("🟢 Creating chat session...");
-		const chat = model.startChat({
+		chatSession = model.startChat({
 			generationConfig,
 			safetySettings,
 		});
 
-		console.log("🟢 Sending message to Gemini...");
-		const result = await chat.sendMessage(systemInstructions + "\n\nUser: " + prompt); // ✅ Fixed: Send as a single string
+		// Send system instructions as a user message
+		await chatSession.sendMessage(systemInstructions);
+	}
+}
 
-		if (!result || !result.response) {
-			console.error("❌ Error: No response received from Gemini.");
-			return "Error: No response received from AI.";
+async function runChat(prompt) {
+	try {
+		if (!API_KEY) throw new Error("❌ API Key is missing! Set VITE_API_KEY.");
+
+		// 🟢 Ensure chat session is initialized
+		await initializeChat();
+
+		// 🟢 Append user message to chat history
+		chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+		console.log("🟢 Sending message to Gemini...");
+		const result = await chatSession.sendMessage(prompt); // ✅ Reuses existing session
+
+		if (!result?.response?.text) {
+			console.error("❌ Error: No valid response received from Gemini.");
+			return { success: false, error: "No response received from AI." };
 		}
 
 		const responseText = await result.response.text();
 		console.log("🟢 Response from Gemini:", responseText);
-		return responseText;
+
+		// 🟢 Append AI response to history
+		chatHistory.push({ role: "model", parts: [{ text: responseText }] });
+
+		return { success: true, response: typeof responseText === "string" ? responseText : "" };
 	} catch (error) {
 		console.error("❌ Error during chat execution:", error);
-		return `Error: Could not process the request. (${error.message})`;
+		return { success: false, error: `Could not process request. (${error.message})` };
 	}
 }
 

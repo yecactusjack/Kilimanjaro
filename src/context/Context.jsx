@@ -4,89 +4,85 @@ import runChat from "../config/Gemini";
 export const Context = createContext();
 
 const ContextProvider = (props) => {
-	const [input, setInput] = useState("");
-	const [recentPrompt, setRecentPrompt] = useState("");
-	const [prevPrompts, setPrevPrompts] = useState([]);
-	const [showResults, setShowResults] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const [resultData, setResultData] = useState("");
+  const [input, setInput] = useState("");
+  const [recentPrompt, setRecentPrompt] = useState("");
+  const [prevPrompts, setPrevPrompts] = useState([]);
+  const [showResults, setShowResults] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [chatHistory, setChatHistory] = useState([]); // ✅ Store full chat history
 
-	const delayPara = (index, nextWord) => {
-		setTimeout(function () {
-			setResultData((prev) => prev + nextWord);
-		}, 10 * index);
-	};
+  const delayPara = (index, nextWord) => {
+    setTimeout(function () {
+      setChatHistory((prev) => {
+        let updatedChat = [...prev];
+        updatedChat[updatedChat.length - 1].text += nextWord;
+        return updatedChat;
+      });
+    }, 10 * index);
+  };
 
-	const newChat = () => {
-		setLoading(false);
-		setShowResults(false);
-	};
+  const newChat = () => {
+    setLoading(false);
+    setShowResults(false);
+    setChatHistory([]); // ✅ Clears history when starting a new chat
+  };
 
-	const onSent = async (prompt) => {
-		setResultData("");
-		setLoading(true);
-		setShowResults(true);
-		let response;
+  const onSent = async (prompt) => {
+    setLoading(true);
+    setShowResults(true);
+    setInput("");
+    
+    if (prompt) {
+      setRecentPrompt(prompt);
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "user", text: prompt }, // ✅ Store user prompt
+      ]);
+    }
 
-		if (prompt !== undefined) {
-			response = await runChat(prompt);
-			setRecentPrompt(prompt);
-		} else {
-			setPrevPrompts((prev) => [...prev, input]);
-			setRecentPrompt(input);
-			response = await runChat(input);
-		}
+    let response = await runChat(prompt);
 
-		try {
-			// Replace formatting symbols with corresponding HTML tags
-			let formattedResponse = response
-				.split("**")
-				.map((part, index) => (index % 2 === 1 ? `<b>${part}</b>` : part))
-				.join("")
-				.split("*")
-				.map((part, index) => (index % 2 === 1 ? `<i>${part}</i>` : part))
-				.join("")
-				.split("~~")
-				.map((part, index) => (index % 2 === 1 ? `<del>${part}</del>` : part))
-				.join("")
-				.split("`")
-				.map((part, index) => (index % 2 === 1 ? `<code>${part}</code>` : part))
-				.join("")
-				.split("\n")
-				.join("<br/>");
+    if (response.success) {
+      let formattedResponse = response.response
+        .split("\n")
+        .join("<br/>");
 
-			// Display formatted text with delay
-			let newResponseArray = formattedResponse.split("");
-			for (let i = 0; i < newResponseArray.length; i++) {
-				const nextWord = newResponseArray[i];
-				delayPara(i, nextWord + "");
-			}
-		} catch (error) {
-			console.error("Error while running chat:", error);
-			// Handle error appropriately
-		} finally {
-			setLoading(false);
-			setInput("");
-		}
-	};
+      setChatHistory((prev) => [
+        ...prev,
+        { role: "ai", text: "" }, // ✅ Create empty AI response first
+      ]);
 
-	const contextValue = {
-		prevPrompts,
-		setPrevPrompts,
-		onSent,
-		setRecentPrompt,
-		recentPrompt,
-		input,
-		setInput,
-		showResults,
-		loading,
-		resultData,
-		newChat,
-	};
+      let newResponseArray = formattedResponse.split("");
+      for (let i = 0; i < newResponseArray.length; i++) {
+        const nextWord = newResponseArray[i];
+        delayPara(i, nextWord);
+      }
+    } else {
+      console.error("Error while running chat:", response.error);
+    }
 
-	return (
-		<Context.Provider value={contextValue}>{props.children}</Context.Provider>
-	);
+    setLoading(false);
+  };
+
+  return (
+    <Context.Provider
+      value={{
+        prevPrompts,
+        setPrevPrompts,
+        onSent,
+        setRecentPrompt,
+        recentPrompt,
+        input,
+        setInput,
+        showResults,
+        loading,
+        chatHistory,
+        newChat,
+      }}
+    >
+      {props.children}
+    </Context.Provider>
+  );
 };
 
 export default ContextProvider;
