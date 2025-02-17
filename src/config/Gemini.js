@@ -7,50 +7,69 @@ import {
 	HarmBlockThreshold,
 } from "@google/generative-ai";
 
-const MODEL_NAME = "gemini-2.0-flash"; // Using the latest model
+const MODEL_NAME = "gemini-2.0-flash"; 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 async function runChat(prompt) {
-	const genAI = new GoogleGenerativeAI(API_KEY);
-	const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+	try {
+		console.log("🟢 Starting chat request...");
 
-	// Updated generationConfig as per Google's recommendation
-	const generationConfig = {
-		temperature: 1,  // More creative and natural responses
-		topK: 40,        // Larger candidate pool for better token selection
-		topP: 0.95,      // More diverse responses
-		maxOutputTokens: 8192,  // Allows longer, structured responses
-	};
+		const genAI = new GoogleGenerativeAI(API_KEY);
+		const model = genAI.getGenerativeModel({ model: MODEL_NAME });
 
-	const safetySettings = [
-		{
-			category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-		},
-		{
-			category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-		},
-		{
-			category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-		},
-		{
-			category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-			threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-		},
-	];
+		const generationConfig = {
+			temperature: 1,  
+			topK: 40,        
+			topP: 0.95,      
+			maxOutputTokens: 8192,  
+		};
 
-	const chat = model.startChat({
-		generationConfig,
-		safetySettings,
-		history: [],
-	});
+		const safetySettings = [
+			{
+				category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+			},
+			{
+				category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
+			},
+		];
 
-	const result = await chat.sendMessage(prompt);
-	const response = result.response;
-	console.log(response.text());
-	return response.text();
+		// System Instructions for AI behavior
+		const systemInstructions = `
+			You are Gemini, an AI assistant specializing in physiotherapy patient history intake.
+			You will ask patients structured questions step by step.
+		`;
+
+		console.log("🟢 Creating chat session...");
+		const chat = model.startChat({
+			generationConfig,
+			safetySettings,
+		});
+
+		console.log("🟢 Sending message to Gemini...");
+		const result = await chat.sendMessage(systemInstructions + "\n\nUser: " + prompt); // ✅ Fixed: Send as a single string
+
+		if (!result || !result.response) {
+			console.error("❌ Error: No response received from Gemini.");
+			return "Error: No response received from AI.";
+		}
+
+		const responseText = await result.response.text();
+		console.log("🟢 Response from Gemini:", responseText);
+		return responseText;
+	} catch (error) {
+		console.error("❌ Error during chat execution:", error);
+		return `Error: Could not process the request. (${error.message})`;
+	}
 }
 
 export default runChat;
