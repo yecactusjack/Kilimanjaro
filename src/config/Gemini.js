@@ -239,12 +239,26 @@ async function runChat(prompt) {
 		}
 
 		const responseText = await result.response.text();
-		console.log("🟢 Response from Gemini:", responseText);
+		console.log("🟢 Raw Response from Gemini:", responseText);
+
+		// Check if the response contains JSON
+		let jsonOutput;
+		try {
+			jsonOutput = JSON.parse(responseText);
+			console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Console log structured JSON
+		} catch (error) {
+			jsonOutput = null; // Not JSON, just normal text
+		}
 
 		// 🟢 Append AI response to history
 		chatHistory.push({ role: "model", parts: [{ text: responseText }] });
 
-		return { success: true, response: typeof responseText === "string" ? responseText : "" };
+		// If JSON was detected, do not show it to the user, return a friendly message instead
+		if (jsonOutput) {
+			return { success: true, response: "Your information has been recorded securely." };
+		} else {
+			return { success: true, response: responseText };
+		}
 	} catch (error) {
 		console.error("❌ Error during chat execution:", error);
 		return { success: false, error: `Could not process request. (${error.message})` };
