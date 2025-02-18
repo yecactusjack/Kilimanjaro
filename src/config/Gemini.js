@@ -238,22 +238,34 @@ async function runChat(prompt) {
           return { success: false, error: "No response received from AI." };
       }
 
-      const responseText = await result.response.text();
+      let responseText = await result.response.text();
       console.log("🟢 Raw Response from Gemini:", responseText);
 
-      // 🟢 Check if the response contains JSON
-      let jsonOutput;
-      try {
-          jsonOutput = JSON.parse(responseText);
-          console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Logs JSON to console
-      } catch (error) {
-          jsonOutput = null; // If parsing fails, treat it as normal text
+      // 🟢 Extract JSON if it is wrapped in a code block
+      const jsonMatch = responseText.match(/```jsonc?\n([\s\S]*?)\n```/);
+      let jsonOutput = null;
+
+      if (jsonMatch) {
+          try {
+              jsonOutput = JSON.parse(jsonMatch[1]); // Extract JSON content
+              console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Console log JSON output
+          } catch (error) {
+              console.warn("⚠️ Failed to parse extracted JSON:", error);
+          }
+      } else if (responseText.trim().startsWith("{")) {
+          // Fallback: If AI returns plain JSON (without a code block)
+          try {
+              jsonOutput = JSON.parse(responseText);
+              console.log("🟢 JSON Output from Gemini:", jsonOutput);
+          } catch (error) {
+              console.warn("⚠️ Failed to parse direct JSON response:", error);
+          }
       }
 
       // 🟢 Append AI response to history
       chatHistory.push({ role: "model", parts: [{ text: responseText }] });
 
-      // If JSON was detected, do not send it to the user
+      // ✅ Suppress JSON in chat, show only a confirmation message
       if (jsonOutput) {
           return { success: true, response: "✅ Your information has been securely recorded." };
       } else {
@@ -264,5 +276,6 @@ async function runChat(prompt) {
       return { success: false, error: `Could not process request. (${error.message})` };
   }
 }
+
 
 export default runChat;
