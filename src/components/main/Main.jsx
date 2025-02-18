@@ -27,7 +27,7 @@ const Main = () => {
   return (
     <div className="main">
       <div className="nav">
-        <p>Gemini</p>
+        <p>Kanishq!</p>
         <img src={assets.user} alt="User" />
       </div>
 
@@ -79,8 +79,7 @@ const Main = () => {
 
           <div className="bottom-info">
             <p>
-              Gemini may display inaccurate info, including about people, so
-              double-check its responses. Your privacy & Gemini Apps.
+              Welcome to Kanishq! Kanishq is here to collect your information in order to make a seamless experience for you. 
             </p>
           </div>
         </div>
