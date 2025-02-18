@@ -221,48 +221,48 @@ Your final user-facing statement should be a closing that acknowledges the patie
 }
 
 async function runChat(prompt) {
-	try {
-		if (!API_KEY) throw new Error("❌ API Key is missing! Set VITE_API_KEY.");
+  try {
+      if (!API_KEY) throw new Error("❌ API Key is missing! Set VITE_API_KEY.");
 
-		// 🟢 Ensure chat session is initialized
-		await initializeChat();
+      // 🟢 Ensure chat session is initialized
+      await initializeChat();
 
-		// 🟢 Append user message to chat history
-		chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+      // 🟢 Append user message to chat history
+      chatHistory.push({ role: "user", parts: [{ text: prompt }] });
 
-		console.log("🟢 Sending message to Gemini...");
-		const result = await chatSession.sendMessage(prompt); // ✅ Reuses existing session
+      console.log("🟢 Sending message to Gemini...");
+      const result = await chatSession.sendMessage(prompt); // ✅ Reuses existing session
 
-		if (!result?.response?.text) {
-			console.error("❌ Error: No valid response received from Gemini.");
-			return { success: false, error: "No response received from AI." };
-		}
+      if (!result?.response?.text) {
+          console.error("❌ Error: No valid response received from Gemini.");
+          return { success: false, error: "No response received from AI." };
+      }
 
-		const responseText = await result.response.text();
-		console.log("🟢 Raw Response from Gemini:", responseText);
+      const responseText = await result.response.text();
+      console.log("🟢 Raw Response from Gemini:", responseText);
 
-		// Check if the response contains JSON
-		let jsonOutput;
-		try {
-			jsonOutput = JSON.parse(responseText);
-			console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Console log structured JSON
-		} catch (error) {
-			jsonOutput = null; // Not JSON, just normal text
-		}
+      // 🟢 Check if the response contains JSON
+      let jsonOutput;
+      try {
+          jsonOutput = JSON.parse(responseText);
+          console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Logs JSON to console
+      } catch (error) {
+          jsonOutput = null; // If parsing fails, treat it as normal text
+      }
 
-		// 🟢 Append AI response to history
-		chatHistory.push({ role: "model", parts: [{ text: responseText }] });
+      // 🟢 Append AI response to history
+      chatHistory.push({ role: "model", parts: [{ text: responseText }] });
 
-		// If JSON was detected, do not show it to the user, return a friendly message instead
-		if (jsonOutput) {
-			return { success: true, response: "Your information has been recorded securely." };
-		} else {
-			return { success: true, response: responseText };
-		}
-	} catch (error) {
-		console.error("❌ Error during chat execution:", error);
-		return { success: false, error: `Could not process request. (${error.message})` };
-	}
+      // If JSON was detected, do not send it to the user
+      if (jsonOutput) {
+          return { success: true, response: "✅ Your information has been securely recorded." };
+      } else {
+          return { success: true, response: responseText };
+      }
+  } catch (error) {
+      console.error("❌ Error during chat execution:", error);
+      return { success: false, error: `Could not process request. (${error.message})` };
+  }
 }
 
 export default runChat;
