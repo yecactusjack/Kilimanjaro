@@ -248,7 +248,6 @@ async function runChat(prompt) {
       if (jsonMatch) {
           try {
               jsonOutput = JSON.parse(jsonMatch[1]); // Extract JSON content
-              console.log("🟢 JSON Output from Gemini:", jsonOutput); // ✅ Console log JSON output
           } catch (error) {
               console.warn("⚠️ Failed to parse extracted JSON:", error);
           }
@@ -256,10 +255,16 @@ async function runChat(prompt) {
           // Fallback: If AI returns plain JSON (without a code block)
           try {
               jsonOutput = JSON.parse(responseText);
-              console.log("🟢 JSON Output from Gemini:", jsonOutput);
           } catch (error) {
               console.warn("⚠️ Failed to parse direct JSON response:", error);
           }
+      }
+
+      // ✅ Force JSON logging (even if parsing fails)
+      if (jsonOutput) {
+          console.log("🟢 Extracted JSON Output:", JSON.stringify(jsonOutput, null, 2));
+      } else {
+          console.log("⚠️ No valid JSON detected, showing normal response.");
       }
 
       // 🟢 Append AI response to history
@@ -276,6 +281,7 @@ async function runChat(prompt) {
       return { success: false, error: `Could not process request. (${error.message})` };
   }
 }
+
 
 
 export default runChat;
