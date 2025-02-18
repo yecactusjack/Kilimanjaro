@@ -24,25 +24,25 @@ async function initializeChat() {
 			maxOutputTokens: 8192,  
 		};
 
-		const safetySettings = [
-			{
-				category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-			},
-			{
-				category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-			},
-			{
-				category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-			},
-			{
-				category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-				threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE,
-			},
-		];
-
+    const safetySettings = [
+      {
+          category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+          threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH, // Blocks only severe harassment
+      },
+      {
+          category: HarmCategory.HARM_CATEGORY_HATE_SPEECH,
+          threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH, // Blocks only extreme hate speech
+      },
+      {
+          category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
+          threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH, // Allows mild sexual content, blocks only extreme
+      },
+      {
+          category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
+          threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH, // Blocks only very dangerous content
+      },
+  ];
+  
 		// Remove system role and send instructions as the first message
 		const systemInstructions = `
 You are Gemini, an advanced conversational AI assistant developed for VitalPhysio+. Your purpose is to conduct a thorough, interactive medical history intake for a patient who is preparing for a physiotherapy or rehabilitation clinic visit.
