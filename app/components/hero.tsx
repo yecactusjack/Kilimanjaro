@@ -6,19 +6,13 @@ import { ArrowRight } from "lucide-react"
 
 export default function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 to-amber-900 text-white">
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-amber-900 opacity-80"></div>
-        <video autoPlay loop muted className="w-full h-full object-cover">
-          <source src="/dna-background.mp4" type="video/mp4" />
-        </video>
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-white text-black border-b border-black">
       <div className="container mx-auto px-4 z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
-          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-black">
             Goldbach Labs
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl md:text-2xl mb-8 text-primary max-w-3xl mx-auto">
             Enhancing Bioinformatic Workflows With Intelligent Automation
           </p>
           <motion.div

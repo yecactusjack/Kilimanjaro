@@ -47,7 +47,7 @@ export default function ToolShowcase() {
   return (
     <section id="tools" className="py-20 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-primary">Our Cutting-Edge Tools</h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {tools.map((tool) => (
             <motion.button
@@ -88,4 +88,3 @@ export default function ToolShowcase() {
     </section>
   )
 }
-

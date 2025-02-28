@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <motion.header
       className={`fixed w-full z-50 transition-colors duration-300 ${
-        scrolled ? "bg-gray-900/80 backdrop-blur-md" : "bg-transparent"
+        scrolled ? "bg-white border-b border-black" : "bg-transparent"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -29,53 +29,53 @@ export default function Header() {
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href="/"
-          className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600"
+          className="text-2xl md:text-3xl font-bold text-black"
         >
           Goldbach Labs
         </Link>
         <nav className="hidden md:block">
           <ul className="flex space-x-6">
             <li>
-              <Link href="#mission" className="text-gray-300 hover:text-amber-400 transition-colors">
+              <Link href="#mission" className="text-black hover:text-blue-500 transition-colors">
                 Mission
               </Link>
             </li>
             <li>
-              <Link href="#features" className="text-gray-300 hover:text-amber-400 transition-colors">
+              <Link href="#features" className="text-black hover:text-blue-500 transition-colors">
                 Features
               </Link>
             </li>
             <li>
-              <Link href="#tools" className="text-gray-300 hover:text-amber-400 transition-colors">
+              <Link href="#tools" className="text-black hover:text-blue-500 transition-colors">
                 Tools
               </Link>
             </li>
           </ul>
         </nav>
         <button className="md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-          <Menu className="h-6 w-6 text-amber-400" />
+          <Menu className="h-6 w-6 text-blue-500" />
         </button>
       </div>
       {mobileMenuOpen && (
         <motion.div
-          className="md:hidden bg-gray-900 shadow-lg"
+          className="md:hidden bg-white shadow-lg"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
           <ul className="py-4">
             <li>
-              <Link href="#mission" className="block px-4 py-2 text-gray-300 hover:bg-amber-600 hover:text-white">
+              <Link href="#mission" className="block px-4 py-2 text-black hover:bg-blue-500 hover:text-white">
                 Mission
               </Link>
             </li>
             <li>
-              <Link href="#features" className="block px-4 py-2 text-gray-300 hover:bg-amber-600 hover:text-white">
+              <Link href="#features" className="block px-4 py-2 text-black hover:bg-blue-500 hover:text-white">
                 Features
               </Link>
             </li>
             <li>
-              <Link href="#tools" className="block px-4 py-2 text-gray-300 hover:bg-amber-600 hover:text-white">
+              <Link href="#tools" className="block px-4 py-2 text-black hover:bg-blue-500 hover:text-white">
                 Tools
               </Link>
             </li>
@@ -85,4 +85,3 @@ export default function Header() {
     </motion.header>
   )
 }
-
