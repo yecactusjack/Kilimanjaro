@@ -4,8 +4,9 @@ modules = ["nodejs-20"]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npm run start -- -p 3000 -H 0.0.0.0"]
 build = ["sh", "-c", "npm run build"]
+deploymentTarget = "static"
+publicDir = "public"
 
 [workflows]
 runButton = "Run"
