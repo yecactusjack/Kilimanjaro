@@ -1,0 +1,23 @@
+run = "run"
+modules = ["nodejs-20"]
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm run start -- -p 3000 -H 0.0.0.0"]
+build = ["sh", "-c", "npm run build"]
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 32621205
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev -- -p 3000 -H 0.0.0.0"
+
+[[ports]]
+localPort = 3000
+externalPort = 80
