@@ -20,7 +20,7 @@ export default function Header() {
   return (
     <motion.header
       className={`fixed w-full z-50 transition-colors duration-300 ${
-        scrolled ? "bg-white border-b border-black" : "bg-transparent"
+        scrolled ? "bg-white border-b border-black" : "bg-transparent opacity-80"
       }`}
       initial={{ y: -100 }}
       animate={{ y: 0 }}

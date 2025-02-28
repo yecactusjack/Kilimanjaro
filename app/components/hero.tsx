@@ -22,7 +22,7 @@ export default function Hero() {
           >
             <Button
               size="lg"
-              className="bg-gradient-to-r from-yellow-400 to-amber-600 hover:from-yellow-500 hover:to-amber-700 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
               onClick={() => {
                 const typeformUrl = "https://form.typeform.com/to/CUme4cwF"
                 window.open(typeformUrl, "_blank", "noopener,noreferrer")
