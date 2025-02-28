@@ -6,7 +6,11 @@ channel = "stable-24_05"
 [deployment]
 build = ["sh", "-c", "npm run build"]
 deploymentTarget = "static"
-publicDir = "public"
+publicDir = "out"
+
+[[deployment.rewrites]]
+from = "/*"
+to = "/index.html"
 
 [workflows]
 runButton = "Run"
