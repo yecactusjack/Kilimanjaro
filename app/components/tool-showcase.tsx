@@ -56,8 +56,8 @@ export default function ToolShowcase() {
               onClick={() => setSelectedTool(tool)}
               className={`px-4 py-2 rounded-full text-sm ${
                 selectedTool.name === tool.name
-                  ? "bg-primary text-white"
-                  : "bg-secondary text-primary hover:bg-primary hover:text-white"
+                  ? "bg-black text-white"
+                  : "bg-white text-black border border-black hover:bg-black hover:text-white"
               } transition-colors`}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -74,13 +74,13 @@ export default function ToolShowcase() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
           >
-            <Card className="bg-white text-gray-800 overflow-hidden shadow-lg">
-              <CardHeader className="bg-secondary border-b border-gray-200">
-                <CardTitle className="text-2xl text-primary">{selectedTool.name}</CardTitle>
-                <CardDescription className="text-gray-600 text-lg">{selectedTool.description}</CardDescription>
+            <Card className="bg-white text-black overflow-hidden shadow-lg border border-black">
+              <CardHeader className="bg-white border-b border-black">
+                <CardTitle className="text-2xl text-black">{selectedTool.name}</CardTitle>
+                <CardDescription className="text-black text-lg">{selectedTool.description}</CardDescription>
               </CardHeader>
               <CardContent className="mt-4">
-                <p className="text-gray-700 text-lg leading-relaxed">{selectedTool.details}</p>
+                <p className="text-black text-lg leading-relaxed">{selectedTool.details}</p>
               </CardContent>
             </Card>
           </motion.div>
