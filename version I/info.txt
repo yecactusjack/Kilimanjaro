@@ -1,0 +1,3 @@
+Currently Adding Porechop in the mix.
+
+fastQC and LLama are merged.
