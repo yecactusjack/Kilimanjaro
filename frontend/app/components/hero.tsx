@@ -35,6 +35,10 @@ export default function Hero() {
               className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
               asChild
             >
+              <Link href="/">
+                HiveMind <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
               <Link href="/ask">
                 HiveMind <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
