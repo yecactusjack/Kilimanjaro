@@ -1,8 +1,8 @@
-"use client"
 
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
+import Link from "next/link"
 
 export default function Hero() {
   return (
@@ -19,7 +19,17 @@ export default function Hero() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
+            className="flex flex-col md:flex-row gap-4 justify-center"
           >
+            <Button
+              size="lg"
+              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
+              asChild
+            >
+              <Link href="/upload">
+                Give it a try <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
             <Button
               size="lg"
               className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
@@ -28,7 +38,7 @@ export default function Hero() {
                 window.open(typeformUrl, "_blank", "noopener,noreferrer")
               }}
             >
-              Get Started <ArrowRight className="ml-2 h-5 w-5" />
+              HiveMind <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
         </motion.div>
@@ -36,4 +46,3 @@ export default function Hero() {
     </section>
   )
 }
-
