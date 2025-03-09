@@ -1,8 +1,9 @@
+"use client"
 
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import { motion } from "framer-motion"
-import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function Hero() {
   return (
@@ -35,23 +36,9 @@ export default function Hero() {
               className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
               asChild
             >
-              <Link href="/">
-                HiveMind <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
               <Link href="/ask">
                 HiveMind <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
-            </Button>
-            <Button
-              size="lg"
-              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-              onClick={() => {
-                const typeformUrl = "https://form.typeform.com/to/CUme4cwF"
-                window.open(typeformUrl, "_blank", "noopener,noreferrer")
-              }}
-            >
-              HiveMind <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </motion.div>
         </motion.div>
