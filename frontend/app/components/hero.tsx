@@ -1,3 +1,4 @@
+"use client"
 
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
@@ -10,50 +11,23 @@ export default function Hero() {
       <div className="container mx-auto px-4 z-10 text-center">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <h1 className="text-4xl md:text-6xl font-bold mb-6 text-black">
-            Goldbach Labs
+            HiveMind Bioinformatics
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-primary max-w-3xl mx-auto">
-            Enhancing Bioinformatic Workflows With Intelligent Automation
+          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-gray-600">
+            Empower your research with our advanced bioinformatics platform. Analyze, visualize, and collaborate on complex biological data.
           </p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="flex flex-col md:flex-row gap-4 justify-center"
-          >
-            <Button
-              size="lg"
-              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-              asChild
-            >
-              <Link href="/upload">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button asChild className="bg-black text-white hover:bg-gray-800">
+              <Link href="/upload" className="flex items-center">
                 Give it a try <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-            <Button
-              size="lg"
-              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-              asChild
-            >
-              <Link href="/">
+            <Button asChild className="bg-black text-white hover:bg-gray-800">
+              <Link href="https://hivemind-bio.com" className="flex items-center">
                 HiveMind <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
-              <Link href="/ask">
-                HiveMind <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button
-              size="lg"
-              className="bg-black hover:bg-gray-900 text-white px-8 py-3 rounded-full text-lg transition-all transform hover:scale-105 shadow-lg hover:shadow-xl"
-              onClick={() => {
-                const typeformUrl = "https://form.typeform.com/to/CUme4cwF"
-                window.open(typeformUrl, "_blank", "noopener,noreferrer")
-              }}
-            >
-              HiveMind <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-          </motion.div>
+          </div>
         </motion.div>
       </div>
     </section>
