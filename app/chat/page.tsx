@@ -16,6 +16,9 @@ export default function ChatPage() {
   ])
   const [inputQuery, setInputQuery] = useState("")
   const [isQuerying, setIsQuerying] = useState(false)
+  const [suggestedQueries, setSuggestedQueries] = useState<string[]>([]); // Added state for suggested queries
+  const [showInterface, setShowInterface] = useState(false); // Added state to control interface visibility
+
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,37 +29,48 @@ export default function ChatPage() {
   }
 
   const handleUpload = async () => {
-    if (!file) {
-      setUploadStatus("Please select a file first")
-      return
-    }
+    if (!file || isUploading) return
 
     setIsUploading(true)
-    setUploadStatus("Uploading and processing file...")
+
+    const formData = new FormData()
+    formData.append('file', file)
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      // Log the file being uploaded for debugging
+      console.log("Uploading file:", file.name)
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData
+      // Use window.location.origin to get the base URL
+      const apiUrl = `${window.location.origin}/api/upload`
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        body: formData,
+        // Add these headers to help with CORS issues
+        headers: {
+          'Accept': 'application/json',
+        },
+        // Include credentials
+        credentials: 'same-origin'
       })
 
       if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(`Server responded with status: ${response.status} - ${errorData.error || 'Unknown error'}`)
+        const errorText = await response.text()
+        throw new Error(`Upload failed: ${response.status} ${errorText}`)
       }
 
       const data = await response.json()
-      console.log("Uploaded file:", file.name)
-
-      setUploadStatus("File uploaded successfully!")
-      setUploadedFileName(file.name)
-      setShowChatInterface(true)
+      setMessages([...messages, { type: "system", content: `File ${file.name} uploaded successfully. You can now ask questions about it.` }])
+      setSuggestedQueries([
+        `What is this file about?`,
+        `Run quality analysis`,
+        `Show me sequence statistics`,
+        `Generate a summary report`
+      ])
+      setShowInterface(true)
     } catch (error) {
-      console.error("Upload error:", error)
-      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      console.error('Upload error:', error)
+      setMessages([...messages, { type: "system", content: `Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}` }])
     } finally {
       setIsUploading(false)
     }
@@ -151,7 +165,7 @@ export default function ChatPage() {
             </span>
           </motion.div>
 
-          {!showChatInterface ? (
+          {!showInterface ? (
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

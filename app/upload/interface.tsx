@@ -28,35 +28,45 @@ export default function Interface() {
   }
 
   const handleUpload = async () => {
-    if (!file) {
-      setUploadStatus("Please select a file first")
-      return
-    }
+    if (!file || isUploading) return
 
     setIsUploading(true)
-    setUploadStatus("Uploading and processing file...")
+    setUploadStatus("Uploading file...")
+
+    const formData = new FormData()
+    formData.append('file', file)
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
-      const response = await fetch("http://206.1.35.40:3002/upload", {
-        method: "POST",
-        body: formData,
-      })
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Server responded with ${response.status}: ${errorData.error || response.statusText}`);
-      }
-      const data = await response.json()
-      // Handle response -  This would need further implementation based on the backend's response structure.
-      setIsUploading(false)
-      setUploadStatus("File uploaded successfully!")
-      setShowChatInterface(true)
+      // Log the file being uploaded for debugging
+      console.log("Uploaded file:", file.name)
 
+      // Use window.location.origin to get the base URL
+      const apiUrl = `${window.location.origin}/api/upload`
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        body: formData,
+        // Add these headers to help with CORS issues
+        headers: {
+          'Accept': 'application/json',
+        },
+        // Include credentials
+        credentials: 'same-origin'
+      })
+
+      if (!response.ok) {
+        const errorText = await response.text()
+        throw new Error(`Upload failed: ${response.status} ${errorText}`)
+      }
+
+      const data = await response.json()
+      setUploadStatus(`File ${file.name} uploaded successfully.`)
+      setShowChatInterface(true)
     } catch (error) {
+      console.error('Upload error:', error)
+      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
       setIsUploading(false)
-      setUploadStatus(`Error uploading file: ${error}`)
-      console.error("Upload error:", error)
     }
   }
 
