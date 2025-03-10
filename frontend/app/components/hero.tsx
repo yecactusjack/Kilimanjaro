@@ -21,8 +21,13 @@ export default function Hero() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-5xl font-bold tracking-tight text-center mb-6 text-black"
         >
-          Goldbach Labs
+          Bioinformatics Assistant
         </motion.h1>
+        <motion.div className="flex justify-center mb-4">
+          <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+            Beta 1.0
+          </span>
+        </motion.div>
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
