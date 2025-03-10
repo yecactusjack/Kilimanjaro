@@ -27,7 +27,7 @@ export default function AskInterface() {
   const [fileName, setFileName] = useState<string>("")
   const [htmlContent, setHtmlContent] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const [formattedTime, setFormattedTime] = useState('');
+
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -41,28 +41,6 @@ export default function AskInterface() {
       setFileName(storedFileName)
     }
   }, [])
-
-  useEffect(() => {
-    // Set time only on client side to avoid hydration mismatch
-    setFormattedTime(new Date().toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: true,
-    }));
-
-    // Optional: update time every second
-    const timer = setInterval(() => {
-      setFormattedTime(new Date().toLocaleTimeString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: true,
-      }));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,15 +70,18 @@ export default function AskInterface() {
 
     try {
       // Direct API call to the external service
-      const response = await axios.post("http://206.1.35.40:3002/ask", {
-        query: input.trim(),
-        fileName: fileName
-      }, {
-        responseType: 'text',
-        headers: {
-          'Content-Type': 'application/json'
+      const response = await axios.post(
+        "http://206.1.35.40:3002/ask",
+        {
+          query: input.trim(),
+          fileName: fileName
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          }
         }
-      })
+      )
 
       // Set the HTML content for download
       setHtmlContent(response.data)
@@ -164,9 +145,6 @@ export default function AskInterface() {
                 }`}
               >
                 <p className="text-sm">{message.content}</p>
-                <p suppressHydrationWarning className="text-xs text-gray-500 mt-1">
-                  {formattedTime}
-                </p>
               </div>
             ))}
             <div ref={messagesEndRef} />
