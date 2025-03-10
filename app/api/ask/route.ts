@@ -1,40 +1,26 @@
+import { NextRequest, NextResponse } from 'next/server'
+import axios from 'axios'
 
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-
-    if (!body.query) {
-      return NextResponse.json(
-        { error: 'No query provided' },
-        { status: 400 }
-      );
-    }
-
-    // Format the request exactly as shown in Postman
-    const requestBody = {
-      "query": body.query,
-      "fileName": body.fileName
-    };
+    const body = await request.json()
 
     // Add debug logging to identify issues
-    console.log("Sending query to external API:", JSON.stringify(requestBody));
+    console.log("Sending query to external API:", JSON.stringify(body));
 
     // Forward the request to the external API
-    const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
-      method: "POST",
+    const externalResponse = await axios.post('http://206.1.35.40:3002/ask', body, {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(requestBody)
-    });
+      responseType: 'text' // Handle potential HTML responses
+    })
 
     // Check if the external API request was successful
-    if (!externalResponse.ok) {
+    if (!externalResponse.status.toString().startsWith('2')) {
       let errorText;
       try {
-        errorText = await externalResponse.text();
+        errorText = externalResponse.data;
         console.error("External API error:", externalResponse.status, errorText);
       } catch (e) {
         errorText = "Could not parse error response";
@@ -42,19 +28,19 @@ export async function POST(request: Request) {
       }
       return NextResponse.json(
         { error: `External API error: ${externalResponse.status} - ${errorText}` },
-        { status: 500 }
+        { status: externalResponse.status }
       );
     }
 
-    // Process the successful response
-    const responseData = await externalResponse.json();
-    return NextResponse.json(responseData);
 
-  } catch (error) {
-    console.error("Query error:", error);
+    // Process the successful response
+    return NextResponse.json(JSON.parse(externalResponse.data), { status: 200 });
+
+  } catch (error: any) {
+    console.error('Error processing ask request:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process query' },
       { status: 500 }
-    );
+    )
   }
 }
