@@ -137,10 +137,20 @@ export default function ChatPage() {
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-3xl font-bold text-center mb-10"
+            className="text-3xl font-bold text-center mb-2"
           >
-            Bioinformatics Analysis Interface
+            Bioinformatics Assistant
           </motion.h1>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="text-center mb-10"
+          >
+            <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+              Beta 1.0
+            </span>
+          </motion.div>
 
           {!showChatInterface ? (
             <motion.div 
