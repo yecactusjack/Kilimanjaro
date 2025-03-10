@@ -1,10 +1,9 @@
-
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    
+
     if (!body.query) {
       return NextResponse.json(
         { error: 'No query provided' },
@@ -15,11 +14,12 @@ export async function POST(request: Request) {
     // Format the request exactly as shown in Postman
     const requestBody = {
       "query": body.query,
-      "fileName": body.fileName || body.fileName // Handle both parameter formats
+      "fileName": body.fileName
     };
 
-    console.log("Sending query to external API:", requestBody);
-    
+    // Add debug logging to identify issues
+    console.log("Sending query to external API:", JSON.stringify(requestBody));
+
     // Forward the request to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
       method: "POST",
@@ -48,7 +48,7 @@ export async function POST(request: Request) {
     // Process the successful response
     const responseData = await externalResponse.json();
     return NextResponse.json(responseData);
-    
+
   } catch (error) {
     console.error("Query error:", error);
     return NextResponse.json(
