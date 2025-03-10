@@ -15,40 +15,40 @@ export default function Hero() {
         transition={{ duration: 0.5 }}
         className="container px-4 md:px-6"
       >
-        <motion.h1
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-5xl font-bold tracking-tight text-center mb-6 text-black"
-        >
-          Goldbach Labs
-        </motion.h1>
-        <motion.div className="flex justify-center mb-4">
-          <span className="bg-blue-500 text-white px-6 py-1.5 rounded-full text-sm font-medium shadow-md">
-            Beta 1.0 Kilimanjaro
-          </span>
-        </motion.div>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-xl text-blue-600 mb-8 text-center"
-        >
-          Enhancing Bioinformatic Workflows With Intelligent Automation
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-          className="flex justify-center"
-        >
-          <Link href="/chat">
-            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
+        <div className="min-h-[40vh] flex flex-col items-center justify-center">
+          <motion.h1
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="text-6xl font-bold tracking-tight text-center mb-4 text-black"
+          >
+            Goldbach Labs
+          </motion.h1>
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+            className="text-xl text-blue-600 mb-8 text-center"
+          >
+            Enhancing Bioinformatic Workflows With Intelligent Automation
+          </motion.p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4, duration: 0.5 }}
+            className="flex justify-center"
+          >
+            <Link href="/chat">
+            <Button className="inline-flex h-12 items-center justify-center rounded-full bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </motion.div>
+        </div>
+        <div className="mt-4 hidden md:block">
+          <span className="text-xs text-gray-500">Beta 1.0 Kilimanjaro</span>
+        </div>
       </motion.div>
     </section>
   )
