@@ -1,3 +1,4 @@
+
 export default function MissionStatement() {
   return (
     <div className="py-16 bg-white">
@@ -7,10 +8,10 @@ export default function MissionStatement() {
         </h2>
         <div className="text-center">
           <p className="text-lg md:text-xl text-gray-600 mb-6">
-            HiveMind aims to democratize bioinformatics tools and make advanced genetic analysis accessible to researchers of all backgrounds. We believe that by providing a simple interface to powerful computational tools, we can accelerate scientific discovery and innovation.
+            Modern bioinformatics workflows are complex and manual. Goldbach Labs is developing an AI agent to automate these processes. This will streamline workflows and reduce human effort. It enhances accessibility for researchers. Our solution makes bioinformatics pipelines more efficient.
           </p>
-          <p className="text-lg md:text-xl text-gray-600">
-            Our platform combines cutting-edge algorithms with artificial intelligence to help you make sense of complex biological data, whether you're analyzing sequences, comparing genomes, or exploring gene expression.
+          <p className="text-xl md:text-2xl text-blue-600 font-medium mt-10">
+            We make bioinformatics as easy as a ChatGPT search, no expertise needed.
           </p>
         </div>
       </div>

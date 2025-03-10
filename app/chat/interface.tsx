@@ -1,132 +1,87 @@
-"use client"
 
-import { useState, useRef, useEffect } from "react"
-import { Send } from "lucide-react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-
-type MessageType = 'user' | 'bot'
-
-interface Message {
-  id: string
-  type: MessageType
-  text: string
-  timestamp: Date
-}
+import { Textarea } from "@/components/ui/textarea"
+import { MessageCircle, Send } from "lucide-react"
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      type: 'bot',
-      text: 'Hello! I\'m your AI assistant. How can I help you today?',
-      timestamp: new Date()
-    }
-  ])
+  const [query, setQuery] = useState("")
+  const [conversation, setConversation] = useState<{role: 'user' | 'assistant', content: string}[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const [inputQuery, setInputQuery] = useState('')
-  const [isQuerying, setIsQuerying] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
-
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
-
-  const handleSubmitQuery = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!query.trim()) return
 
-    if (!inputQuery.trim() || isQuerying) return
+    const userMessage = { role: 'user' as const, content: query }
+    setConversation(prev => [...prev, userMessage])
+    setQuery("")
+    setIsLoading(true)
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      type: 'user',
-      text: inputQuery,
-      timestamp: new Date()
-    }
+    try {
+      // Simulate API call
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: [...conversation, userMessage] })
+      })
 
-    setMessages(prev => [...prev, userMessage])
-    setInputQuery('')
-    setIsQuerying(true)
-
-    // Simulate response delay
-    setTimeout(() => {
-      const botResponse: Message = {
-        id: (Date.now() + 1).toString(),
-        type: 'bot',
-        text: getBotResponse(inputQuery),
-        timestamp: new Date()
-      }
-
-      setMessages(prev => [...prev, botResponse])
-      setIsQuerying(false)
-    }, 1000)
-  }
-
-  const getBotResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase()
-
-    if (lowerQuery.includes('hello') || lowerQuery.includes('hi')) {
-      return 'Hello! How can I assist you today?'
-    } else if (lowerQuery.includes('help')) {
-      return 'I can help you analyze your documents, answer questions about your data, or explain concepts. What would you like to know?'
-    } else if (lowerQuery.includes('file') || lowerQuery.includes('upload')) {
-      return 'You can upload files from the Upload page. I can then help you analyze and understand the content of those files.'
-    } else if (lowerQuery.includes('thank')) {
-      return 'You\'re welcome! Is there anything else I can help you with?'
-    } else {
-      return 'I\'m processing your query. In a real implementation, this would connect to an AI model to provide relevant answers to your specific questions.'
+      if (!response.ok) throw new Error('Failed to get response')
+      
+      const data = await response.json()
+      setConversation(prev => [...prev, { role: 'assistant', content: data.response || "I'm sorry, I couldn't process that request." }])
+    } catch (error) {
+      console.error('Error:', error)
+      setConversation(prev => [...prev, { role: 'assistant', content: "Sorry, there was an error processing your request." }])
+    } finally {
+      setIsLoading(false)
     }
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <Card className="border-black rounded-none p-4 min-h-[500px] flex flex-col">
-        <div className="flex-grow overflow-y-auto mb-4 space-y-4 p-2">
-          {messages.map((message) => (
-            <div 
-              key={message.id}
-              className={`flex ${message.type === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div 
-                className={`max-w-[80%] p-3 rounded-lg ${
-                  message.type === 'user' 
-                    ? 'bg-black text-white' 
-                    : 'bg-gray-100 text-black'
-                }`}
-              >
-                <p>{message.text}</p>
-                <p className="text-xs opacity-70 mt-1">
-                  {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </p>
-              </div>
-            </div>
-          ))}
-          <div ref={messagesEndRef} />
+    <div className="container mx-auto p-4 max-w-4xl">
+      <Card className="border-black rounded-none p-6">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold mb-2 flex items-center">
+            <MessageCircle className="mr-2" /> Ask Our AI
+          </h2>
+          <p className="text-gray-600">
+            Ask questions about bioinformatics tools, workflows, or how to analyze your data
+          </p>
         </div>
 
-        <form onSubmit={handleSubmitQuery} className="mt-auto">
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={inputQuery}
-              onChange={(e) => setInputQuery(e.target.value)}
-              placeholder="Type your message here..."
-              className="flex-1 p-2 border border-black rounded-none focus:outline-none focus:ring-1 focus:ring-black"
-              disabled={isQuerying}
-            />
-            <Button 
-              type="submit"
-              className="rounded-none bg-black text-white hover:bg-gray-800"
-              size="icon"
-              disabled={!inputQuery.trim() || isQuerying}
-            >
-              <Send size={18} />
-            </Button>
-          </div>
+        <div className="min-h-[300px] mb-4 border border-gray-200 p-4 rounded overflow-y-auto">
+          {conversation.length === 0 ? (
+            <div className="text-gray-400 text-center h-full flex items-center justify-center">
+              <p>Your conversation will appear here</p>
+            </div>
+          ) : (
+            <>
+              {conversation.map((message, index) => (
+                <div key={index} className={`mb-4 p-3 rounded-md ${message.role === 'user' ? 'bg-gray-100 ml-auto max-w-[80%]' : 'bg-black text-white mr-auto max-w-[80%]'}`}>
+                  <p>{message.content}</p>
+                </div>
+              ))}
+              {isLoading && (
+                <div className="mb-4 p-3 rounded-md bg-black text-white mr-auto max-w-[80%]">
+                  <p>Thinking...</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="flex gap-2">
+          <Textarea 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Type your question here..."
+            className="flex-grow border-black rounded-none"
+          />
+          <Button type="submit" disabled={isLoading || !query.trim()} className="bg-black text-white hover:bg-gray-800 rounded-none">
+            <Send size={18} />
+          </Button>
         </form>
       </Card>
     </div>

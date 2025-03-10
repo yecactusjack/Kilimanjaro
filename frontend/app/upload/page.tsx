@@ -1,3 +1,4 @@
+
 import Header from "./components/header"
 import Footer from "./components/footer"
 import Hero from "./components/hero"
@@ -11,15 +12,14 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="mission" />
         <MissionStatement />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="features" />
         <Features />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="tools" />
         <ToolShowcase />
       </main>
       <Footer />
     </div>
   )
 }
-
