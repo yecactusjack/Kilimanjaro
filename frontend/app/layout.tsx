@@ -1,10 +1,12 @@
+
 import type { Metadata } from 'next'
 import './globals.css'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
-  generator: 'v0.dev',
+  title: 'Goldbach Labs - Transforming Bioinformatics',
+  description: 'Advanced bioinformatics solutions and tools',
+  generator: 'Next.js',
 }
 
 export default function RootLayout({
@@ -14,7 +16,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="min-h-screen bg-white">
+        <ThemeProvider attribute="class" defaultTheme="light">
+          <div className="flex flex-col min-h-screen">
+            {children}
+          </div>
+        </ThemeProvider>
+      </body>
     </html>
   )
 }

@@ -7,9 +7,9 @@ export default function MissionStatement() {
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <section id="mission" className="py-16 bg-white text-black">
-      <div className="aesthetic-divider"></div>
-      <div className="container mx-auto px-4">
+    <section className="py-16 md:py-24 bg-white">
+      <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        <div className="aesthetic-divider"></div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
