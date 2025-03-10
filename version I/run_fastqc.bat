@@ -1,1 +1,0 @@
-java -Xmx250m -classpath ".;.\htsjdk.jar;.\jbzip2-0.9.jar" uk.ac.babraham.FastQC.FastQCApplication %*
