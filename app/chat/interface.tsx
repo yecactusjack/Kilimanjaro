@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef, useEffect } from "react"
@@ -25,28 +24,28 @@ export default function ChatInterface() {
   const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  
+
   // Auto-scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
   }, [messages])
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!input.trim()) return
-    
+
     const userMessage: Message = {
       id: Date.now().toString(),
       content: input.trim(),
       sender: "user",
       timestamp: new Date()
     }
-    
+
     setMessages(prev => [...prev, userMessage])
     setInput("")
     setIsLoading(true)
-    
+
     // Simulate AI response
     setTimeout(() => {
       const responses = [
@@ -56,25 +55,25 @@ export default function ChatInterface() {
         "Your data appears to be RNA-seq. I recommend the following pipeline: FastQC → STAR → featureCounts → DESeq2.",
         "I've analyzed your query and it seems you're working with metagenomic data. Kraken2 would be ideal for taxonomic classification."
       ]
-      
+
       const randomResponse = responses[Math.floor(Math.random() * responses.length)]
-      
+
       const assistantMessage: Message = {
         id: Date.now().toString(),
         content: randomResponse,
         sender: "assistant",
         timestamp: new Date()
       }
-      
+
       setMessages(prev => [...prev, assistantMessage])
       setIsLoading(false)
     }, 1500)
   }
-  
+
   return (
     <div className="max-w-3xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
       <h1 className="text-3xl font-bold mb-6 text-center">Ask Our Assistant</h1>
-      
+
       <Card className="flex-1 overflow-hidden flex flex-col">
         <div className="flex-1 overflow-y-auto p-4">
           {messages.map((message) => (
@@ -101,7 +100,7 @@ export default function ChatInterface() {
               </div>
             </div>
           ))}
-          
+
           {isLoading && (
             <div className="flex justify-start mb-4">
               <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none px-4 py-3">
@@ -113,10 +112,10 @@ export default function ChatInterface() {
               </div>
             </div>
           )}
-          
+
           <div ref={messagesEndRef} />
         </div>
-        
+
         <div className="p-4 border-t">
           <form onSubmit={handleSubmit} className="flex gap-2">
             <input
@@ -133,7 +132,7 @@ export default function ChatInterface() {
           </form>
         </div>
       </Card>
-      
+
       <div className="mt-4 text-center text-sm text-gray-500">
         Need to upload a file first? <a href="/upload" className="text-blue-500 hover:underline">Go to upload page</a>
       </div>

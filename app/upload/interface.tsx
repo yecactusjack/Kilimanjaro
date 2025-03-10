@@ -1,62 +1,103 @@
 
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Upload, FileText } from "lucide-react"
+import { Upload, FileText, X } from "lucide-react"
+import axios from "axios"
+import Link from "next/link"
 
 export default function UploadInterface() {
   const [file, setFile] = useState<File | null>(null)
-  const [fileInfo, setFileInfo] = useState<{ name: string; size: string } | null>(null)
+  const [fileName, setFileName] = useState<string>("")
+  const [fileSize, setFileSize] = useState<string>("")
   const [isUploading, setIsUploading] = useState(false)
   const [uploadComplete, setUploadComplete] = useState(false)
+  const [uploadError, setUploadError] = useState<string | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + " bytes"
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB"
+    return (bytes / (1024 * 1024)).toFixed(2) + " MB"
+  }
   
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0] || null
-    setFile(selectedFile)
-    
-    if (selectedFile) {
-      // Convert bytes to human-readable format
-      const size = selectedFile.size < 1024 * 1024
-        ? `${(selectedFile.size / 1024).toFixed(2)} KB`
-        : `${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB`
-      
-      setFileInfo({
-        name: selectedFile.name,
-        size: size
-      })
-    } else {
-      setFileInfo(null)
+    if (e.target.files && e.target.files[0]) {
+      const selectedFile = e.target.files[0]
+      setFile(selectedFile)
+      setFileName(selectedFile.name)
+      setFileSize(formatFileSize(selectedFile.size))
+      setUploadError(null)
     }
+  }
+  
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const droppedFile = e.dataTransfer.files[0]
+      setFile(droppedFile)
+      setFileName(droppedFile.name)
+      setFileSize(formatFileSize(droppedFile.size))
+      setUploadError(null)
+    }
+  }
+  
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault()
   }
   
   const handleUpload = async () => {
     if (!file) return
     
     setIsUploading(true)
+    setUploadError(null)
     
-    // Simulate upload delay
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const formData = new FormData()
+    formData.append("file", file)
     
-    setIsUploading(false)
-    setUploadComplete(true)
-    
-    // Reset after a few seconds
-    setTimeout(() => {
-      setFile(null)
-      setFileInfo(null)
-      setUploadComplete(false)
-    }, 3000)
+    try {
+      // Send file to API
+      await axios.post("http://206.1.35.40:3002/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      })
+      
+      setUploadComplete(true)
+      
+      // Redirect to chat after short delay
+      setTimeout(() => {
+        window.location.href = "/chat"
+      }, 2000)
+    } catch (error) {
+      console.error("Error uploading file:", error)
+      setUploadError("Failed to upload file. Please try again.")
+    } finally {
+      setIsUploading(false)
+    }
+  }
+  
+  const handleRemoveFile = () => {
+    setFile(null)
+    setFileName("")
+    setFileSize("")
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
+    }
   }
   
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Upload Your File</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center">Upload Your Bioinformatics File</h1>
       
       <Card className="p-8 border-dashed">
-        <div className="flex flex-col items-center justify-center">
-          {!fileInfo ? (
+        <div 
+          className="flex flex-col items-center justify-center"
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
+          {!file ? (
             <>
               <div className="w-16 h-16 mb-4 flex items-center justify-center rounded-full bg-blue-50 text-blue-500">
                 <Upload size={28} />
@@ -71,6 +112,7 @@ export default function UploadInterface() {
                     type="file" 
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" 
                     onChange={handleFileChange}
+                    ref={fileInputRef}
                     accept=".fastq,.fq,.fasta,.fa,.sam,.bam,.vcf,.gff,.gtf"
                   />
                   <span className="flex items-center">
@@ -86,22 +128,25 @@ export default function UploadInterface() {
                   <FileText size={20} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium truncate">{fileInfo.name}</h3>
-                  <p className="text-xs text-gray-500">{fileInfo.size}</p>
+                  <h3 className="text-sm font-medium truncate">{fileName}</h3>
+                  <p className="text-xs text-gray-500">{fileSize}</p>
                 </div>
                 {!isUploading && !uploadComplete && (
                   <Button 
                     variant="ghost" 
                     size="sm" 
-                    onClick={() => {
-                      setFile(null)
-                      setFileInfo(null)
-                    }}
+                    onClick={handleRemoveFile}
                   >
-                    Remove
+                    <X size={16} />
                   </Button>
                 )}
               </div>
+              
+              {uploadError && (
+                <div className="mb-4 p-3 bg-red-50 text-red-500 rounded-md text-sm">
+                  {uploadError}
+                </div>
+              )}
               
               {!uploadComplete ? (
                 <Button 
@@ -123,7 +168,7 @@ export default function UploadInterface() {
       
       <div className="mt-6 text-center">
         <p className="text-gray-500">
-          Need help with your file? <a href="/chat" className="text-blue-500 hover:underline">Chat with our assistant</a>
+          Need help with your file? <Link href="/chat" className="text-blue-500 hover:underline">Chat with our assistant</Link>
         </p>
       </div>
     </div>
