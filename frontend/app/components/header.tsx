@@ -32,9 +32,6 @@ export default function Header() {
             Tools
           </Link>
         </nav>
-        <div>
-          <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-full">Beta 1.0 Kilimanjaro</span>
-        </div>
       </div>
     </header>
   )

@@ -162,7 +162,7 @@ export default function ChatPage() {
             className="text-center mb-10"
           >
             <span className="inline-block bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-medium">
-              Beta 1.0
+              Beta 1.0 Kilimanjaro
             </span>
           </motion.div>
 
