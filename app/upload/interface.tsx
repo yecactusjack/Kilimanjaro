@@ -39,6 +39,9 @@ const UploadInterface = () => {
 
       setUploadStatus("File uploaded successfully!");
       console.log("Uploaded file:", file.name);
+      
+      // Store the file name in localStorage
+      localStorage.setItem("uploadedFileName", file.name);
 
       // Automatically redirect to query page after successful upload
       setTimeout(() => {

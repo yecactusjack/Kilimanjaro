@@ -96,7 +96,7 @@ export default function AskInterface() {
       }
       // Process HTML content for better display and download
       let htmlContent = '';
-      
+
       if (responseData.htmlContent) {
         // Direct HTML content from API
         htmlContent = responseData.htmlContent;
@@ -110,7 +110,7 @@ export default function AskInterface() {
         // Fallback to stringified JSON if no HTML content found
         htmlContent = JSON.stringify(responseData, null, 2);
       }
-      
+
       setHtmlContent(htmlContent);
 
 

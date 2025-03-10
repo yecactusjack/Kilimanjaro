@@ -7,9 +7,16 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { query, fileName } = body;
     
-    if (!query || !fileName) {
+    if (!query) {
       return NextResponse.json(
-        { error: 'Query and fileName are required' },
+        { error: 'Query is required' },
+        { status: 400 }
+      );
+    }
+    
+    if (!fileName) {
+      return NextResponse.json(
+        { error: 'No file has been uploaded. Please upload a file first.' },
         { status: 400 }
       );
     }
