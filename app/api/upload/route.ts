@@ -20,28 +20,36 @@ export async function POST(request: Request) {
     externalFormData.append('file', file);
     
     // Forward the file to the external API
-    const externalResponse = await fetch("http://206.1.35.40:3002/upload", {
+    const response = await fetch("http://206.1.35.40:3002/upload", {
       method: "POST",
       body: externalFormData
     });
     
-    // Handle the response from the external API
-    if (!externalResponse.ok) {
-      const errorText = await externalResponse.text();
-      console.error("External API error:", externalResponse.status, errorText);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error("External API error:", response.status, errorText);
       return NextResponse.json(
-        { error: `External API error: ${externalResponse.status}` },
-        { status: externalResponse.status }
+        { error: `Server responded with status: ${response.status}` },
+        { status: response.status }
       );
     }
     
-    const responseData = await externalResponse.json();
-    return NextResponse.json(responseData);
+    try {
+      const responseData = await response.json();
+      return NextResponse.json(responseData);
+    } catch (parseError) {
+      console.error("Error parsing response:", parseError);
+      const responseText = await response.text();
+      return NextResponse.json(
+        { filename: file.name, message: "File uploaded successfully" },
+        { status: 200 }
+      );
+    }
     
-  } catch (error) {
+  } catch (error: any) {
     console.error("Upload error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error.message || 'Internal server error' },
       { status: 500 }
     );
   }

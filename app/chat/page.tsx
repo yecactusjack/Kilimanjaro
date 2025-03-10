@@ -1,271 +1,157 @@
+"use client";
 
-"use client"
-
-import { useState, useRef, FormEvent } from "react"
-import { motion } from "framer-motion"
-import Header from "../components/header"
-import Footer from "../components/footer"
+import { useState, useRef } from "react";
+import axios from "axios";
 
 export default function ChatPage() {
-  const [file, setFile] = useState<File | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadStatus, setUploadStatus] = useState<string | null>(null)
-  const [showChatInterface, setShowChatInterface] = useState(false)
-  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
-  const [messages, setMessages] = useState<Array<{type: string, content: string}>>([
-    {type: "system", content: "Welcome to Goldbach Labs. How can I help you with your bioinformatics query?"}
-  ])
-  const [inputQuery, setInputQuery] = useState("")
-  const [isQuerying, setIsQuerying] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [file, setFile] = useState<File | null>(null);
+  const [filename, setFilename] = useState<string>("");
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+  const [query, setQuery] = useState<string>("");
+  const [response, setResponse] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0])
-      setUploadStatus("")
+    if (event.target.files && event.target.files.length > 0) {
+      const selectedFile = event.target.files[0];
+      setFile(selectedFile);
+      setUploadStatus("");
+      setResponse("");
     }
-  }
+  };
 
   const handleUpload = async () => {
     if (!file) {
-      setUploadStatus("Please select a file first")
-      return
+      setUploadStatus("Please select a file first!");
+      return;
     }
 
-    setIsUploading(true)
-    setUploadStatus("Uploading and processing file...")
+    setLoading(true);
+    setUploadStatus("Uploading...");
+
+    const formData = new FormData();
+    formData.append("file", file);
 
     try {
-      const formData = new FormData()
-      formData.append("file", file)
+      const response = await axios.post("/api/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
 
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData
-      })
+      setUploadStatus("File uploaded successfully!");
+      setFilename(file.name);
+      console.log("Uploaded file:", file.name);
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        throw new Error(`Server responded with status: ${response.status} - ${errorData.error || 'Unknown error'}`)
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-
-      const data = await response.json()
-      console.log("Uploaded file:", file.name)
-      
-      setUploadStatus("File uploaded successfully!")
-      setUploadedFileName(file.name)
-      setShowChatInterface(true)
-    } catch (error) {
-      console.error("Upload error:", error)
-      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } catch (error: any) {
+      console.error("Upload error:", error);
+      setUploadStatus(`Error uploading file: ${error.response?.data?.error || error.message}`);
     } finally {
-      setIsUploading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  const handleSubmitQuery = async (e: FormEvent) => {
-    e.preventDefault()
-    
-    if (!inputQuery.trim() || !uploadedFileName) return
+  const handleSubmitQuery = async () => {
+    if (!query.trim()) {
+      setResponse("Please enter a query.");
+      return;
+    }
 
-    // Add user message to chat
-    setMessages(prev => [...prev, {type: "user", content: inputQuery}])
-    
-    // Add processing message
-    setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
-    
-    setIsQuerying(true)
-    
+    if (!filename) {
+      setResponse("Please upload a file first.");
+      return;
+    }
+
+    setLoading(true);
+    setResponse("Processing query...");
+
     try {
-      console.log("Sending query with file:", inputQuery, uploadedFileName)
-      
-      const response = await fetch("/api/ask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          query: inputQuery,
-          filename: uploadedFileName
-        })
-      })
+      console.log("Sending query with file:", query, filename);
 
-      if (!response.ok) {
-        const errorData = await response.json()
-        console.error("Query API error:", response.status, JSON.stringify(errorData))
-        throw new Error(`Server responded with ${response.status}: ${errorData.error || 'Unknown error'}`)
-      }
+      const response = await axios.post("/api/ask", {
+        query: query,
+        filename: filename
+      });
 
-      const data = await response.json()
-      
-      // Remove the processing message
-      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-      
-      // Add the response
-      setMessages(prev => [...prev, {
-        type: "system", 
-        content: data.htmlContent || data.message || "Analysis complete."
-      }])
-    } catch (error) {
-      console.error("Query error:", error)
-      
-      // Remove the processing message
-      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-      
-      // Add error message
-      setMessages(prev => [...prev, {
-        type: "system", 
-        content: `Error: ${error instanceof Error ? error.message : 'Failed to process query'}`
-      }])
+      setResponse(response.data.status || JSON.stringify(response.data, null, 2));
+    } catch (error: any) {
+      console.error("Query error:", error);
+      const errorMsg = error.response?.data?.error || error.message;
+      console.error("Query API error:", error.response?.status, error.response?.data);
+      setResponse(`Error processing query: ${errorMsg}`);
     } finally {
-      setIsQuerying(false)
-      setInputQuery("")
-      
-      // Scroll to bottom
-      setTimeout(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-      }, 100)
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background text-foreground">
-      <Header />
-      <main className="flex-grow py-10">
-        <div className="container mx-auto px-4">
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="text-3xl font-bold text-center mb-10"
-          >
-            Bioinformatics Analysis Interface
-          </motion.h1>
+    <div className="flex min-h-screen flex-col items-center justify-between p-24">
+      <div className="z-10 max-w-5xl w-full items-center justify-between text-sm">
+        <h1 className="text-4xl font-bold mb-8">Bioinformatics Tool</h1>
 
-          {!showChatInterface ? (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-              className="max-w-md mx-auto bg-white p-6 rounded-lg shadow-lg"
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold mb-4">Upload FASTQ File</h2>
+          <div className="flex flex-col md:flex-row gap-4">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="border p-2 rounded w-full md:w-2/3"
+              accept=".fastq,.fq"
+              ref={fileInputRef}
+            />
+            <button
+              onClick={handleUpload}
+              disabled={loading || !file}
+              className={`px-4 py-2 rounded font-semibold ${
+                loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+              } text-white`}
             >
-              <h2 className="text-xl font-semibold mb-4">Upload Your File</h2>
-              <p className="text-gray-600 mb-6">
-                Supported formats: FASTA, FASTQ, VCF, SAM, BAM, and other bioinformatics formats.
-              </p>
-              
-              <div className="flex flex-col space-y-4">
-                <label className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors">
-                  <input 
-                    type="file" 
-                    className="hidden" 
-                    onChange={handleFileChange}
-                    accept=".fasta,.fastq,.vcf,.sam,.bam"
-                  />
-                  <div className="text-gray-500">
-                    {file ? file.name : "Click or drag to upload file"}
-                  </div>
-                </label>
-                
-                <button 
-                  onClick={handleUpload}
-                  disabled={!file || isUploading}
-                  className={`py-2 px-4 rounded-md font-medium ${
-                    !file || isUploading 
-                      ? "bg-gray-300 cursor-not-allowed" 
-                      : "bg-blue-600 hover:bg-blue-700 text-white"
-                  } transition-colors`}
-                >
-                  {isUploading ? "Uploading..." : "Upload and Analyze"}
-                </button>
-                
-                {uploadStatus && (
-                  <div className={`text-sm p-2 rounded ${
-                    uploadStatus.includes("Error") 
-                      ? "bg-red-100 text-red-700" 
-                      : uploadStatus.includes("success") 
-                        ? "bg-green-100 text-green-700"
-                        : "bg-blue-100 text-blue-700"
-                  }`}>
-                    {uploadStatus}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          ) : (
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="max-w-3xl mx-auto"
-            >
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <div className="p-4 bg-blue-600 text-white">
-                  <h2 className="text-xl font-semibold">
-                    File Analysis: {uploadedFileName}
-                  </h2>
-                </div>
-                
-                <div className="h-96 overflow-y-auto p-4 bg-gray-50">
-                  {messages.map((message, index) => (
-                    <div 
-                      key={index} 
-                      className={`mb-4 ${
-                        message.type === "user" 
-                          ? "text-right" 
-                          : "text-left"
-                      }`}
-                    >
-                      <div 
-                        className={`inline-block p-3 rounded-lg ${
-                          message.type === "user"
-                            ? "bg-blue-600 text-white"
-                            : "bg-gray-200 text-gray-800"
-                        }`}
-                      >
-                        {message.content.startsWith("<!DOCTYPE") ? (
-                          <div
-                            dangerouslySetInnerHTML={{ __html: message.content }}
-                            className="max-w-2xl overflow-x-auto"
-                          />
-                        ) : (
-                          message.content
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  <div ref={messagesEndRef} />
-                </div>
-                
-                <form onSubmit={handleSubmitQuery} className="p-4 border-t">
-                  <div className="flex space-x-2">
-                    <input
-                      type="text"
-                      value={inputQuery}
-                      onChange={(e) => setInputQuery(e.target.value)}
-                      placeholder="Enter a command or query about your file..."
-                      className="flex-1 py-2 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      disabled={isQuerying}
-                    />
-                    <button
-                      type="submit"
-                      disabled={!inputQuery.trim() || isQuerying}
-                      className={`py-2 px-4 rounded-md font-medium ${
-                        !inputQuery.trim() || isQuerying
-                          ? "bg-gray-300 cursor-not-allowed"
-                          : "bg-blue-600 hover:bg-blue-700 text-white"
-                      } transition-colors`}
-                    >
-                      {isQuerying ? "Processing..." : "Send"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </motion.div>
+              {loading ? "Processing..." : "Upload"}
+            </button>
+          </div>
+          {uploadStatus && (
+            <p className={`mt-2 ${uploadStatus.includes("Error") ? "text-red-500" : "text-green-500"}`}>
+              {uploadStatus}
+            </p>
           )}
         </div>
-      </main>
-      <Footer />
+
+        {filename && (
+          <div className="mb-6">
+            <h2 className="text-2xl font-semibold mb-4">Query</h2>
+            <div className="flex flex-col gap-4">
+              <textarea
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Enter your query (e.g., 'run fastqc on this')"
+                className="border p-2 rounded w-full h-24"
+                disabled={loading}
+              />
+              <button
+                onClick={handleSubmitQuery}
+                disabled={loading || !query.trim()}
+                className={`px-4 py-2 rounded font-semibold ${
+                  loading ? "bg-gray-400" : "bg-blue-500 hover:bg-blue-600"
+                } text-white`}
+              >
+                {loading ? "Processing..." : "Submit Query"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {response && (
+          <div className="mt-6">
+            <h2 className="text-2xl font-semibold mb-4">Result</h2>
+            <div className="bg-gray-100 p-4 rounded overflow-auto max-h-96">
+              <pre className="whitespace-pre-wrap">{response}</pre>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
-  )
+  );
 }

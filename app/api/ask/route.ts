@@ -5,9 +5,9 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     
-    if (!body.query) {
+    if (!body.query || !body.filename) {
       return NextResponse.json(
-        { error: 'No query provided' },
+        { error: 'Both query and filename are required' },
         { status: 400 }
       );
     }
@@ -20,8 +20,8 @@ export async function POST(request: Request) {
 
     console.log("Sending query to external API:", requestBody);
     
-    // Forward the request to the external API
-    const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
+    // Forward the request to the external API - exactly match the Postman format
+    const response = await fetch("http://206.1.35.40:3002/ask", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
@@ -29,24 +29,32 @@ export async function POST(request: Request) {
       body: JSON.stringify(requestBody)
     });
 
-    // Check if the external API request was successful
-    if (!externalResponse.ok) {
-      const errorText = await externalResponse.text();
-      console.error("External API error:", externalResponse.status, errorText);
+    if (!response.ok) {
+      let errorMessage;
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.error || `External API error: ${response.status}`;
+      } catch (e) {
+        const errorText = await response.text();
+        errorMessage = `External API error: ${response.status} - ${errorText}`;
+      }
+      
+      console.error("Query API error:", response.status, errorMessage);
       return NextResponse.json(
-        { error: `External API error: ${externalResponse.status} - ${errorText}` },
-        { status: externalResponse.status }
+        { error: errorMessage },
+        { status: response.status }
       );
     }
 
     // Process the successful response
-    const responseData = await externalResponse.json();
+    const responseData = await response.json();
+    console.log("Got successful response:", responseData);
     return NextResponse.json(responseData);
     
-  } catch (error) {
+  } catch (error: any) {
     console.error("Query error:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: error.message || 'Internal server error' },
       { status: 500 }
     );
   }
