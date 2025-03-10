@@ -1,237 +1,201 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
+import { Upload, CheckCircle, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Interface() {
   const [file, setFile] = useState<File | null>(null)
-  const [uploadStatus, setUploadStatus] = useState<string>("")
   const [isUploading, setIsUploading] = useState(false)
-  const [showChatInterface, setShowChatInterface] = useState(false)
-  const [suggestedQueries, setSuggestedQueries] = useState([
-    "Analyze for potential genomic markers",
-    "Identify sequence variations",
-    "Find regulatory elements",
-    "Compare with reference genome"
-  ])
-  const [messages, setMessages] = useState<Array<{type: string, content: string}>>([
-    {type: "system", content: "Welcome to HiveMind. How can I help you with your bioinformatics query?"}
-  ])
-  const [inputQuery, setInputQuery] = useState("")
+  const [uploadStatus, setUploadStatus] = useState<"idle" | "success" | "error">("idle")
+  const [errorMessage, setErrorMessage] = useState<string>("")
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setFile(event.target.files[0])
-      setUploadStatus("")
-    }
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0] || null
+    setFile(selectedFile)
+    setUploadStatus("idle")
+    setErrorMessage("")
   }
 
   const handleUpload = async () => {
-    if (!file || isUploading) return
+    if (!file) return
 
     setIsUploading(true)
-    setUploadStatus("Uploading file...")
-
-    const formData = new FormData()
-    formData.append('file', file)
+    setUploadStatus("idle")
 
     try {
-      // Log the file being uploaded for debugging
+      // Simulate upload - replace with actual API call
       console.log("Uploaded file:", file.name)
 
-      // Use window.location.origin to get the base URL
-      const apiUrl = `${window.location.origin}/api/upload`
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        body: formData,
-        // Add these headers to help with CORS issues
-        headers: {
-          'Accept': 'application/json',
-        },
-        // Include credentials
-        credentials: 'same-origin'
-      })
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(`Upload failed: ${response.status} ${errorText}`)
-      }
-
-      const data = await response.json()
-      setUploadStatus(`File ${file.name} uploaded successfully.`)
-      setShowChatInterface(true)
+      // Simulate successful upload after 1.5 seconds
+      setTimeout(() => {
+        setIsUploading(false)
+        setUploadStatus("success")
+      }, 1500)
     } catch (error) {
-      console.error('Upload error:', error)
-      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
-    } finally {
+      console.error("Upload error:", error)
       setIsUploading(false)
+      setUploadStatus("error")
+      setErrorMessage("Failed to upload file. Please try again.")
     }
-  }
-
-  const handleSendQuery = async () => {
-    if (!inputQuery.trim()) return
-
-    // Add user message
-    setMessages([...messages, {type: "user", content: inputQuery}])
-
-    try {
-      const response = await fetch("http://206.1.35.40:3002/ask", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ query: inputQuery })
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(`Server responded with ${response.status}: ${errorData.error || response.statusText}`);
-      }
-      const data = await response.json();
-
-      //Assuming the backend returns a file URL.  Adjust based on your backend's actual response.
-      let responseMessage = "Based on your uploaded data, I've analyzed your query. ";
-      if (data.fileUrl) {
-        responseMessage += `Here's your result: <a href="${data.fileUrl}" download>Download Result</a>`;
-      } else {
-        responseMessage += data.message || "No results found."; //Handle cases where no file is returned.
-      }
-
-      setMessages(prev => [...prev, {type: "system", content: responseMessage}]);
-      setInputQuery("");
-    } catch (error) {
-      console.error("Query error:", error);
-      setMessages(prev => [...prev, {type: "system", content: `Error processing your query: ${error}`}]);
-    }
-
-  }
-
-  const handleSuggestedQuery = (query: string) => {
-    setInputQuery(query)
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-      {!showChatInterface ? (
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white p-6 rounded-lg shadow-md"
-        >
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select your bioinformatics file
-            </label>
-            <div className="flex items-center justify-center w-full">
-              <label className="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
-                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                  <svg className="w-10 h-10 mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                  </svg>
-                  <p className="mb-2 text-sm text-gray-500">
-                    <span className="font-semibold">Click to upload</span> or drag and drop
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    FASTA, FASTQ, VCF, BAM, or other bioinformatics files
-                  </p>
-                </div>
-                <input
-                  type="file"
-                  className="hidden"
-                  onChange={handleFileChange}
-                  accept=".fasta,.fastq,.vcf,.bam,.csv,.txt"
-                />
-              </label>
-            </div>
-            {file && (
-              <p className="mt-2 text-sm text-gray-600">
-                Selected file: {file.name}
-              </p>
-            )}
-          </div>
+      <Tabs defaultValue="upload" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 bg-gray-100 rounded-none border border-black">
+          <TabsTrigger value="upload" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
+            Upload File
+          </TabsTrigger>
+          <TabsTrigger value="history" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
+            Upload History
+          </TabsTrigger>
+        </TabsList>
 
-          <Button
-            onClick={handleUpload}
-            disabled={isUploading || !file}
-            className="w-full py-2 px-4 bg-black text-white font-semibold rounded-md shadow-sm"
-          >
-            {isUploading ? "Processing..." : "Upload and Analyze"}
-          </Button>
-
-          {uploadStatus && (
-            <p className={`mt-4 text-center ${uploadStatus.includes("successfully") ? "text-green-600" : uploadStatus.includes("Uploading") ? "text-blue-600" : "text-red-600"}`}>
-              {uploadStatus}
-            </p>
-          )}
-        </motion.div>
-      ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-lg shadow-md overflow-hidden"
-        >
-          <div className="border-b p-4">
-            <h2 className="font-bold text-lg">Analysis Chat Interface</h2>
-            <p className="text-sm text-gray-600">File: {file?.name}</p>
-          </div>
-
-          <div className="h-96 overflow-y-auto p-4 bg-gray-50">
-            {messages.map((message, index) => (
+        <TabsContent value="upload" className="mt-6">
+          <Card className="p-6 border-black">
+            <div className="flex flex-col items-center">
               <div 
-                key={index} 
-                className={`mb-4 ${message.type === "user" ? "text-right" : ""}`}
+                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors mb-4"
+                onClick={() => document.getElementById("file-upload")?.click()}
               >
-                <div 
-                  className={`inline-block p-3 rounded-lg max-w-md ${
-                    message.type === "user" 
-                      ? "bg-blue-600 text-white" 
-                      : "bg-gray-200 text-gray-800"
-                  }`}
-                  dangerouslySetInnerHTML={
-                    message.content.includes('<') && message.content.includes('</') 
-                      ? { __html: message.content } 
-                      : undefined
-                  }
-                >
-                  {message.content.includes('<') && message.content.includes('</') ? null : message.content}
-                </div>
+                <Upload size={40} className="text-gray-400 mb-2" />
+                <p className="text-lg text-gray-500">Drag and drop your file here or click to browse</p>
+                <p className="text-sm text-gray-400 mt-2">Supported formats: FASTQ, FASTA, BAM, SAM, VCF</p>
+                <input 
+                  id="file-upload" 
+                  type="file" 
+                  className="hidden" 
+                  onChange={handleFileChange}
+                  accept=".fastq,.fasta,.bam,.sam,.vcf,.fastq.gz,.fasta.gz"
+                />
               </div>
-            ))}
-          </div>
 
-          <div className="p-4 bg-white">
-            <div className="flex flex-wrap gap-2 mb-4">
-              <p className="text-sm text-gray-500 w-full mb-1">Suggested queries:</p>
-              {suggestedQueries.map((query, index) => (
-                <button
-                  key={index}
-                  onClick={() => handleSuggestedQuery(query)}
-                  className="text-xs bg-gray-100 hover:bg-gray-200 py-1 px-2 rounded-full text-gray-700"
+              {file && (
+                <div className="w-full bg-gray-50 p-4 flex justify-between items-center mb-4">
+                  <div>
+                    <p className="font-medium">{file.name}</p>
+                    <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                  </div>
+                  <Button 
+                    variant="default" 
+                    className="bg-black text-white hover:bg-gray-800 rounded-none"
+                    onClick={handleUpload}
+                    disabled={isUploading}
+                  >
+                    {isUploading ? "Uploading..." : "Upload"}
+                  </Button>
+                </div>
+              )}
+
+              {uploadStatus === "success" && (
+                <div className="w-full flex items-center p-4 bg-green-50 text-green-700 mb-4">
+                  <CheckCircle className="mr-2" size={20} />
+                  <p>File uploaded successfully! You can now analyze it.</p>
+                </div>
+              )}
+
+              {uploadStatus === "error" && (
+                <div className="w-full flex items-center p-4 bg-red-50 text-red-700 mb-4">
+                  <AlertCircle className="mr-2" size={20} />
+                  <p>{errorMessage || "An error occurred during upload."}</p>
+                </div>
+              )}
+
+              {uploadStatus === "success" && (
+                <div className="w-full mt-4">
+                  <h3 className="text-xl font-bold mb-4">Analysis Options</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Button 
+                      variant="outline" 
+                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
+                    >
+                      <div>
+                        <p className="font-bold">Quality Control</p>
+                        <p className="text-sm text-gray-600 mt-1">Run FastQC to check sequence quality</p>
+                      </div>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
+                    >
+                      <div>
+                        <p className="font-bold">Trimming</p>
+                        <p className="text-sm text-gray-600 mt-1">Trim adapters and low-quality bases</p>
+                      </div>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
+                    >
+                      <div>
+                        <p className="font-bold">Alignment</p>
+                        <p className="text-sm text-gray-600 mt-1">Align sequences to a reference genome</p>
+                      </div>
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
+                    >
+                      <div>
+                        <p className="font-bold">Variant Calling</p>
+                        <p className="text-sm text-gray-600 mt-1">Identify variants in your sequence</p>
+                      </div>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="history" className="mt-6">
+          <Card className="p-6 border-black">
+            <h3 className="text-xl font-bold mb-4">Previous Uploads</h3>
+            {/* Sample upload history */}
+            <div className="space-y-4">
+              <div className="p-4 bg-gray-50 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">sample_1.fastq.gz</p>
+                  <p className="text-sm text-gray-500">Uploaded on March 10, 2025</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="border-black rounded-none"
                 >
-                  {query}
-                </button>
-              ))}
+                  View Analysis
+                </Button>
+              </div>
+              <div className="p-4 bg-gray-50 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">genome_assembly.fasta</p>
+                  <p className="text-sm text-gray-500">Uploaded on March 8, 2025</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="border-black rounded-none"
+                >
+                  View Analysis
+                </Button>
+              </div>
+              <div className="p-4 bg-gray-50 flex justify-between items-center">
+                <div>
+                  <p className="font-medium">variants.vcf</p>
+                  <p className="text-sm text-gray-500">Uploaded on March 5, 2025</p>
+                </div>
+                <Button 
+                  variant="outline" 
+                  className="border-black rounded-none"
+                >
+                  View Analysis
+                </Button>
+              </div>
             </div>
-
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={inputQuery}
-                onChange={(e) => setInputQuery(e.target.value)}
-                placeholder="Type your query about the uploaded file..."
-                className="flex-grow p-2 border rounded-md"
-                onKeyDown={(e) => e.key === "Enter" && handleSendQuery()}
-              />
-              <Button onClick={handleSendQuery} className="bg-black text-white">
-                Send
-              </Button>
-            </div>
-          </div>
-        </motion.div>
-      )}
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   )
 }

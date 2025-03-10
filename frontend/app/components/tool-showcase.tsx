@@ -1,91 +1,94 @@
-"use client"
 
-import { useState } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-
-const tools = [
-  {
-    name: "FastQC",
-    description: "Quality control tool for high throughput sequence data",
-    details:
-      "Provides a comprehensive report on sequence quality, including per base quality scores, GC content, and overrepresented sequences.",
-  },
-  {
-    name: "Bowtie2",
-    description: "Fast and sensitive read alignment",
-    details:
-      "Aligns short DNA sequences (reads) to a reference genome, particularly effective for reads 50-100 bp long.",
-  },
-  {
-    name: "Kraken2",
-    description: "Taxonomic classification of sequencing reads",
-    details: "Assigns taxonomic labels to metagenomic DNA sequences with high accuracy and speed.",
-  },
-  {
-    name: "Porechop",
-    description: "Adapter trimmer for Oxford Nanopore reads",
-    details: "Finds and removes adapters from Oxford Nanopore reads, including in the middle of reads.",
-  },
-  {
-    name: "MultiQC",
-    description: "Aggregate results from bioinformatics analyses",
-    details:
-      "Searches a directory for analysis logs and compiles a HTML report with plots to visualize quality control results across many samples.",
-  },
-  {
-    name: "Krona",
-    description: "Interactive metagenomic visualization",
-    details:
-      "Creates interactive hierarchical data visualizations, particularly useful for metagenomic classifications.",
-  },
-]
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function ToolShowcase() {
-  const [selectedTool, setSelectedTool] = useState(tools[0])
-
   return (
-    <section id="tools" className="py-20 md:py-28 bg-white text-black my-8">
-      <div className="aesthetic-divider"></div>
+    <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
-        <div className="flex flex-wrap justify-center gap-4 mb-8">
-          {tools.map((tool) => (
-            <motion.button
-              key={tool.name}
-              onClick={() => setSelectedTool(tool)}
-              className={`px-4 py-2 rounded-full text-sm ${
-                selectedTool.name === tool.name
-                  ? "bg-black text-white"
-                  : "bg-white text-black border border-black hover:bg-black hover:text-white"
-              } transition-colors`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              {tool.name}
-            </motion.button>
-          ))}
-        </div>
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={selectedTool.name}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <Card className="bg-white text-black overflow-hidden shadow-lg border border-black">
-              <CardHeader className="bg-white border-b border-black">
-                <CardTitle className="text-2xl text-black">{selectedTool.name}</CardTitle>
-                <CardDescription className="text-black text-lg">{selectedTool.description}</CardDescription>
-              </CardHeader>
-              <CardContent className="mt-4">
-                <p className="text-black text-lg leading-relaxed">{selectedTool.details}</p>
-              </CardContent>
-            </Card>
-          </motion.div>
-        </AnimatePresence>
+        <h2 className="text-3xl md:text-4xl font-bold text-black text-center mb-12">
+          Powerful Tools
+        </h2>
+        
+        <Tabs defaultValue="sequence" className="max-w-4xl mx-auto">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-100 rounded-none border border-black">
+            <TabsTrigger value="sequence" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
+              Sequence Analysis
+            </TabsTrigger>
+            <TabsTrigger value="alignment" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
+              Alignment
+            </TabsTrigger>
+            <TabsTrigger value="variant" className="rounded-none data-[state=active]:bg-black data-[state=active]:text-white">
+              Variant Analysis
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="sequence" className="mt-6 p-6 border border-black">
+            <h3 className="text-xl font-bold text-black mb-4">Sequence Analysis Tools</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">BLAST</h4>
+                <p className="text-gray-600">Basic Local Alignment Search Tool for finding regions of similarity between sequences.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">FastQC</h4>
+                <p className="text-gray-600">Quality control tool for high throughput sequence data.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">Trimmomatic</h4>
+                <p className="text-gray-600">A flexible read trimming tool for Illumina NGS data.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">Cutadapt</h4>
+                <p className="text-gray-600">Removes adapter sequences, primers, and other specified sequences.</p>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="alignment" className="mt-6 p-6 border border-black">
+            <h3 className="text-xl font-bold text-black mb-4">Alignment Tools</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">Bowtie2</h4>
+                <p className="text-gray-600">An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">BWA</h4>
+                <p className="text-gray-600">Burrows-Wheeler Aligner for mapping low-divergent sequences against a large reference genome.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">STAR</h4>
+                <p className="text-gray-600">Spliced Transcripts Alignment to a Reference for RNA-seq data.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">HISAT2</h4>
+                <p className="text-gray-600">Fast and sensitive alignment program for mapping next-generation sequencing reads.</p>
+              </div>
+            </div>
+          </TabsContent>
+          
+          <TabsContent value="variant" className="mt-6 p-6 border border-black">
+            <h3 className="text-xl font-bold text-black mb-4">Variant Analysis Tools</h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">SAMtools</h4>
+                <p className="text-gray-600">Provides various utilities for manipulating alignments in the SAM format.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">BCFtools</h4>
+                <p className="text-gray-600">Set of utilities for variant calling and manipulating VCFs and BCFs.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">GATK</h4>
+                <p className="text-gray-600">Genome Analysis Toolkit for variant discovery and genotyping.</p>
+              </div>
+              <div className="p-4 bg-gray-50">
+                <h4 className="font-bold mb-2">VEP</h4>
+                <p className="text-gray-600">Variant Effect Predictor for determining the effect of variants on genes, transcripts, and protein sequences.</p>
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
-    </section>
+    </div>
   )
 }
