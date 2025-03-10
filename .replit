@@ -13,7 +13,7 @@ from = "/*"
 to = "/index.html"
 
 [workflows]
-runButton = "Run"
+runButton = "Start Dev Server"
 
 [[workflows.workflow]]
 name = "Run"
@@ -23,6 +23,18 @@ author = 32621205
 task = "shell.exec"
 args = "npm run dev -- -p 3000 -H 0.0.0.0"
 
+[[workflows.workflow]]
+name = "Start Dev Server"
+author = 32621205
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
+
 [[ports]]
 localPort = 3000
 externalPort = 80
+
+[[ports]]
+localPort = 3001
+externalPort = 3001
