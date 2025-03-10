@@ -1,0 +1,59 @@
+Project Context
+
+You already have a Next.js (v14.2.16) project with an upload page that allows users to upload bioinformatics files.
+Do not change or remove anything on the upload page. It remains exactly as is.
+The new functionality will be a separate page (a minimalistic “Chat/Query” page) that sends requests to http://206.1.35.40:3002/ask.
+1. Chat/Query Page Requirements
+Minimalistic Design
+
+Match the styling, fonts, and colors of the existing pages (same theme).
+Keep the layout clean and simple—similar to a typical chat or messaging interface.
+User Input (Query Field)
+
+A text input for the user to type queries (e.g., “Run fastqc on this file”).
+A submit button next to the input field to send the query.
+API Integration
+
+Endpoint: POST http://206.1.35.40:3002/ask
+Request Body Structure:
+json
+Copy
+Edit
+{
+  "query": "<user's typed query>",
+  "fileName": "<name_of_the_file_already_uploaded>"
+}
+It is critical to include "fileName" in the JSON body exactly as the user has previously uploaded it (e.g., "1_control_psbA3_2019_minq7.fastq").
+The user’s typed query becomes the "query" value.
+Response Handling & Download
+
+The API’s response will be in HTML format (or contain an HTML file).
+Display a download link or button so the user can download the returned HTML file.
+Optionally, show the response text in the chat interface (if feasible or desired).
+Separation from Upload Page
+
+The upload page is already handling file uploads at http://206.1.35.40:3002/upload.
+Do not modify the existing upload logic or page.
+If the user needs the fileName from the uploaded file, ensure they can reference it on this new page (e.g., pass it via query params or store it in local state—implementation is up to you, but keep it separate from the upload page’s code).
+UI Flow Explanation
+
+Upload Page (Unchanged):
+User uploads a file, obtaining a fileName.
+Chat/Query Page (New):
+The user enters a query in the text field.
+The user references the same fileName (from the file they previously uploaded).
+Sends the query + file name to /ask.
+Receives an HTML response, which can be downloaded or displayed.
+2. Technical & Implementation Details
+Next.js (v14.2.16) with TypeScript.
+Use "use client" at the top of any component that uses useState, useEffect, etc.
+Maintain a minimalistic chat design—similar look and feel as the rest of the site.
+Provide clear instructions (or a small README) on how to run this new page.
+3. Summary
+No Changes to the existing upload page.
+A new Chat/Query page that:
+Looks minimalistic, matching existing pages.
+Has a text input for user queries.
+Sends POST requests to http://206.1.35.40:3002/ask with the required JSON.
+Allows downloading the returned HTML file.
+Keep the code clean, modular, and consistent with the rest of the project’s design.
