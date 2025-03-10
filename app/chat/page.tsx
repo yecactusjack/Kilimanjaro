@@ -69,7 +69,7 @@ export default function ChatPage() {
         : 'Unknown error - possibly a CORS or network issue';
       setUploadStatus(`Error uploading file: ${errorMessage}`);
       console.error("Upload error:", error)
-      
+
       // Show more detailed error instructions to the user
       if (errorMessage.includes('Failed to fetch')) {
         setUploadStatus("Network error: The server may be unreachable or blocking requests from this origin. Please check your connection and that the API server is running.");
@@ -88,54 +88,40 @@ export default function ChatPage() {
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
 
     try {
-      const response = await fetch("http://206.1.35.40:3002/ask", {
+      // Use the correct ask endpoint
+      const response = await fetch("http://localhost:3001/ask", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
+        body: JSON.stringify({ 
           query: inputQuery,
-          filename: file?.name || "uploaded_file"
-        }),
-        credentials: 'include',
-      })
+          fileName: file?.name // Send the filename for reference
+        })
+      });
 
       if (!response.ok) {
-        throw new Error(`Query failed with status: ${response.status}`)
+        throw new Error(`Server responded with status: ${response.status}`);
       }
 
-      // Check if the response is a file
-      const contentType = response.headers.get("content-type") || ""
-      const contentDisposition = response.headers.get("content-disposition") || ""
-      const filenameMatch = contentDisposition.match(/filename="?([^"]*)"?/)
-      const filename = filenameMatch ? filenameMatch[1] : "result_file"
+      const data = await response.json();
+      console.log("Ask response:", data);
 
-      if (contentType.includes("application/json")) {
-        // Handle JSON response
-        const data = await response.json()
-        setMessages(prev => prev.slice(0, -1).concat({
-          type: "system", 
-          content: data.message || "Query processed successfully."
-        }))
-      } else {
-        // Handle file response
-        const blob = await response.blob()
-        const url = URL.createObjectURL(blob)
-
-        setMessages(prev => prev.slice(0, -1).concat({
-          type: "system", 
-          content: `<div>
-            <p>Your query has been processed. Here is your result file:</p>
-            <a href="${url}" download="${filename}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-2">Download Result</a>
-          </div>`
-        }))
-      }
-    } catch (error) {
-      setMessages(prev => prev.slice(0, -1).concat({
+      // Create response message based on the API response
+      const responseMessage = {
         type: "system", 
-        content: `Error processing query: ${error instanceof Error ? error.message : 'Unknown error'}`
-      }))
+        content: data.message || "Analysis complete."
+      }
+
+      setMessages(prev => [...prev, responseMessage])
+    } catch (error) {
+      console.error("Query error:", error);
+      // Add error message to chat
+      const errorMessage = {
+        type: "system",
+        content: `Error processing query: ${error instanceof Error ? error.message : 'Failed to connect to server'}`
+      }
+      setMessages(prev => [...prev, errorMessage])
     }
 
     setInputQuery("")
