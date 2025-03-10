@@ -12,7 +12,7 @@ const AskPage = () => {
 
   const handleAsk = async () => {
     if (!fileName || !query) {
-      setMessage("Please enter both filename and query.");
+      setMessage("Please enter both fileName and query.");
       return;
     }
 
