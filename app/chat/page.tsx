@@ -38,7 +38,7 @@ export default function ChatPage() {
       formData.append("file", file)
 
       // Use relative URL to avoid CORS issues
-      const response = await fetch("/upload", {
+      const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
         // Simplify the request configuration
@@ -78,7 +78,7 @@ export default function ChatPage() {
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
 
     try {
-      const response = await fetch("http://206.1.35.40:3002/ask", {
+      const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
