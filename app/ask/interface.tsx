@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useEffect, useRef } from "react"
@@ -28,6 +27,7 @@ export default function AskInterface() {
   const [fileName, setFileName] = useState<string>("")
   const [htmlContent, setHtmlContent] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const [formattedTime, setFormattedTime] = useState('');
 
   // Auto-scroll to bottom when messages change
   useEffect(() => {
@@ -41,6 +41,29 @@ export default function AskInterface() {
       setFileName(storedFileName)
     }
   }, [])
+
+  useEffect(() => {
+    // Set time only on client side to avoid hydration mismatch
+    setFormattedTime(new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: true,
+    }));
+
+    // Optional: update time every second
+    const timer = setInterval(() => {
+      setFormattedTime(new Date().toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true,
+      }));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,7 +115,7 @@ export default function AskInterface() {
       setMessages(prev => [...prev, botMessage])
     } catch (error) {
       console.error("Error querying the API:", error)
-      
+
       const errorMessage: Message = {
         id: Date.now().toString(),
         content: "Sorry, there was an error processing your query. Please try again.",
@@ -142,7 +165,7 @@ export default function AskInterface() {
               >
                 <p className="text-sm">{message.content}</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  {message.timestamp.toLocaleTimeString()}
+                  {formattedTime}
                 </p>
               </div>
             ))}
