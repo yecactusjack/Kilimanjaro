@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState } from "react"
@@ -36,44 +35,59 @@ export default function Interface() {
 
     setIsUploading(true)
     setUploadStatus("Uploading and processing file...")
-    
-    // Simulate upload delay
-    setTimeout(() => {
+
+    try {
+      const formData = new FormData()
+      formData.append("file", file)
+      const response = await fetch("http://206.1.35.40:3002/upload", {
+        method: "POST",
+        body: formData,
+      })
+      const data = await response.json()
+      // Handle response -  This would need further implementation based on the backend's response structure.
       setIsUploading(false)
       setUploadStatus("File uploaded successfully!")
       setShowChatInterface(true)
-    }, 2000)
-    
-    // Actual implementation would use:
-    // const formData = new FormData()
-    // formData.append("file", file)
-    // try {
-    //   const response = await fetch("/api/upload", {
-    //     method: "POST",
-    //     body: formData,
-    //   })
-    //   const data = await response.json()
-    //   // Handle response
-    // } catch (error) {
-    //   setUploadStatus("Error uploading file")
-    // }
+
+    } catch (error) {
+      setIsUploading(false)
+      setUploadStatus("Error uploading file")
+      console.error("Upload error:", error)
+    }
   }
 
-  const handleSendQuery = () => {
+  const handleSendQuery = async () => {
     if (!inputQuery.trim()) return
 
     // Add user message
     setMessages([...messages, {type: "user", content: inputQuery}])
-    
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
-        type: "system", 
-        content: "Based on your uploaded data, I've analyzed your query about '" + inputQuery + "'. The file shows several interesting patterns that could be relevant to your research. Would you like me to elaborate on any specific aspect?"
-      }])
-    }, 1000)
 
-    setInputQuery("")
+    try {
+      const response = await fetch("http://206.1.35.40:3002/ask", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: inputQuery })
+      });
+
+      const data = await response.json();
+
+      //Assuming the backend returns a file URL.  Adjust based on your backend's actual response.
+      let responseMessage = "Based on your uploaded data, I've analyzed your query. ";
+      if (data.fileUrl) {
+        responseMessage += `Here's your result: <a href="${data.fileUrl}" download>Download Result</a>`;
+      } else {
+        responseMessage += data.message || "No results found."; //Handle cases where no file is returned.
+      }
+
+      setMessages(prev => [...prev, {type: "system", content: responseMessage}]);
+      setInputQuery("");
+    } catch (error) {
+      console.error("Query error:", error);
+      setMessages(prev => [...prev, {type: "system", content: "Error processing your query."}]);
+    }
+
   }
 
   const handleSuggestedQuery = (query: string) => {
@@ -159,8 +173,13 @@ export default function Interface() {
                       ? "bg-blue-600 text-white" 
                       : "bg-gray-200 text-gray-800"
                   }`}
+                  dangerouslySetInnerHTML={
+                    message.content.includes('<') && message.content.includes('</') 
+                      ? { __html: message.content } 
+                      : undefined
+                  }
                 >
-                  {message.content}
+                  {message.content.includes('<') && message.content.includes('</') ? null : message.content}
                 </div>
               </div>
             ))}
@@ -179,7 +198,7 @@ export default function Interface() {
                 </button>
               ))}
             </div>
-            
+
             <div className="flex gap-2">
               <input
                 type="text"

@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
@@ -32,7 +31,7 @@ export default function ChatPage() {
 
     setIsUploading(true)
     setUploadStatus("Uploading and processing file...")
-    
+
     // Simulate upload delay
     setTimeout(() => {
       setIsUploading(false)
@@ -41,26 +40,71 @@ export default function ChatPage() {
     }, 2000)
   }
 
-  const handleSendQuery = (e: FormEvent) => {
+  const handleSendQuery = async (e: FormEvent) => {
     e.preventDefault()
-    
+
     if (!inputQuery.trim()) return
 
-    // Add user message
     setMessages([...messages, {type: "user", content: inputQuery}])
-    
-    // Simulate AI response
-    setTimeout(() => {
-      setMessages(prev => [...prev, {
+
+    // Show loading state
+    setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
+
+    try {
+      const response = await fetch("http://206.1.35.40:3002/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: inputQuery,
+          filename: file?.name || "uploaded_file"
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Query failed with status: ${response.status}`)
+      }
+
+      // Check if the response is a file
+      const contentType = response.headers.get("content-type") || ""
+      const contentDisposition = response.headers.get("content-disposition") || ""
+      const filenameMatch = contentDisposition.match(/filename="?([^"]*)"?/)
+      const filename = filenameMatch ? filenameMatch[1] : "result_file"
+
+      if (contentType.includes("application/json")) {
+        // Handle JSON response
+        const data = await response.json()
+        setMessages(prev => prev.slice(0, -1).concat({
+          type: "system", 
+          content: data.message || "Query processed successfully."
+        }))
+      } else {
+        // Handle file response
+        const blob = await response.blob()
+        const url = URL.createObjectURL(blob)
+
+        setMessages(prev => prev.slice(0, -1).concat({
+          type: "system", 
+          content: `<div>
+            <p>Your query has been processed. Here is your result file:</p>
+            <a href="${url}" download="${filename}" class="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-2">Download Result</a>
+          </div>`
+        }))
+      }
+    } catch (error) {
+      setMessages(prev => prev.slice(0, -1).concat({
         type: "system", 
-        content: "Based on your uploaded data, I've analyzed your query about '" + inputQuery + "'. The file shows several interesting patterns that could be relevant to your research. Would you like me to elaborate on any specific aspect?"
-      }])
-      
-      // Scroll to bottom after new message
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, 1000)
+        content: `Error processing query: ${error instanceof Error ? error.message : 'Unknown error'}`
+      }))
+    }
 
     setInputQuery("")
+
+    // Scroll to bottom of messages
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+    }
   }
 
   return (
@@ -76,7 +120,7 @@ export default function ChatPage() {
           >
             Bioinformatics Analysis Interface
           </motion.h1>
-          
+
           <div className="max-w-4xl mx-auto">
             {!showChatInterface ? (
               <motion.div 
@@ -110,14 +154,14 @@ export default function ChatPage() {
                     </label>
                   </div>
                 </div>
-                
+
                 {file && (
                   <div className="mb-4 p-4 bg-gray-50 rounded">
                     <p className="text-sm font-medium">Selected file:</p>
                     <p className="text-sm text-gray-600">{file.name} ({(file.size / 1024).toFixed(2)} KB)</p>
                   </div>
                 )}
-                
+
                 <button
                   onClick={handleUpload}
                   disabled={isUploading || !file}
@@ -143,7 +187,7 @@ export default function ChatPage() {
                   <h2 className="font-bold text-lg">Analysis Chat Interface</h2>
                   <p className="text-sm text-gray-600">File: {file?.name}</p>
                 </div>
-                
+
                 <div className="h-96 overflow-y-auto p-4">
                   {messages.map((message, index) => (
                     <div 
@@ -156,14 +200,19 @@ export default function ChatPage() {
                             ? 'bg-black text-white rounded-br-none' 
                             : 'bg-gray-200 text-black rounded-bl-none'
                         }`}
+                        dangerouslySetInnerHTML={
+                          message.content.includes('<') && message.content.includes('</') 
+                            ? { __html: message.content } 
+                            : undefined
+                        }
                       >
-                        {message.content}
+                        {message.content.includes('<') && message.content.includes('</') ? null : message.content}
                       </div>
                     </div>
                   ))}
                   <div ref={messagesEndRef} />
                 </div>
-                
+
                 <div className="border-t p-4">
                   <form onSubmit={handleSendQuery} className="flex space-x-2">
                     <input
@@ -180,7 +229,7 @@ export default function ChatPage() {
                       Send
                     </button>
                   </form>
-                  
+
                   <div className="mt-4">
                     <p className="text-sm text-gray-600 mb-2">Suggested queries:</p>
                     <div className="flex flex-wrap gap-2">
