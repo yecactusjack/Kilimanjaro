@@ -1,12 +1,14 @@
+
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function Hero() {
   return (
-    <section className="w-full py-24 md:py-32 lg:py-40 flex flex-col items-center justify-center text-center">
+    <section className="w-full py-24 md:py-32 lg:py-40 flex flex-col items-center justify-center text-center bg-white">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -17,9 +19,9 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-5xl font-bold tracking-tight text-center mb-6"
+          className="text-5xl font-bold tracking-tight text-center mb-6 text-black"
         >
-          Goldbach Labs
+          Transforming Bioinformatics
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -33,11 +35,12 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="flex justify-center"
+          className="flex justify-center space-x-4"
         >
           <Link href="/chat">
-            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
+            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
               Get Started
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </motion.div>
