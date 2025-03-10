@@ -34,29 +34,46 @@ export default function ChatPage() {
 
     try {
       const formData = new FormData()
-      // Using the default file key name that the server expects
+      // Using the default key name "file" that the server expects
       formData.append("file", file)
 
+      // Improved fetch with more robust error handling and CORS settings
       const response = await fetch("http://206.1.35.40:3002/upload", {
         method: "POST",
         body: formData,
-        // Don't set Content-Type header - browser will set it automatically with boundary
+        // Let browser handle Content-Type for multipart/form-data with proper boundary
         credentials: 'include',
+        // Add mode: 'cors' to explicitly request CORS support
+        mode: 'cors',
+        // Add cache: 'no-cache' to prevent caching issues
+        cache: 'no-cache',
       })
 
+      // Check for HTTP errors
       if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`)
+        const errorText = await response.text().catch(() => 'No error details available');
+        throw new Error(`Server responded with status: ${response.status} - ${errorText}`);
       }
 
-      const data = await response.json()
+      // Parse the JSON response safely
+      const data = await response.json();
 
       setIsUploading(false)
       setUploadStatus("File uploaded successfully!")
       setShowChatInterface(true)
     } catch (error) {
       setIsUploading(false)
-      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      // Provide better error information for debugging
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Unknown error - possibly a CORS or network issue';
+      setUploadStatus(`Error uploading file: ${errorMessage}`);
       console.error("Upload error:", error)
+      
+      // Show more detailed error instructions to the user
+      if (errorMessage.includes('Failed to fetch')) {
+        setUploadStatus("Network error: The server may be unreachable or blocking requests from this origin. Please check your connection and that the API server is running.");
+      }
     }
   }
 
