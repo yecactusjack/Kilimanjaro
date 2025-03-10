@@ -62,8 +62,7 @@ section:last-of-type {
 /* Improve overall spacing and section separation */
 section {
   @apply relative border-b border-gray-100;
-  padding: 4.5rem 0;
-  scroll-margin-top: 5rem;
+  padding: 4rem 0;
 }
 
 main {
@@ -72,8 +71,8 @@ main {
 
 /* Clean section dividers */
 .section-divider {
-  @apply w-full h-px bg-gray-200 my-24; /* Increased vertical margin */
-  max-width: 75%;
+  @apply w-full h-px bg-gray-200 my-20;
+  max-width: 80%;
   margin-left: auto;
   margin-right: auto;
 }

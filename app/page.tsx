@@ -10,7 +10,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-8"> {/* Increased padding */}
+        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-6"> {/* Added padding for better spacing */}
           <Hero />
           <div className="section-divider"></div>
           <MissionStatement />
