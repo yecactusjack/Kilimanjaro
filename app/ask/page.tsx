@@ -1,8 +1,7 @@
 import AskInterface from './interface'
-
-// Placeholder components - these would need to be properly implemented
-const ToolsSection = () => <div>This is a placeholder for the Tools Section</div>;
-const Footer = () => <div>This is a placeholder for the Footer</div>;
+import ToolShowcase from '../components/tool-showcase'
+import Footer from '../components/footer'
+import Header from '../components/header'
 
 export const metadata = {
   title: 'Ask questions about your data',
@@ -11,12 +10,18 @@ export const metadata = {
 
 export default function AskPage() {
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
+      <Header />
       <div className="container mx-auto py-8 px-4 border-b border-gray-200">
         <AskInterface />
       </div>
-      <ToolsSection />
+      <ToolShowcase />
+      <div className="text-center py-5">
+        <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full text-sm font-medium">
+          Beta 1.0 Kilimanjaro
+        </a>
+      </div>
       <Footer />
-    </>
+    </div>
   )
 }
