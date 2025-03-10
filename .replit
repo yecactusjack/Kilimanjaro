@@ -13,7 +13,7 @@ from = "/*"
 to = "/index.html"
 
 [workflows]
-runButton = "Start Dev Server"
+runButton = "Next.js Dev"
 
 [[workflows.workflow]]
 name = "Run"
@@ -30,6 +30,14 @@ author = 32621205
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev -- -p 3000 -H 0.0.0.0"
+
+[[workflows.workflow]]
+name = "Next.js Dev"
+author = 32621205
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev -- -p 3001 -H 0.0.0.0"
 
 [[ports]]
 localPort = 3000
