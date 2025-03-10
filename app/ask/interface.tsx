@@ -83,8 +83,16 @@ export default function AskInterface() {
         }
       )
 
-      // Set the HTML content for download
-      setHtmlContent(response.data)
+      // Handle the response properly depending on its structure
+      let responseData;
+      if (response.data && typeof response.data === 'object') {
+        responseData = response.data;
+      } else {
+        responseData = { response: response.data };
+      }
+      // Set the HTML content for download.  Assuming response.data now contains HTML or a suitable structure.
+      setHtmlContent(responseData.html || responseData.response); // Adjust based on actual API response
+
 
       const botMessage: Message = {
         id: Date.now().toString(),

@@ -36,11 +36,17 @@ export async function POST(request: Request) {
       );
     }
     
-    // Get the response content as JSON
-    const responseData = await externalResponse.json();
-    
-    // Return the JSON content
-    return NextResponse.json({ response: responseData });
+    try {
+      // Try to parse as JSON first
+      const responseData = await externalResponse.json();
+      // Return the JSON content directly without wrapping
+      return NextResponse.json(responseData);
+    } catch (jsonError) {
+      // If JSON parsing fails, get as text
+      const responseText = await externalResponse.text();
+      // Return as JSON with text content
+      return NextResponse.json({ response: responseText });
+    }
     
   } catch (error) {
     console.error("Ask API error:", error);
