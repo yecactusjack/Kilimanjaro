@@ -11,11 +11,11 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <div className="aesthetic-divider mx-auto w-[80%]"></div>
+        <div className="aesthetic-divider mx-auto w-[60%]"></div>
         <MissionStatement />
-        <div className="aesthetic-divider mx-auto w-[80%]"></div>
+        <div className="aesthetic-divider mx-auto w-[60%]"></div>
         <Features />
-        <div className="aesthetic-divider mx-auto w-[80%]"></div>
+        <div className="aesthetic-divider mx-auto w-[60%]"></div>
         <ToolShowcase />
       </main>
       <Footer />

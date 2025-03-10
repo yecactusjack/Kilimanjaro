@@ -51,7 +51,7 @@
 /* Custom divider styles */
 .aesthetic-divider {
   height: 1px;
-  background-image: linear-gradient(to right, transparent, rgba(59, 130, 246, 0.5) 50%, transparent);
+  background-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.5) 50%, transparent);
   margin: 3rem 0;
   position: relative;
 }
@@ -63,7 +63,7 @@
   left: 50%;
   width: 7px;
   height: 7px;
-  background: rgba(59, 130, 246, 0.7);
+  background: rgba(0, 0, 0, 0.7);
   border-radius: 50%;
   transform: translateX(-50%);
 }
