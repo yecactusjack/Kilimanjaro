@@ -43,7 +43,7 @@ export default function ToolsSection() {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
 
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap gap-2 sm:gap-3 justify-center mb-6 sm:mb-8">
           {Object.keys(tools).map((toolName) => (
             <button
               key={toolName}

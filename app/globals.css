@@ -82,6 +82,35 @@ main {
   @apply py-10;
 }
 
+/* Mobile responsiveness improvements */
+@media (max-width: 768px) {
+  section {
+    padding: 3rem 1rem;
+  }
+  
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .section-divider {
+    max-width: 95%;
+  }
+  
+  h1, h2 {
+    font-size: clamp(1.5rem, 5vw, 2.5rem);
+  }
+  
+  .mobile-stack {
+    flex-direction: column;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
 :root {
   --background: 210 40% 98%;
   --foreground: 222.2 84% 4.9%;

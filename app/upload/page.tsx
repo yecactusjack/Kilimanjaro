@@ -1,4 +1,3 @@
-
 import UploadInterface from './interface'
 import ToolShowcase from '../components/tool-showcase'
 import Footer from '../components/footer'
@@ -19,7 +18,7 @@ export default function UploadPage() {
             Beta 1.0 Kilimanjaro
           </a>
         </div>
-        <div className="container mx-auto py-10 px-4">
+        <div className="container mx-auto py-4 sm:py-8 px-3 sm:px-4">
           <UploadInterface />
         </div>
       </main>
