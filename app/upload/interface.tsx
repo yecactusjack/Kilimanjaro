@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef } from "react"
@@ -16,13 +15,13 @@ export default function UploadInterface() {
   const [uploadComplete, setUploadComplete] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  
+
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + " bytes"
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(2) + " KB"
     return (bytes / (1024 * 1024)).toFixed(2) + " MB"
   }
-  
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const selectedFile = e.target.files[0]
@@ -32,10 +31,10 @@ export default function UploadInterface() {
       setUploadError(null)
     }
   }
-  
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0]
       setFile(droppedFile)
@@ -44,28 +43,28 @@ export default function UploadInterface() {
       setUploadError(null)
     }
   }
-  
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
   }
-  
+
   const handleUpload = async () => {
     if (!file) return
-    
+
     setIsUploading(true)
     setUploadError(null)
-    
+
     const formData = new FormData()
     formData.append("file", file)
-    
+
     try {
       // Send file to API
       await axios.post("http://206.1.35.40:3002/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       })
-      
+
       setUploadComplete(true)
-      
+
       // Redirect to chat after short delay
       setTimeout(() => {
         window.location.href = "/chat"
@@ -77,7 +76,7 @@ export default function UploadInterface() {
       setIsUploading(false)
     }
   }
-  
+
   const handleRemoveFile = () => {
     setFile(null)
     setFileName("")
@@ -86,11 +85,11 @@ export default function UploadInterface() {
       fileInputRef.current.value = ""
     }
   }
-  
+
   return (
     <div className="max-w-2xl mx-auto">
       <h1 className="text-3xl font-bold mb-8 text-center">Upload Your Bioinformatics File</h1>
-      
+
       <Card className="p-8 border-dashed">
         <div 
           className="flex flex-col items-center justify-center"
@@ -141,13 +140,13 @@ export default function UploadInterface() {
                   </Button>
                 )}
               </div>
-              
+
               {uploadError && (
                 <div className="mb-4 p-3 bg-red-50 text-red-500 rounded-md text-sm">
                   {uploadError}
                 </div>
               )}
-              
+
               {!uploadComplete ? (
                 <Button 
                   className="w-full" 
@@ -165,12 +164,8 @@ export default function UploadInterface() {
           )}
         </div>
       </Card>
-      
-      <div className="mt-6 text-center">
-        <p className="text-gray-500">
-          Need help with your file? <Link href="/chat" className="text-blue-500 hover:underline">Chat with our assistant</Link>
-        </p>
-      </div>
+
+      {/* Removed "Need help with your file?" section */}
     </div>
   )
 }

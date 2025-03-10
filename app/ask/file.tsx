@@ -4,6 +4,8 @@
 import { useState } from "react";
 import axios from "axios";
 
+"use client"
+
 const AskPage = () => {
   const [fileName, setFileName] = useState("");
   const [query, setQuery] = useState("");
