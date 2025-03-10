@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -26,21 +27,36 @@ export default function Interface() {
     setUploadStatus("idle")
 
     try {
-      // Simulate upload - replace with actual API call
-      console.log("Uploaded file:", file.name)
+      const formData = new FormData()
+      formData.append("file", file)
 
-      // Simulate successful upload after 1.5 seconds
-      setTimeout(() => {
-        setIsUploading(false)
-        setUploadStatus("success")
-      }, 1500)
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: formData
+      })
+
+      if (!response.ok) {
+        throw new Error(`Upload failed with status: ${response.status}`)
+      }
+
+      const data = await response.json()
+      console.log("Upload response:", data)
+      
+      setIsUploading(false)
+      setUploadStatus("success")
     } catch (error) {
       console.error("Upload error:", error)
       setIsUploading(false)
       setUploadStatus("error")
-      setErrorMessage("Failed to upload file. Please try again.")
+      setErrorMessage(error instanceof Error ? error.message : "Failed to upload file")
     }
   }
+
+  const acceptedFormats = [
+    ".fasta", ".fa", ".fastq", ".fq", ".fastq.gz", ".fq.gz",
+    ".bam", ".sam", ".vcf", ".gtf", ".gff",
+    ".txt", ".csv", ".tsv", ".xls", ".xlsx"
+  ]
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -53,28 +69,37 @@ export default function Interface() {
             Upload History
           </TabsTrigger>
         </TabsList>
-
+        
         <TabsContent value="upload" className="mt-6">
-          <Card className="p-6 border-black">
-            <div className="flex flex-col items-center">
-              <div 
-                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors mb-4"
-                onClick={() => document.getElementById("file-upload")?.click()}
+          <Card className="p-6 border-black rounded-none">
+            <div className="text-center mb-8">
+              <h3 className="text-xl font-bold mb-2">Upload Bioinformatics Data</h3>
+              <p className="text-gray-600">
+                Upload your FASTA, FASTQ, BAM, VCF or other bioinformatics files for analysis
+              </p>
+            </div>
+            
+            <div className="mb-6">
+              <label 
+                htmlFor="file-upload"
+                className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-black bg-gray-50 cursor-pointer hover:bg-gray-100"
               >
-                <Upload size={40} className="text-gray-400 mb-2" />
-                <p className="text-lg text-gray-500">Drag and drop your file here or click to browse</p>
-                <p className="text-sm text-gray-400 mt-2">Supported formats: FASTQ, FASTA, BAM, SAM, VCF</p>
+                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                  <Upload className="h-10 w-10 mb-2" />
+                  <p className="mb-2 text-sm text-gray-700"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                  <p className="text-xs text-gray-500">Supported formats: FASTA, FASTQ, BAM, VCF, etc.</p>
+                </div>
                 <input 
                   id="file-upload" 
                   type="file" 
                   className="hidden" 
+                  accept={acceptedFormats.join(",")}
                   onChange={handleFileChange}
-                  accept=".fastq,.fasta,.bam,.sam,.vcf,.fastq.gz,.fasta.gz"
                 />
-              </div>
-
+              </label>
+              
               {file && (
-                <div className="w-full bg-gray-50 p-4 flex justify-between items-center mb-4">
+                <div className="w-full bg-gray-50 p-4 flex justify-between items-center mb-4 mt-4 border border-black">
                   <div>
                     <p className="font-medium">{file.name}</p>
                     <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
@@ -91,72 +116,40 @@ export default function Interface() {
               )}
 
               {uploadStatus === "success" && (
-                <div className="w-full flex items-center p-4 bg-green-50 text-green-700 mb-4">
+                <div className="w-full flex items-center p-4 bg-green-50 text-green-700 mb-4 border border-green-200">
                   <CheckCircle className="mr-2" size={20} />
                   <p>File uploaded successfully! You can now analyze it.</p>
                 </div>
               )}
 
               {uploadStatus === "error" && (
-                <div className="w-full flex items-center p-4 bg-red-50 text-red-700 mb-4">
+                <div className="w-full flex items-center p-4 bg-red-50 text-red-700 mb-4 border border-red-200">
                   <AlertCircle className="mr-2" size={20} />
                   <p>{errorMessage || "An error occurred during upload."}</p>
                 </div>
               )}
-
-              {uploadStatus === "success" && (
-                <div className="w-full mt-4">
-                  <h3 className="text-xl font-bold mb-4">Analysis Options</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Quality Control</p>
-                        <p className="text-sm text-gray-600 mt-1">Run FastQC to check sequence quality</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Trimming</p>
-                        <p className="text-sm text-gray-600 mt-1">Trim adapters and low-quality bases</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Alignment</p>
-                        <p className="text-sm text-gray-600 mt-1">Align sequences to a reference genome</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Variant Calling</p>
-                        <p className="text-sm text-gray-600 mt-1">Identify variants in your sequence</p>
-                      </div>
-                    </Button>
-                  </div>
-                </div>
-              )}
+            </div>
+            
+            <div className="bg-gray-50 p-4 border border-black">
+              <h4 className="font-bold mb-2">Supported File Formats</h4>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                <div className="bg-white p-2 border border-gray-200">FASTA (.fa, .fasta)</div>
+                <div className="bg-white p-2 border border-gray-200">FASTQ (.fq, .fastq)</div>
+                <div className="bg-white p-2 border border-gray-200">BAM/SAM</div>
+                <div className="bg-white p-2 border border-gray-200">VCF</div>
+                <div className="bg-white p-2 border border-gray-200">GFF/GTF</div>
+                <div className="bg-white p-2 border border-gray-200">CSV/TSV</div>
+              </div>
             </div>
           </Card>
         </TabsContent>
-
+        
         <TabsContent value="history" className="mt-6">
-          <Card className="p-6 border-black">
+          <Card className="p-6 border-black rounded-none">
             <h3 className="text-xl font-bold mb-4">Previous Uploads</h3>
             {/* Sample upload history */}
             <div className="space-y-4">
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
+              <div className="p-4 bg-gray-50 flex justify-between items-center border border-black">
                 <div>
                   <p className="font-medium">sample_1.fastq.gz</p>
                   <p className="text-sm text-gray-500">Uploaded on March 10, 2025</p>
@@ -168,7 +161,7 @@ export default function Interface() {
                   View Analysis
                 </Button>
               </div>
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
+              <div className="p-4 bg-gray-50 flex justify-between items-center border border-black">
                 <div>
                   <p className="font-medium">genome_assembly.fasta</p>
                   <p className="text-sm text-gray-500">Uploaded on March 8, 2025</p>
@@ -180,7 +173,7 @@ export default function Interface() {
                   View Analysis
                 </Button>
               </div>
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
+              <div className="p-4 bg-gray-50 flex justify-between items-center border border-black">
                 <div>
                   <p className="font-medium">variants.vcf</p>
                   <p className="text-sm text-gray-500">Uploaded on March 5, 2025</p>
