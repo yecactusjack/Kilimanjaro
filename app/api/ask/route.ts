@@ -1,46 +1,56 @@
-import { NextRequest, NextResponse } from 'next/server'
-import axios from 'axios'
 
-export async function POST(request: NextRequest) {
+import { NextResponse } from 'next/server';
+
+export async function POST(request: Request) {
   try {
-    const body = await request.json()
-
-    // Add debug logging to identify issues
-    console.log("Sending query to external API:", JSON.stringify(body));
-
-    // Forward the request to the external API
-    const externalResponse = await axios.post('http://206.1.35.40:3002/ask', body, {
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      responseType: 'text' // Handle potential HTML responses
-    })
-
-    // Check if the external API request was successful
-    if (!externalResponse.status.toString().startsWith('2')) {
-      let errorText;
-      try {
-        errorText = externalResponse.data;
-        console.error("External API error:", externalResponse.status, errorText);
-      } catch (e) {
-        errorText = "Could not parse error response";
-        console.error("External API error:", externalResponse.status, "Could not parse error response");
-      }
+    // Get data from the client-side
+    const body = await request.json();
+    const { query, fileName } = body;
+    
+    if (!query || !fileName) {
       return NextResponse.json(
-        { error: `External API error: ${externalResponse.status} - ${errorText}` },
-        { status: externalResponse.status }
+        { error: 'Query and fileName are required' },
+        { status: 400 }
       );
     }
 
-
-    // Process the successful response
-    return NextResponse.json(JSON.parse(externalResponse.data), { status: 200 });
-
-  } catch (error: any) {
-    console.error('Error processing ask request:', error)
+    // Forward the request to the external API
+    const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        query,
+        fileName
+      })
+    });
+    
+    // Handle the response from the external API
+    if (!externalResponse.ok) {
+      const errorText = await externalResponse.text();
+      console.error("External API error:", externalResponse.status, errorText);
+      return NextResponse.json(
+        { error: `External API error: ${externalResponse.status}` },
+        { status: externalResponse.status }
+      );
+    }
+    
+    // Get the response content as text since it's HTML
+    const responseText = await externalResponse.text();
+    
+    // Return the HTML content
+    return new NextResponse(responseText, {
+      headers: {
+        'Content-Type': 'text/html',
+      },
+    });
+    
+  } catch (error) {
+    console.error("Ask API error:", error);
     return NextResponse.json(
-      { error: 'Failed to process query' },
+      { error: 'Internal server error' },
       { status: 500 }
-    )
+    );
   }
 }
