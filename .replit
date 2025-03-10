@@ -17,41 +17,13 @@ to = "/index.html"
 runButton = "Next.js Dev"
 
 [[workflows.workflow]]
-name = "Run"
-author = 32621205
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev -- -p 3000 -H 0.0.0.0"
-
-[[workflows.workflow]]
-name = "Start Dev Server"
-author = 32621205
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev -- -p 3000 -H 0.0.0.0"
-
-[[workflows.workflow]]
 name = "Next.js Dev"
 author = 32621205
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
-args = "npm run dev -- -p 3003 -H 0.0.0.0"
+args = "npm run dev -- -p 3000 -H 0.0.0.0"
 
 [[ports]]
 localPort = 3000
 externalPort = 80
-
-[[ports]]
-localPort = 3001
-externalPort = 3001
-
-[[ports]]
-localPort = 3002
-externalPort = 3002
-
-[[ports]]
-localPort = 3003
-externalPort = 3003
