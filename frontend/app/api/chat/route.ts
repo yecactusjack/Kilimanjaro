@@ -14,35 +14,3 @@ export async function POST(req: Request) {
   return result.toDataStreamResponse()
 }
 
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
-  try {
-    const { query, fileName } = await request.json();
-    
-    if (!query) {
-      return NextResponse.json(
-        { error: 'No query provided' },
-        { status: 400 }
-      );
-    }
-
-    // In a real implementation, you would process the query here
-    // For now, we'll return a mock response
-    
-    const mockResponse = `I've analyzed your query: "${query}" for file "${fileName || 'unknown'}". 
-    
-This is a simulated response for demonstration purposes. In a production environment, this would connect to your bioinformatics processing backend.`;
-    
-    return NextResponse.json({
-      response: mockResponse,
-      success: true
-    });
-  } catch (error) {
-    console.error('Chat API error:', error);
-    return NextResponse.json(
-      { error: 'Error processing chat query' },
-      { status: 500 }
-    );
-  }
-}

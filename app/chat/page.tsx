@@ -288,7 +288,20 @@ export default function ChatPage() {
                       {messages.some(msg => msg.content.includes('<html>') || msg.content.includes('FastQC')) && (
                         <button
                           className="px-4 py-2 bg-green-500 text-white rounded-md"
-                          onClick={downloadReport}
+                          onClick={() => {
+                            const htmlContent = messages.find(msg => msg.content.includes('<html>') || msg.content.includes('FastQC'))?.content;
+                            if (htmlContent) {
+                              const blob = new Blob([htmlContent], { type: 'text/html' });
+                              const url = URL.createObjectURL(blob);
+                              const a = document.createElement('a');
+                              a.href = url;
+                              a.download = `${uploadedFileName || 'fastqc'}_report.html`;
+                              document.body.appendChild(a);
+                              a.click();
+                              document.body.removeChild(a);
+                              URL.revokeObjectURL(url);
+                            }
+                          }}
                         >
                           Download Report
                         </button>

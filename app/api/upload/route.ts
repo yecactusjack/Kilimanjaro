@@ -46,39 +46,3 @@ export async function POST(request: Request) {
     );
   }
 }
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
-  try {
-    const formData = await request.formData();
-    const file = formData.get('file') as File;
-    
-    if (!file) {
-      return NextResponse.json(
-        { error: 'No file uploaded' },
-        { status: 400 }
-      );
-    }
-
-    // In a real implementation, you would process the file here
-    // For now, we'll just return success to make the UI work
-    
-    return NextResponse.json({
-      success: true,
-      message: "File processed successfully",
-      filename: file.name,
-      suggestions: [
-        "Analyze for quality metrics",
-        "Check for sequence patterns",
-        "Run FastQC analysis",
-        "Identify common variants"
-      ]
-    });
-  } catch (error) {
-    console.error('Upload error:', error);
-    return NextResponse.json(
-      { error: 'Error processing file upload' },
-      { status: 500 }
-    );
-  }
-}
