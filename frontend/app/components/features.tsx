@@ -34,7 +34,7 @@ export default function Features() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
 
   return (
-    <section id="features" className="py-16 bg-white text-black">
+    <section id="features" className="py-12 md:py-16 lg:py-20 my-8 bg-white text-black">
       <div className="aesthetic-divider"></div>
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black">Bioinformatics, Simplified by Intelligence</h2>

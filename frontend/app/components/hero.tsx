@@ -8,7 +8,7 @@ import { motion } from "framer-motion"
 
 export default function Hero() {
   return (
-    <section className="w-full py-24 md:py-32 lg:py-40 flex flex-col items-center justify-center text-center bg-white">
+    <section className="w-full py-24 md:py-32 lg:py-40 flex flex-col items-center justify-center text-center bg-white mb-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}

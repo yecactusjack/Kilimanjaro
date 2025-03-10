@@ -7,7 +7,7 @@ export default function MissionStatement() {
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <section id="mission" className="py-16 bg-white text-black">
+    <section id="mission" className="py-16 bg-white text-black my-8">
       <div className="aesthetic-divider"></div>
       <div className="container mx-auto px-4">
         <motion.div

@@ -45,7 +45,7 @@ export default function ToolShowcase() {
   const [selectedTool, setSelectedTool] = useState(tools[0])
 
   return (
-    <section id="tools" className="py-16 bg-white text-black">
+    <section id="tools" className="py-12 md:py-16 lg:py-20 bg-white text-black my-8">
       <div className="aesthetic-divider"></div>
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
