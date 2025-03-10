@@ -45,71 +45,71 @@ export default function ChatPage() {
         cache: 'no-cache',
       })
 
-      // Check for HTTP errors
       if (!response.ok) {
-        const errorText = await response.text().catch(() => 'No error details available');
-        throw new Error(`Server responded with status: ${response.status} - ${errorText}`);
+        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`);
       }
 
-      // Parse the JSON response safely
-      const data = await response.json();
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("Failed to parse JSON response:", text.substring(0, 100) + "...");
+        throw new Error("Invalid JSON response from server");
+      }
 
       setIsUploading(false)
       setUploadStatus("File uploaded successfully!")
       setShowChatInterface(true)
     } catch (error) {
       setIsUploading(false)
-      // Provide better error information for debugging
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : 'Unknown error - possibly a CORS or network issue';
-      setUploadStatus(`Error uploading file: ${errorMessage}`);
+      setUploadStatus(`Error uploading file: ${error.message}`)
       console.error("Upload error:", error)
-
-      // Show more detailed error instructions to the user
-      if (errorMessage.includes('Failed to fetch')) {
-        setUploadStatus("Network error: The server may be unreachable or blocking requests from this origin. Please check your connection and that the API server is running.");
-      }
     }
   }
 
   const handleSendQuery = async (e: FormEvent) => {
     e.preventDefault()
-
     if (!inputQuery.trim()) return
 
-    setMessages([...messages, {type: "user", content: inputQuery}])
-
-    // Show loading state
+    // Add user message to the chat
+    setMessages(prev => [...prev, {type: "user", content: inputQuery}])
+    setInputQuery("")
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
 
     try {
-      // Use relative URL to avoid CORS issues
-      const response = await fetch("/ask", {
+      const response = await fetch("http://206.1.35.40:3002/ask", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
-          query: inputQuery,
-          fileName: file?.name // Send the filename for reference
-        })
-      });
+        body: JSON.stringify({ query: inputQuery })
+      })
 
       if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status}`);
+        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
       }
 
-      const data = await response.json();
-      console.log("Ask response:", data);
-
-      // Create response message based on the API response
-      const responseMessage = {
-        type: "system", 
-        content: data.message || "Analysis complete."
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch (e) {
+        console.error("Failed to parse JSON response:", text.substring(0, 100) + "...");
+        throw new Error("Invalid JSON response from server");
       }
 
-      setMessages(prev => [...prev, responseMessage])
+      // Remove the "Processing" message
+      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
+
+      // Add the bot response
+      setMessages(prev => [...prev, {
+        type: "bot", 
+        content: data.response || "I couldn't process that query."
+      }])
+
+      // Scroll to bottom
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
     } catch (error) {
       console.error("Query error:", error);
       // Add error message to chat
