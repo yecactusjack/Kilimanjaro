@@ -1,0 +1,84 @@
+Build Error
+Failed to compile
+
+Next.js (14.2.16) is outdated (learn more)
+./app/components/hero.tsx
+Error: 
+  × the name `Link` is defined multiple times
+    ╭─[/home/runner/workspace/app/components/hero.tsx:1:1]
+  1 │ "use client"
+  2 │ 
+  3 │ import Link from "next/link"
+    ·        ──┬─
+    ·          ╰── previous definition of `Link` here
+  4 │ import { ArrowRight } from "lucide-react"
+  5 │ import { motion } from "framer-motion"
+  6 │ import { Button } from "@/components/ui/button"
+  7 │ 
+  8 │ import Link from "next/link"
+    ·        ──┬─
+    ·          ╰── `Link` redefined here
+  9 │ import { Button } from "@/components/ui/button"
+ 10 │ import { ArrowRight } from "lucide-react" 
+ 11 │ import { motion } from "framer-motion"
+    ╰────
+
+  × the name `Button` is defined multiple times
+    ╭─[/home/runner/workspace/app/components/hero.tsx:3:1]
+  3 │ import Link from "next/link"
+  4 │ import { ArrowRight } from "lucide-react"
+  5 │ import { motion } from "framer-motion"
+  6 │ import { Button } from "@/components/ui/button"
+    ·          ───┬──
+    ·             ╰── previous definition of `Button` here
+  7 │ 
+  8 │ import Link from "next/link"
+  9 │ import { Button } from "@/components/ui/button"
+    ·          ───┬──
+    ·             ╰── `Button` redefined here
+ 10 │ import { ArrowRight } from "lucide-react" 
+ 11 │ import { motion } from "framer-motion"
+    ╰────
+
+  × the name `ArrowRight` is defined multiple times
+    ╭─[/home/runner/workspace/app/components/hero.tsx:1:1]
+  1 │ "use client"
+  2 │ 
+  3 │ import Link from "next/link"
+  4 │ import { ArrowRight } from "lucide-react"
+    ·          ─────┬────
+    ·               ╰── previous definition of `ArrowRight` here
+  5 │ import { motion } from "framer-motion"
+  6 │ import { Button } from "@/components/ui/button"
+  7 │ 
+  8 │ import Link from "next/link"
+  9 │ import { Button } from "@/components/ui/button"
+ 10 │ import { ArrowRight } from "lucide-react" 
+    ·          ─────┬────
+    ·               ╰── `ArrowRight` redefined here
+ 11 │ import { motion } from "framer-motion"
+ 12 │ 
+ 13 │ export default function Hero() {
+    ╰────
+
+  × the name `motion` is defined multiple times
+    ╭─[/home/runner/workspace/app/components/hero.tsx:2:1]
+  2 │ 
+  3 │ import Link from "next/link"
+  4 │ import { ArrowRight } from "lucide-react"
+  5 │ import { motion } from "framer-motion"
+    ·          ───┬──
+    ·             ╰── previous definition of `motion` here
+  6 │ import { Button } from "@/components/ui/button"
+  7 │ 
+  8 │ import Link from "next/link"
+  9 │ import { Button } from "@/components/ui/button"
+ 10 │ import { ArrowRight } from "lucide-react" 
+ 11 │ import { motion } from "framer-motion"
+    ·          ───┬──
+    ·             ╰── `motion` redefined here
+ 12 │ 
+ 13 │ export default function Hero() {
+ 14 │   return (
+    ╰────
+This error occurred during the build process and can only be dismissed by fixing the error.
