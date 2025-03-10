@@ -15,8 +15,8 @@ export default function Home() {
         <MissionStatement />
         <Features />
         <ToolsSection />
-        <div className="text-center py-5">
-          <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-full text-sm font-medium">
+        <div className="text-center py-8">
+          <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium transition-all hover:bg-blue-700">
             Beta 1.0 Kilimanjaro
           </a>
         </div>

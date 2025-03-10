@@ -2,6 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Improved section spacing */
+section {
+  padding: 5rem 0;
+  border-bottom: 1px solid #f0f0f0;
+  scroll-margin-top: 80px;
+}
+
+section:last-of-type {
+  border-bottom: none;
+}
+
+/* More minimalist buttons */
+.btn-minimal {
+  background-color: #fff;
+  color: #333;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.btn-minimal:hover {
+  background-color: #f7f7f7;
+  border-color: #ccc;
+}
+
+/* Tool buttons */
+.tool-button {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  background-color: white;
+  color: #333;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.tool-button.active {
+  background-color: #f0f7ff;
+  border-color: #2563eb;
+  color: #2563eb;
+}
+
+.tool-button:hover {
+  background-color: #f7f7f7;
+}
+
 /* Add separator styles */
 .page-section {
   @apply py-12 border-b border-gray-200;

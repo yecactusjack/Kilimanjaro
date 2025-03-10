@@ -12,7 +12,7 @@ export default function ChatPage() {
   return (
     <div className="bg-white min-h-screen flex flex-col">
       <Header />
-      <div className="container mx-auto py-10 px-4 flex-1">
+      <div className="container mx-auto py-16 px-4 flex-1">
         <ChatInterface />
       </div>
       <div className="text-center py-5">
