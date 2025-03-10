@@ -12,24 +12,27 @@ const AskPage = () => {
 
   const handleAsk = async () => {
     if (!fileName || !query) {
-      alert("Please enter both filename and query.");
+      setMessage("Please enter both filename and query.");
       return;
     }
 
     setLoading(true); // Start loading
+    setMessage("Processing your request...");
 
     try {
-      const response = await axios.post("http://localhost:3001/ask", {
+      // Use relative API URL instead of hardcoded localhost
+      const response = await axios.post("/api/ask", {
         query: query,
         fileName: fileName,
       });
 
       setResult(response.data.htmlContent);
-      setMessage(response.data.message);
+      setMessage(response.data.message || "Request processed successfully");
       console.log("Ask response:", response.data);
     } catch (error) {
-      setMessage("Error processing request.");
       console.error("Ask error:", error);
+      setMessage(error.response?.data?.error || "Error processing request. Please try again.");
+      setResult(null);
     } finally {
       setLoading(false); // Stop loading
     }

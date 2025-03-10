@@ -7,32 +7,40 @@ import axios from "axios";
 const UploadPage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       setFile(event.target.files[0]);
+      setUploadStatus("");
     }
   };
 
   const handleUpload = async () => {
     if (!file) {
-      alert("Please select a file first!");
+      setUploadStatus("Please select a file first!");
       return;
     }
 
+    setIsLoading(true);
+    setUploadStatus("Uploading...");
+    
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:3000/upload", formData, {
+      // Use relative API URL instead of hardcoded localhost
+      const response = await axios.post("/api/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
       setUploadStatus("File uploaded successfully!");
-      console.log("Upload response:", response.data);
+      console.log("Uploaded file:", file.name);
     } catch (error) {
-      setUploadStatus("File upload failed.");
+      setUploadStatus("File upload failed. Please try again.");
       console.error("Upload error:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
