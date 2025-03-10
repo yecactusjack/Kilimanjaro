@@ -84,9 +84,9 @@ export default function ChatInterface() {
               <div 
                 className={`flex max-w-[80%] ${
                   message.sender === "user" 
-                    ? "bg-blue-500 text-white rounded-xl shadow-sm" 
-                    : "bg-gray-50 text-gray-800 rounded-xl shadow-sm border border-gray-100"
-                } px-4 py-3`}
+                    ? "bg-blue-600 text-white rounded-xl shadow-sm" 
+                    : "bg-gray-100 text-gray-800 rounded-xl shadow-sm border border-gray-200"
+                } p-3`}
               >
                 <div className={`mr-2 ${message.sender === "user" ? "text-white" : "text-blue-500"}`}>
                   {message.sender === "user" ? <User size={16} /> : <Bot size={16} />}

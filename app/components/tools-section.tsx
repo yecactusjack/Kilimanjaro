@@ -3,34 +3,34 @@
 
 import { useState } from "react"
 
+// Define the tool data structure
 interface Tool {
-  id: string
-  name: string
-  description: string
-  detail: string
+  id: string;
+  name: string;
+  description: string;
+  detail: string;
 }
 
 export default function ToolsSection() {
-  const [selectedTool, setSelectedTool] = useState<Tool | null>(null)
-  
+  // Define the available tools
   const tools: Tool[] = [
     {
       id: "fastqc",
       name: "FastQC",
-      description: "Quality control for high throughput sequence data",
-      detail: "Provides quality control reports for NGS data, allowing users to identify problems in their sequencing data."
+      description: "Quality control tool for high throughput sequence data",
+      detail: "Provides quality control checks on raw sequence data coming from high throughput sequencing pipelines."
     },
     {
       id: "bowtie2",
       name: "Bowtie2",
-      description: "Fast and sensitive read alignment",
+      description: "Ultrafast and memory-efficient tool for aligning sequencing reads",
       detail: "An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences."
     },
     {
       id: "kraken2",
       name: "Kraken2",
-      description: "Taxonomic sequence classification system",
-      detail: "Uses exact k-mer matches to assign taxonomic labels to metagenomic DNA sequences."
+      description: "Taxonomic classification of sequencing reads",
+      detail: "Assigns taxonomic labels to short DNA sequences, usually obtained from metagenomic studies."
     },
     {
       id: "porechop",
@@ -42,18 +42,20 @@ export default function ToolsSection() {
       id: "multiqc",
       name: "MultiQC",
       description: "Aggregate results from bioinformatics analyses",
-      detail: "Searches a directory for analysis logs and compiles a HTML report with plots to visualize quality control results across many samples."
+      detail: "Searches a directory for analysis logs and compiles a HTML report that summarizes all results."
     },
     {
       id: "krona",
       name: "Krona",
       description: "Interactive metagenomic visualization",
-      detail: "Creates interactive hierarchical data visualizations, particularly useful for metagenomic classifications."
+      detail: "Allows intuitive exploration of relative abundances and confidences within the complex hierarchies of metagenomic classifications."
     }
   ]
 
+  const [selectedTool, setSelectedTool] = useState<Tool | null>(tools.find(t => t.id === "porechop") || null);
+
   return (
-    <section className="border-t border-gray-200 py-12 bg-white">
+    <section id="tools" className="py-16 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Tools we plan on integrating in our MVP</h2>
         
@@ -77,7 +79,7 @@ export default function ToolsSection() {
           <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm max-w-3xl mx-auto">
             <div className="p-5 border-b border-gray-200">
               <h3 className="text-xl font-bold">{selectedTool.name}</h3>
-              <p className="text-gray-700 mt-2">{selectedTool.description}</p>
+              <p className="mt-2">{selectedTool.description}</p>
             </div>
             <div className="p-5">
               <p className="leading-relaxed">{selectedTool.detail}</p>

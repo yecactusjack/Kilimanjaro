@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -19,7 +20,6 @@ export default function ToolShowcase() {
           <div className="bg-white p-8 rounded-md border border-gray-100 hover:shadow-sm transition-shadow">
             <h3 className="text-xl font-bold mb-4">Question Answering</h3>
             <p className="text-gray-600 mb-6">Ask specific questions about your genomic data and get detailed, accurate answers.</p>
-            <a href="/ask" className="text-blue-600 hover:text-blue-800 font-medium">Try It →</a>
           </div>
         </div>
       </div>
