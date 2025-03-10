@@ -12,18 +12,14 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!body.fileName) {
-      return NextResponse.json(
-        { error: 'No fileName provided' },
-        { status: 400 }
-      );
-    }
-
     // Format the request exactly as shown in Postman
     const requestBody = {
       "query": body.query,
       "fileName": body.fileName
     };
+
+    // Add debug logging to identify issues
+    console.log("Sending query to external API:", JSON.stringify(requestBody));
 
     // Forward the request to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
@@ -39,8 +35,10 @@ export async function POST(request: Request) {
       let errorText;
       try {
         errorText = await externalResponse.text();
+        console.error("External API error:", externalResponse.status, errorText);
       } catch (e) {
         errorText = "Could not parse error response";
+        console.error("External API error:", externalResponse.status, "Could not parse error response");
       }
       return NextResponse.json(
         { error: `External API error: ${externalResponse.status} - ${errorText}` },
@@ -48,11 +46,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Return the response from the external API
+    // Process the successful response
     const responseData = await externalResponse.json();
     return NextResponse.json(responseData);
+
   } catch (error) {
-    console.error('Error processing request:', error);
+    console.error("Query error:", error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
