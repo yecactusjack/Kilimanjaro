@@ -78,10 +78,13 @@ export default function AskInterface() {
         },
         {
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
           }
         }
       )
+
+      console.log("Request sent:", { query: input.trim(), fileName: fileName });
 
       // Handle the response properly depending on its structure
       let responseData;

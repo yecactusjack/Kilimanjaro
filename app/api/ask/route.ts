@@ -36,15 +36,16 @@ export async function POST(request: Request) {
       );
     }
     
-    try {
-      // Try to parse as JSON first
+    // First check the content type of the response
+    const contentType = externalResponse.headers.get('Content-Type');
+    
+    if (contentType && contentType.includes('application/json')) {
+      // If it's JSON, parse and return directly
       const responseData = await externalResponse.json();
-      // Return the JSON content directly without wrapping
       return NextResponse.json(responseData);
-    } catch (jsonError) {
-      // If JSON parsing fails, get as text
+    } else {
+      // If not JSON, get as text and wrap in a JSON response
       const responseText = await externalResponse.text();
-      // Return as JSON with text content
       return NextResponse.json({ response: responseText });
     }
     
