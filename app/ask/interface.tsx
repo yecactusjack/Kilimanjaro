@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import axios from "axios"
 import { Download } from "lucide-react"
+import { Input } from '@/components/ui/input' // Added import statement
 
 type Message = {
   id: string
