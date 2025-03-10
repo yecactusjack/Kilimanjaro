@@ -1,9 +1,10 @@
+
 "use client"
 
+import { motion } from "framer-motion"
+import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { ArrowRight } from "lucide-react"
-import { motion } from "framer-motion"
 
 export default function Hero() {
   return (
@@ -38,12 +39,12 @@ export default function Hero() {
             className="flex justify-center"
           >
             <Link href="/chat">
-            <Button className="inline-flex h-12 items-center justify-center rounded-full bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
-        </motion.div>
+              <Button className="inline-flex h-12 items-center justify-center rounded-full bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
+                Get Started
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </motion.div>
         </div>
         <div className="mt-4 hidden md:block">
           <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-full">Beta 1.0 Kilimanjaro</span>
