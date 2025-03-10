@@ -11,11 +11,11 @@ export default function Home() {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <hr className="border-t border-gray-200 my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
         <MissionStatement />
-        <hr className="border-t border-gray-200 my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
         <Features />
-        <hr className="border-t border-gray-200 my-8 mx-auto w-[90%]" />
+        <hr className="border-t border-black my-8 mx-auto w-[90%]" />
         <ToolShowcase />
       </main>
       <Footer />

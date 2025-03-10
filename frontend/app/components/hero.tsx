@@ -47,7 +47,7 @@ export default function Hero() {
         </motion.div>
         </div>
         <div className="mt-4 hidden md:block">
-          <span className="text-xs text-gray-500">Beta 1.0 Kilimanjaro</span>
+          <span className="inline-block px-3 py-1 text-xs font-medium text-white bg-blue-600 rounded-full">Beta 1.0 Kilimanjaro</span>
         </div>
       </motion.div>
     </section>
