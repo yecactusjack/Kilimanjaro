@@ -36,15 +36,11 @@ export async function POST(request: Request) {
       );
     }
     
-    // Get the response content as text since it's HTML
-    const responseText = await externalResponse.text();
+    // Get the response content as JSON
+    const responseData = await externalResponse.json();
     
-    // Return the HTML content
-    return new NextResponse(responseText, {
-      headers: {
-        'Content-Type': 'text/html',
-      },
-    });
+    // Return the JSON content
+    return NextResponse.json({ response: responseData });
     
   } catch (error) {
     console.error("Ask API error:", error);
