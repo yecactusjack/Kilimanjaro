@@ -21,7 +21,7 @@ export default function Hero() {
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-5xl font-bold tracking-tight text-center mb-6 text-black"
         >
-          Transforming Bioinformatics
+          Goldbach Labs
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -35,10 +35,10 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
-          className="flex justify-center space-x-4"
+          className="flex justify-center"
         >
           <Link href="/chat">
-            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-primary px-8 text-sm font-medium text-primary-foreground shadow transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
               Get Started
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
