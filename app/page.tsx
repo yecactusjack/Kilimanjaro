@@ -10,7 +10,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1">
-        <div className="container mx-auto px-4 md:px-8 lg:px-16"> {/* Added container for better mobile responsiveness */}
+        <div className="container mx-auto px-4 md:px-8 lg:px-16 py-8"> {/* Increased padding */}
           <Hero />
           <div className="section-divider"></div>
           <MissionStatement />
@@ -19,7 +19,7 @@ export default function Home() {
           <div className="section-divider"></div>
           <ToolsSection />
         </div>
-        <div className="text-center py-8 mt-8">
+        <div className="text-center py-10 mt-8"> {/* Increased vertical padding */}
           <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium transition-all hover:bg-blue-700">
             Beta 1.0 Kilimanjaro
           </a>
