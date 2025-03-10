@@ -7,9 +7,10 @@ import Footer from "../components/footer"
 
 export default function ChatPage() {
   const [file, setFile] = useState<File | null>(null)
-  const [uploadStatus, setUploadStatus] = useState<string>("")
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState<string | null>(null)
   const [showChatInterface, setShowChatInterface] = useState(false)
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null)
   const [messages, setMessages] = useState<Array<{type: string, content: string}>>([
     {type: "system", content: "Welcome to Goldbach Labs. How can I help you with your bioinformatics query?"}
   ])
@@ -42,25 +43,18 @@ export default function ChatPage() {
         method: "POST",
         body: formData,
         // Simplify the request configuration
-        cache: 'no-cache',
       })
 
       if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`);
+        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`)
       }
 
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error("Failed to parse JSON response:", text.substring(0, 100) + "...");
-        throw new Error("Invalid JSON response from server");
-      }
-
+      const data = await response.json()
       setIsUploading(false)
       setUploadStatus("File uploaded successfully!")
       setShowChatInterface(true)
+      setUploadedFileName(file.name) // Store the filename for queries
+      console.log("Uploaded file:", file.name)
     } catch (error) {
       setIsUploading(false)
       setUploadStatus(`Error uploading file: ${error.message}`)
@@ -78,26 +72,27 @@ export default function ChatPage() {
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
 
     try {
+      console.log("Sending query with file:", inputQuery, uploadedFileName);
+
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ query: inputQuery })
-      })
+        body: JSON.stringify({ 
+          query: inputQuery,
+          filename: uploadedFileName
+        })
+      });
 
       if (!response.ok) {
-        throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error("Query API error:", response.status, errorText);
+        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`);
       }
 
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch (e) {
-        console.error("Failed to parse JSON response:", text.substring(0, 100) + "...");
-        throw new Error("Invalid JSON response from server");
-      }
+      const data = await response.json();
+      console.log("Query response:", data);
 
       // Remove the "Processing" message
       setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))

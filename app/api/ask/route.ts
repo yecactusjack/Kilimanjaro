@@ -12,13 +12,18 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log("Sending query to external API:", body);
+    
     // Forward the request to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
       method: "POST",
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(body)
+      body: JSON.stringify({
+        query: body.query,
+        filename: body.filename || body.fileName // Support both filename and fileName properties
+      })
     });
 
     // Check if the external API request was successful
