@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
@@ -51,7 +50,7 @@ export default function ChatPage() {
 
       const data = await response.json()
       console.log("Uploaded file:", file.name)
-      
+
       setUploadStatus("File uploaded successfully!")
       setUploadedFileName(file.name)
       setShowChatInterface(true)
@@ -65,20 +64,20 @@ export default function ChatPage() {
 
   const handleSubmitQuery = async (e: FormEvent) => {
     e.preventDefault()
-    
+
     if (!inputQuery.trim() || !uploadedFileName) return
 
     // Add user message to chat
     setMessages(prev => [...prev, {type: "user", content: inputQuery}])
-    
+
     // Add processing message
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
-    
+
     setIsQuerying(true)
-    
+
     try {
       console.log("Sending query with file:", inputQuery, uploadedFileName)
-      
+
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
@@ -97,10 +96,10 @@ export default function ChatPage() {
       }
 
       const data = await response.json()
-      
+
       // Remove the processing message
       setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-      
+
       // Add the response
       setMessages(prev => [...prev, {
         type: "system", 
@@ -108,10 +107,10 @@ export default function ChatPage() {
       }])
     } catch (error) {
       console.error("Query error:", error)
-      
+
       // Remove the processing message
       setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-      
+
       // Add error message
       setMessages(prev => [...prev, {
         type: "system", 
@@ -120,11 +119,26 @@ export default function ChatPage() {
     } finally {
       setIsQuerying(false)
       setInputQuery("")
-      
+
       // Scroll to bottom
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
       }, 100)
+    }
+  }
+
+  const downloadReport = () => {
+    const htmlContent = messages.find(msg => msg.content.includes('<html>') || msg.content.includes('FastQC Report'))?.content;
+    if (htmlContent) {
+      const blob = new Blob([htmlContent], { type: 'text/html' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'fastqc_report.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   }
 
@@ -163,7 +177,7 @@ export default function ChatPage() {
               <p className="text-gray-600 mb-6">
                 Supported formats: All bioinformatics file formats accepted.
               </p>
-              
+
               <div className="flex flex-col space-y-4">
                 <label className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors">
                   <input 
@@ -176,7 +190,7 @@ export default function ChatPage() {
                     {file ? file.name : "Click or drag to upload file"}
                   </div>
                 </label>
-                
+
                 <button 
                   onClick={handleUpload}
                   disabled={!file || isUploading}
@@ -188,7 +202,7 @@ export default function ChatPage() {
                 >
                   {isUploading ? "Uploading..." : "Upload and Analyze"}
                 </button>
-                
+
                 {uploadStatus && (
                   <div className={`text-sm p-2 rounded ${
                     uploadStatus.includes("Error") 
@@ -211,11 +225,16 @@ export default function ChatPage() {
             >
               <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <div className="p-4 bg-blue-600 text-white">
-                  <h2 className="text-xl font-semibold">
-                    File Analysis: {uploadedFileName}
-                  </h2>
+                  <div className="flex items-center gap-3">
+                    <h2 className="text-xl font-semibold">
+                      File Analysis: {uploadedFileName}
+                    </h2>
+                    <span className="px-2 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
+                      Beta 1.0
+                    </span>
+                  </div>
                 </div>
-                
+
                 <div className="h-96 overflow-y-auto p-4 bg-gray-50">
                   {messages.map((message, index) => (
                     <div 
@@ -246,7 +265,7 @@ export default function ChatPage() {
                   ))}
                   <div ref={messagesEndRef} />
                 </div>
-                
+
                 <form onSubmit={handleSubmitQuery} className="p-4 border-t">
                   <div className="flex space-x-2">
                     <input
@@ -268,6 +287,14 @@ export default function ChatPage() {
                     >
                       {isQuerying ? "Processing..." : "Send"}
                     </button>
+                    {messages.some(msg => msg.content.includes('<html>') || msg.content.includes('FastQC Report')) && (
+                      <button 
+                        onClick={downloadReport}
+                        className={`py-2 px-4 rounded-md font-medium bg-gray-300 hover:bg-gray-400 text-white transition-colors`}
+                      >
+                        Download Report
+                      </button>
+                    )}
                   </div>
                 </form>
               </div>
