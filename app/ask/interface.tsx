@@ -17,7 +17,7 @@ export default function AskInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      content: "Hello! Ask questions about your uploaded bioinformatics file.",
+      content: "Hello! I'm here to help you analyze your bioinformatics data. How can I assist you with your uploaded file today?",
       sender: "assistant",
       timestamp: new Date()
     }
@@ -94,13 +94,30 @@ export default function AskInterface() {
       } else {
         responseData = { response: response.data };
       }
-      // Set the HTML content for download.  Assuming response.data now contains HTML or a suitable structure.
-      setHtmlContent(responseData.html || responseData.response || JSON.stringify(responseData)); // Adjust based on actual API response
+      // Process HTML content for better display and download
+      let htmlContent = '';
+      
+      if (responseData.htmlContent) {
+        // Direct HTML content from API
+        htmlContent = responseData.htmlContent;
+      } else if (responseData.response && typeof responseData.response === 'string') {
+        // HTML in response field
+        htmlContent = responseData.response;
+      } else if (responseData.html) {
+        // HTML in html field
+        htmlContent = responseData.html;
+      } else {
+        // Fallback to stringified JSON if no HTML content found
+        htmlContent = JSON.stringify(responseData, null, 2);
+      }
+      
+      setHtmlContent(htmlContent);
 
 
+      // Create a more friendly bot message
       const botMessage: Message = {
         id: Date.now().toString(),
-        content: "I've processed your query. You can download the results below.",
+        content: "I've processed your query. You can view and download the results below. How else can I help you with your bioinformatics data?",
         sender: "assistant",
         timestamp: new Date()
       }
@@ -164,14 +181,17 @@ export default function AskInterface() {
 
           {htmlContent && (
             <div className="mb-4 p-3 bg-green-50 rounded-lg">
-              <p className="text-sm mb-2">Result is ready!</p>
+              <p className="text-sm font-medium mb-2">Results are ready!</p>
+              <div className="mb-3 max-h-[200px] overflow-auto p-2 bg-white rounded border text-xs">
+                <div dangerouslySetInnerHTML={{ __html: htmlContent.substring(0, 1000) + (htmlContent.length > 1000 ? '... (content truncated for preview)' : '') }} />
+              </div>
               <Button 
                 onClick={downloadHtml}
                 className="bg-green-500 hover:bg-green-600 text-white flex items-center gap-2"
                 size="sm"
               >
                 <Download size={16} />
-                Download Result
+                Download Complete Result
               </Button>
             </div>
           )}
