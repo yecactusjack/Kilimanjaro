@@ -161,7 +161,7 @@ export default function ChatPage() {
             >
               <h2 className="text-xl font-semibold mb-4">Upload Your File</h2>
               <p className="text-gray-600 mb-6">
-                Supported formats: FASTA, FASTQ, VCF, SAM, BAM, and other bioinformatics formats.
+                Supported formats: All bioinformatics file formats accepted.
               </p>
               
               <div className="flex flex-col space-y-4">
@@ -170,7 +170,7 @@ export default function ChatPage() {
                     type="file" 
                     className="hidden" 
                     onChange={handleFileChange}
-                    accept=".fasta,.fastq,.vcf,.sam,.bam"
+                    accept="*"
                   />
                   <div className="text-gray-500">
                     {file ? file.name : "Click or drag to upload file"}
