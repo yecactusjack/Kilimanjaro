@@ -1,9 +1,9 @@
+import { NextRequest, NextResponse } from 'next/server'
+import axios from 'axios'
 
-import { NextResponse } from 'next/server';
-
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json();
+    const body = await req.json()
 
     if (!body.query) {
       return NextResponse.json(
@@ -12,49 +12,16 @@ export async function POST(request: Request) {
       );
     }
 
-    // Format the request exactly as shown in Postman
-    const requestBody = {
-      "query": body.query,
-      "fileName": body.fileName
-    };
+    // Send the request to the external API
+    const response = await axios.post('http://206.1.35.40:3002/ask', body)
 
-    // Add debug logging to identify issues
-    console.log("Sending query to external API:", JSON.stringify(requestBody));
-
-    // Forward the request to the external API
-    const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    // Check if the external API request was successful
-    if (!externalResponse.ok) {
-      let errorText;
-      try {
-        errorText = await externalResponse.text();
-        console.error("External API error:", externalResponse.status, errorText);
-      } catch (e) {
-        errorText = "Could not parse error response";
-        console.error("External API error:", externalResponse.status, "Could not parse error response");
-      }
-      return NextResponse.json(
-        { error: `External API error: ${externalResponse.status} - ${errorText}` },
-        { status: 500 }
-      );
-    }
-
-    // Process the successful response
-    const responseData = await externalResponse.json();
-    return NextResponse.json(responseData);
-
+    // Return the response data
+    return NextResponse.json(response.data)
   } catch (error) {
-    console.error("Query error:", error);
+    console.error('Error forwarding request to external API:', error)
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'Failed to process your request' },
       { status: 500 }
-    );
+    )
   }
 }
