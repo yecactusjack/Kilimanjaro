@@ -1,15 +1,15 @@
 
-import AskInterface from './file'
+import QueryInterface from './interface'
 
 export const metadata = {
-  title: 'Ask About Your Data',
-  description: 'Ask questions about your bioinformatics data',
+  title: 'Analyze Files',
+  description: 'Ask questions about your bioinformatics files',
 }
 
 export default function AskPage() {
   return (
     <div className="container mx-auto py-8 px-4">
-      <AskInterface />
+      <QueryInterface />
     </div>
   )
 }
