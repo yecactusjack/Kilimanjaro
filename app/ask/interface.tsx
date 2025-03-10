@@ -164,7 +164,7 @@ export default function AskInterface() {
                 }`}
               >
                 <p className="text-sm">{message.content}</p>
-                <p className="text-xs text-gray-500 mt-1">
+                <p suppressHydrationWarning className="text-xs text-gray-500 mt-1">
                   {formattedTime}
                 </p>
               </div>
