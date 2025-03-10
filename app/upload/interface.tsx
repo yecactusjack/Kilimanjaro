@@ -43,6 +43,10 @@ export default function Interface() {
         method: "POST",
         body: formData,
       })
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Server responded with ${response.status}: ${errorData.error || response.statusText}`);
+      }
       const data = await response.json()
       // Handle response -  This would need further implementation based on the backend's response structure.
       setIsUploading(false)
@@ -51,7 +55,7 @@ export default function Interface() {
 
     } catch (error) {
       setIsUploading(false)
-      setUploadStatus("Error uploading file")
+      setUploadStatus(`Error uploading file: ${error}`)
       console.error("Upload error:", error)
     }
   }
@@ -70,7 +74,10 @@ export default function Interface() {
         },
         body: JSON.stringify({ query: inputQuery })
       });
-
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`Server responded with ${response.status}: ${errorData.error || response.statusText}`);
+      }
       const data = await response.json();
 
       //Assuming the backend returns a file URL.  Adjust based on your backend's actual response.
@@ -85,7 +92,7 @@ export default function Interface() {
       setInputQuery("");
     } catch (error) {
       console.error("Query error:", error);
-      setMessages(prev => [...prev, {type: "system", content: "Error processing your query."}]);
+      setMessages(prev => [...prev, {type: "system", content: `Error processing your query: ${error}`}]);
     }
 
   }

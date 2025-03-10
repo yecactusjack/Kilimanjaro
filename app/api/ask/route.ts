@@ -31,11 +31,17 @@ export async function POST(request: Request) {
 
     // Check if the external API request was successful
     if (!externalResponse.ok) {
-      const errorText = await externalResponse.text();
-      console.error("External API error:", externalResponse.status, errorText);
+      let errorText;
+      try {
+        errorText = await externalResponse.text();
+        console.error("External API error:", externalResponse.status, errorText);
+      } catch (e) {
+        errorText = "Could not parse error response";
+        console.error("External API error:", externalResponse.status, "Could not parse error response");
+      }
       return NextResponse.json(
         { error: `External API error: ${externalResponse.status} - ${errorText}` },
-        { status: externalResponse.status }
+        { status: 500 }
       );
     }
 
