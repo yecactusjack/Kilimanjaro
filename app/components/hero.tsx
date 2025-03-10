@@ -1,3 +1,4 @@
+
 export default function Hero() {
   return (
     <section className="py-24 text-center">
