@@ -10,7 +10,7 @@ export default function MissionStatement() {
           reduce human effort. It enhances accessibility for researchers. Our solution makes 
           bioinformatics pipelines more efficient.
         </p>
-        <p className="text-xl text-blue-500 font-medium">
+        <p className="text-xl text-blue-600 font-medium">
           We make bioinformatics as easy as a ChatGPT search, no expertise needed.
         </p>
       </div>

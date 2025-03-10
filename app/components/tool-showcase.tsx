@@ -3,53 +3,28 @@
 import { useState } from "react"
 
 export default function ToolShowcase() {
-  const [selectedTool, setSelectedTool] = useState("MultiQC")
-
-  const tools = [
-    "FastQC",
-    "Bowtie2",
-    "Kraken2",
-    "Porechop",
-    "MultiQC",
-    "Krona"
-  ]
-
-  const toolDescriptions = {
-    FastQC: "Quality control tool for high throughput sequence data.",
-    Bowtie2: "Fast and sensitive read alignment tool for aligning sequencing reads to reference genomes.",
-    Kraken2: "Taxonomic classification system using exact k-mer matches to achieve high accuracy and speed.",
-    Porechop: "Tool for finding and removing adapters from Oxford Nanopore reads.",
-    MultiQC: "Aggregate results from bioinformatics analyses across many samples into a single report.",
-    Krona: "Visualization tool that enables intuitive exploration of relative abundances in metagenomic data."
-  }
-
   return (
-    <div className="mt-12 max-w-6xl mx-auto px-4">
-      <h2 className="text-3xl font-bold mb-12 text-center">Tools we plan on integrating in our MVP</h2>
-
-      <div className="flex flex-wrap justify-center gap-2 mb-8">
-        {tools.map((tool) => (
-          <button
-            key={tool}
-            className={`px-6 py-3 rounded-full transition-colors ${
-              selectedTool === tool 
-                ? "bg-black text-white" 
-                : "bg-white text-black border border-gray-200 hover:bg-blue-50"
-            }`}
-            onClick={() => setSelectedTool(tool)}
-          >
-            {tool}
-          </button>
-        ))}
+    <section id="tools" className="py-16 bg-gray-50">
+      <div className="container mx-auto">
+        <h2 className="text-3xl font-bold mb-12 text-center">Our Tools</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="bg-white p-8 rounded-md shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-xl font-bold mb-4">File Upload</h3>
+            <p className="text-gray-600 mb-6">Upload genomic data files for analysis. Supports FASTQ, BAM, VCF, and other formats.</p>
+            <a href="/upload" className="text-blue-600 hover:text-blue-800 font-medium">Try It →</a>
+          </div>
+          <div className="bg-white p-8 rounded-md shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-xl font-bold mb-4">Interactive Chat</h3>
+            <p className="text-gray-600 mb-6">Conversational interface with AI for complex bioinformatics queries and visualizations.</p>
+            <a href="/chat" className="text-blue-600 hover:text-blue-800 font-medium">Try It →</a>
+          </div>
+          <div className="bg-white p-8 rounded-md shadow-sm hover:shadow-md transition-shadow">
+            <h3 className="text-xl font-bold mb-4">Question Answering</h3>
+            <p className="text-gray-600 mb-6">Ask specific questions about your genomic data and get detailed, accurate answers.</p>
+            <a href="/ask" className="text-blue-600 hover:text-blue-800 font-medium">Try It →</a>
+          </div>
+        </div>
       </div>
-
-      <div className="bg-white border border-gray-200 p-8 rounded-lg shadow-sm">
-        <h3 className="text-xl font-bold mb-2">{selectedTool}</h3>
-        <p className="text-gray-600 mb-6">
-          {toolDescriptions[selectedTool as keyof typeof toolDescriptions]}
-        </p>
-
-      </div>
-    </div>
+    </section>
   )
 }
