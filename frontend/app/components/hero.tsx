@@ -1,23 +1,16 @@
 
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-
 export default function Hero() {
   return (
-    <section className="py-20 bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-      <div className="container mx-auto text-center px-4">
-        <h1 className="text-4xl md:text-5xl font-bold mb-6">
-          AI-Powered Bioinformatics Pipeline
-        </h1>
-        <p className="text-xl max-w-2xl mx-auto mb-8 text-gray-300">
-          Natural language interface for sophisticated bioinformatics workflows.
-          No coding required.
-        </p>
-        <Link href="/chat" passHref>
-          <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
-            Get Started
-          </Button>
-        </Link>
+    <section className="py-24 text-center">
+      <h1 className="text-5xl font-bold mb-2">Goldbach Labs</h1>
+      <p className="text-xl text-blue-500 mb-8">Enhancing Bioinformatic Workflows With Intelligent Automation</p>
+      <div className="flex justify-center">
+        <a href="/upload" className="inline-flex items-center px-6 py-3 rounded-full bg-black text-white hover:bg-gray-800 transition-colors">
+          Get Started <span className="ml-2">→</span>
+        </a>
+      </div>
+      <div className="mt-16 flex justify-center">
+        <div className="px-4 py-1.5 bg-blue-100 text-blue-800 rounded-full text-sm">Beta 1.0 Kilimanjaro</div>
       </div>
     </section>
   )
