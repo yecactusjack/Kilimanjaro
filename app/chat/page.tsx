@@ -1,4 +1,3 @@
-
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
@@ -36,18 +35,25 @@ export default function ChatPage() {
     try {
       const formData = new FormData()
       formData.append("file", file)
-      
+
       const response = await fetch("http://206.1.35.40:3002/upload", {
         method: "POST",
         body: formData,
+        // Adding proper headers for CORS
+        headers: {
+          // Removing Content-Type to let the browser set it with boundary for multipart/form-data
+          'Accept': 'application/json',
+        },
+        // Ensure credentials are included if needed
+        credentials: 'include',
       })
-      
+
       if (!response.ok) {
-        throw new Error(`Upload failed with status: ${response.status}`)
+        throw new Error(`Server responded with status: ${response.status}`)
       }
-      
+
       const data = await response.json()
-      
+
       setIsUploading(false)
       setUploadStatus("File uploaded successfully!")
       setShowChatInterface(true)
@@ -72,12 +78,14 @@ export default function ChatPage() {
       const response = await fetch("http://206.1.35.40:3002/ask", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
         },
         body: JSON.stringify({
           query: inputQuery,
           filename: file?.name || "uploaded_file"
         }),
+        credentials: 'include',
       })
 
       if (!response.ok) {
@@ -101,7 +109,7 @@ export default function ChatPage() {
         // Handle file response
         const blob = await response.blob()
         const url = URL.createObjectURL(blob)
-        
+
         setMessages(prev => prev.slice(0, -1).concat({
           type: "system", 
           content: `<div>
@@ -150,7 +158,7 @@ export default function ChatPage() {
               <p className="text-gray-600 mb-6">
                 Supported formats: FASTA, FASTQ, VCF, SAM, BAM, and other bioinformatics formats.
               </p>
-              
+
               <div className="border-2 border-dashed border-gray-300 rounded-md p-6 mb-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
                 onClick={() => document.getElementById('file-upload')?.click()}
               >
@@ -171,7 +179,7 @@ export default function ChatPage() {
                   )}
                 </div>
               </div>
-              
+
               <button
                 onClick={handleUpload}
                 disabled={isUploading || !file}
@@ -207,7 +215,7 @@ export default function ChatPage() {
                 <h2 className="font-bold text-lg">Analysis Chat Interface</h2>
                 <p className="text-sm text-gray-600">File: {file?.name}</p>
               </div>
-              
+
               <div className="h-96 overflow-y-auto p-4 bg-gray-50">
                 {messages.map((message, index) => (
                   <div
@@ -228,7 +236,7 @@ export default function ChatPage() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
-              
+
               <form onSubmit={handleSendQuery} className="p-4 border-t">
                 <div className="flex gap-2">
                   <input
