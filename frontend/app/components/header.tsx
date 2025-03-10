@@ -1,28 +1,32 @@
+
+"use client"
+
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 export default function Header() {
   return (
-    <header className="w-full bg-white border-b border-black">
-      <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center py-4">
-          <Link href="/" className="text-2xl font-bold text-black">
+    <header className="w-full py-4 border-b">
+      <div className="container flex items-center justify-between">
+        <div className="flex items-center">
+          <Link href="/" className="text-xl font-bold">
             Goldbach Labs
           </Link>
-          <nav className="hidden md:flex space-x-8">
-            <Link href="#mission" className="text-black hover:text-gray-600">
-              Mission
-            </Link>
-            <Link href="#features" className="text-black hover:text-gray-600">
-              Features
-            </Link>
-            <Link href="#tools" className="text-black hover:text-gray-600">
-              Tools
-            </Link>
-            <Link href="#feedback" className="text-black hover:text-gray-600">
-              Feedback
-            </Link>
-          </nav>
         </div>
+        <nav className="flex items-center space-x-6">
+          <Link href="#mission" className="text-sm font-medium hover:text-primary">
+            Mission
+          </Link>
+          <Link href="#features" className="text-sm font-medium hover:text-primary">
+            Features
+          </Link>
+          <Link href="#tools" className="text-sm font-medium hover:text-primary">
+            Tools
+          </Link>
+          <Link href="#feedback" className="text-sm font-medium hover:text-primary">
+            Feedback
+          </Link>
+        </nav>
       </div>
     </header>
   )

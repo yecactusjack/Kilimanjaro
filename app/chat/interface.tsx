@@ -1,89 +1,142 @@
 
-import { useState } from "react"
+"use client"
+
+import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Textarea } from "@/components/ui/textarea"
-import { MessageCircle, Send } from "lucide-react"
+import { Send, User, Bot } from "lucide-react"
+
+type Message = {
+  id: string
+  content: string
+  sender: "user" | "assistant"
+  timestamp: Date
+}
 
 export default function ChatInterface() {
-  const [query, setQuery] = useState("")
-  const [conversation, setConversation] = useState<{role: 'user' | 'assistant', content: string}[]>([])
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: "welcome",
+      content: "Hello! I'm your bioinformatics assistant. How can I help you today?",
+      sender: "assistant",
+      timestamp: new Date()
+    }
+  ])
+  const [input, setInput] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+  }, [messages])
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!query.trim()) return
-
-    const userMessage = { role: 'user' as const, content: query }
-    setConversation(prev => [...prev, userMessage])
-    setQuery("")
-    setIsLoading(true)
-
-    try {
-      // Simulate API call
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: [...conversation, userMessage] })
-      })
-
-      if (!response.ok) throw new Error('Failed to get response')
-      
-      const data = await response.json()
-      setConversation(prev => [...prev, { role: 'assistant', content: data.response || "I'm sorry, I couldn't process that request." }])
-    } catch (error) {
-      console.error('Error:', error)
-      setConversation(prev => [...prev, { role: 'assistant', content: "Sorry, there was an error processing your request." }])
-    } finally {
-      setIsLoading(false)
+    
+    if (!input.trim()) return
+    
+    const userMessage: Message = {
+      id: Date.now().toString(),
+      content: input.trim(),
+      sender: "user",
+      timestamp: new Date()
     }
+    
+    setMessages(prev => [...prev, userMessage])
+    setInput("")
+    setIsLoading(true)
+    
+    // Simulate AI response
+    setTimeout(() => {
+      const responses = [
+        "I can help you analyze that data. What format is your file in?",
+        "That's a common issue with sequencing data. Have you tried running quality control?",
+        "The best approach would be to use FastQC first, then proceed with alignment using Bowtie2.",
+        "Your data appears to be RNA-seq. I recommend the following pipeline: FastQC → STAR → featureCounts → DESeq2.",
+        "I've analyzed your query and it seems you're working with metagenomic data. Kraken2 would be ideal for taxonomic classification."
+      ]
+      
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)]
+      
+      const assistantMessage: Message = {
+        id: Date.now().toString(),
+        content: randomResponse,
+        sender: "assistant",
+        timestamp: new Date()
+      }
+      
+      setMessages(prev => [...prev, assistantMessage])
+      setIsLoading(false)
+    }, 1500)
   }
-
+  
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <Card className="border-black rounded-none p-6">
-        <div className="mb-4">
-          <h2 className="text-2xl font-bold mb-2 flex items-center">
-            <MessageCircle className="mr-2" /> Ask Our AI
-          </h2>
-          <p className="text-gray-600">
-            Ask questions about bioinformatics tools, workflows, or how to analyze your data
-          </p>
-        </div>
-
-        <div className="min-h-[300px] mb-4 border border-gray-200 p-4 rounded overflow-y-auto">
-          {conversation.length === 0 ? (
-            <div className="text-gray-400 text-center h-full flex items-center justify-center">
-              <p>Your conversation will appear here</p>
-            </div>
-          ) : (
-            <>
-              {conversation.map((message, index) => (
-                <div key={index} className={`mb-4 p-3 rounded-md ${message.role === 'user' ? 'bg-gray-100 ml-auto max-w-[80%]' : 'bg-black text-white mr-auto max-w-[80%]'}`}>
+    <div className="max-w-3xl mx-auto h-[calc(100vh-12rem)] flex flex-col">
+      <h1 className="text-3xl font-bold mb-6 text-center">Ask Our Assistant</h1>
+      
+      <Card className="flex-1 overflow-hidden flex flex-col">
+        <div className="flex-1 overflow-y-auto p-4">
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`mb-4 flex ${message.sender === "user" ? "justify-end" : "justify-start"}`}
+            >
+              <div 
+                className={`flex max-w-[80%] ${
+                  message.sender === "user" 
+                    ? "bg-blue-500 text-white rounded-2xl rounded-tr-none" 
+                    : "bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none"
+                } px-4 py-2`}
+              >
+                <div className={`mr-2 mt-1 ${message.sender === "user" ? "text-white" : "text-blue-500"}`}>
+                  {message.sender === "user" ? <User size={16} /> : <Bot size={16} />}
+                </div>
+                <div>
                   <p>{message.content}</p>
+                  <p className="text-xs opacity-70 mt-1">
+                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </p>
                 </div>
-              ))}
-              {isLoading && (
-                <div className="mb-4 p-3 rounded-md bg-black text-white mr-auto max-w-[80%]">
-                  <p>Thinking...</p>
+              </div>
+            </div>
+          ))}
+          
+          {isLoading && (
+            <div className="flex justify-start mb-4">
+              <div className="bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none px-4 py-3">
+                <div className="flex space-x-1">
+                  <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                  <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: "100ms" }}></div>
+                  <div className="w-2 h-2 rounded-full bg-gray-300 animate-bounce" style={{ animationDelay: "200ms" }}></div>
                 </div>
-              )}
-            </>
+              </div>
+            </div>
           )}
+          
+          <div ref={messagesEndRef} />
         </div>
-
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <Textarea 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Type your question here..."
-            className="flex-grow border-black rounded-none"
-          />
-          <Button type="submit" disabled={isLoading || !query.trim()} className="bg-black text-white hover:bg-gray-800 rounded-none">
-            <Send size={18} />
-          </Button>
-        </form>
+        
+        <div className="p-4 border-t">
+          <form onSubmit={handleSubmit} className="flex gap-2">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Ask about bioinformatics workflows..."
+              className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={isLoading}
+            />
+            <Button type="submit" disabled={isLoading || !input.trim()}>
+              <Send size={18} />
+            </Button>
+          </form>
+        </div>
       </Card>
+      
+      <div className="mt-4 text-center text-sm text-gray-500">
+        Need to upload a file first? <a href="/upload" className="text-blue-500 hover:underline">Go to upload page</a>
+      </div>
     </div>
   )
 }

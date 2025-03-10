@@ -1,22 +1,19 @@
 
-import Header from "./components/header"
-import Footer from "./components/footer"
-import Hero from "./components/hero"
-import ToolShowcase from "./components/tool-showcase"
-import MissionStatement from "./components/mission-statement"
-import Features from "./components/features"
+import Header from "@/app/components/header"
+import Hero from "@/app/components/hero"
+import MissionStatement from "@/app/components/mission-statement"
+import Features from "@/app/components/features"
+import ToolShowcase from "@/app/components/tool-showcase"
+import Footer from "@/app/components/footer"
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen bg-white text-black">
+    <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow">
+      <main className="flex-1">
         <Hero />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="mission" />
         <MissionStatement />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="features" />
         <Features />
-        <hr className="border-t border-black my-8 mx-auto w-[90%]" id="tools" />
         <ToolShowcase />
       </main>
       <Footer />

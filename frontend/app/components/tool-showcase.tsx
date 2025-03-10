@@ -1,67 +1,83 @@
+
 "use client"
 
 import { useState } from "react"
 
 export default function ToolShowcase() {
-  const [selectedTool, setSelectedTool] = useState("Krona")
-
+  const [selectedTool, setSelectedTool] = useState("MultiQC")
+  
   const tools = [
-    { name: "FastQC", description: "" },
-    { name: "Bowtie2", description: "" },
-    { name: "Kraken2", description: "" },
-    { name: "Porechop", description: "" },
-    { name: "MultiQC", description: "" },
-    { name: "Krona", 
-      title: "Interactive metagenomic visualization",
-      description: "Creates interactive hierarchical data visualizations, particularly useful for metagenomic classifications." 
+    {
+      id: "FastQC",
+      name: "FastQC",
+      description: "Quality control tool for sequencing data",
+      details: "Provides quality control checks on raw sequence data coming from high throughput sequencing pipelines."
     },
+    {
+      id: "Bowtie2",
+      name: "Bowtie2",
+      description: "Read alignment",
+      details: "An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences."
+    },
+    {
+      id: "Kraken2",
+      name: "Kraken2",
+      description: "Taxonomic classification",
+      details: "Taxonomic classification system using exact k-mer matches to achieve high accuracy and fast classification speeds."
+    },
+    {
+      id: "Porechop",
+      name: "Porechop",
+      description: "Adapter trimming for Oxford Nanopore reads",
+      details: "Tool for finding and removing adapters from Oxford Nanopore reads."
+    },
+    {
+      id: "MultiQC",
+      name: "MultiQC",
+      description: "Aggregate results from bioinformatics analyses",
+      details: "Searches a directory for analysis logs and compiles a HTML report with plots to visualize quality control results across many samples."
+    },
+    {
+      id: "Krona",
+      name: "Krona",
+      description: "Interactive visualization of taxonomic data",
+      details: "Interactive metagenomic visualization in a web browser."
+    }
   ]
 
-  const handleToolSelect = (toolName: string) => {
-    setSelectedTool(toolName)
-  }
-
-  const selectedToolData = tools.find(tool => tool.name === selectedTool)
+  const currentTool = tools.find(tool => tool.id === selectedTool) || tools[0]
 
   return (
-    <div className="py-16 bg-white">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-black text-center mb-12">
-          Tools we plan on integrating in our MVP
-        </h2>
-
-        <div className="flex flex-wrap justify-center gap-2 mb-6">
+    <section id="tools" className="py-16 border-b">
+      <div className="container mx-auto">
+        <h2 className="text-3xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
+        
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
           {tools.map((tool) => (
             <button
-              key={tool.name}
-              onClick={() => handleToolSelect(tool.name)}
-              className={`border ${
-                selectedTool === tool.name
-                  ? "bg-black text-white"
-                  : "border-gray-300 bg-white text-black"
-              } rounded-full px-4 py-2`}
+              key={tool.id}
+              onClick={() => setSelectedTool(tool.id)}
+              className={`px-4 py-2 border rounded-full transition-colors ${
+                selectedTool === tool.id 
+                  ? 'bg-black text-white' 
+                  : 'bg-white hover:bg-gray-50'
+              }`}
             >
               {tool.name}
             </button>
           ))}
         </div>
-
-        {selectedToolData && (
-          <div className="border border-gray-300 rounded-none overflow-hidden">
-            <div className="p-6 border-b border-gray-300">
-              <h3 className="text-xl font-bold">{selectedToolData.name}</h3>
-              {selectedToolData.title && (
-                <p className="text-gray-600">{selectedToolData.title}</p>
-              )}
-            </div>
-            {selectedToolData.description && (
-              <div className="p-6">
-                <p className="text-gray-600">{selectedToolData.description}</p>
-              </div>
-            )}
+        
+        <div className="border rounded-lg">
+          <div className="p-6 border-b">
+            <h3 className="text-xl font-bold">{currentTool.name}</h3>
+            <p className="text-gray-600">{currentTool.description}</p>
           </div>
-        )}
+          <div className="p-6">
+            <p>{currentTool.details}</p>
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
   )
 }
