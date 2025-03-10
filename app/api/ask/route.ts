@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // Format the request exactly as shown in Postman
     const requestBody = {
       "query": body.query,
-      "filename": body.filename
+      "fileName": body.filename
     };
 
     console.log("Sending query to external API:", requestBody);
