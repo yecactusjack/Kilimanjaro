@@ -2,29 +2,29 @@
 "use client"
 
 import Link from "next/link"
-import { motion } from "framer-motion"
-import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function Hero() {
   return (
-    <section className="w-full py-16 md:py-20 lg:py-24 flex flex-col items-center justify-center text-center bg-white">
+    <section className="w-full py-24 md:py-32 lg:py-40 flex flex-col items-center justify-center text-center bg-white mb-8">
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="container px-4 md:px-6 max-w-3xl"
+        className="container px-4 md:px-6"
       >
         <motion.h1
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.5 }}
-          className="text-4xl font-bold tracking-tight text-center mb-4 text-black"
+          className="text-5xl font-bold tracking-tight text-center mb-6 text-black"
         >
           Bioinformatics Assistant
         </motion.h1>
-        <motion.div className="flex justify-center mb-3">
-          <span className="text-xs border border-black px-3 py-0.5">
+        <motion.div className="flex justify-center mb-4">
+          <span className="bg-blue-500 text-white px-6 py-1.5 rounded-full text-sm font-medium shadow-md">
             Beta 1.0 Kilimanjaro
           </span>
         </motion.div>
@@ -32,7 +32,7 @@ export default function Hero() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.3, duration: 0.5 }}
-          className="text-sm text-gray-600 mb-6 text-center max-w-xl mx-auto"
+          className="text-xl text-blue-600 mb-8 text-center"
         >
           Enhancing Bioinformatic Workflows With Intelligent Automation
         </motion.p>
@@ -43,9 +43,9 @@ export default function Hero() {
           className="flex justify-center"
         >
           <Link href="/chat">
-            <Button className="h-9 items-center justify-center rounded-none bg-black text-white px-6 text-xs font-medium hover:bg-gray-800">
+            <Button className="inline-flex h-10 items-center justify-center rounded-md bg-black text-white px-8 text-sm font-medium shadow hover:bg-gray-800">
               Get Started
-              <ArrowRight className="ml-1 h-3 w-3" />
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         </motion.div>
