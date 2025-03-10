@@ -114,19 +114,19 @@ export default function ChatInterface() {
         </div>
 
         <div className="p-4 border-t bg-gray-50">
-          <form onSubmit={handleSubmit} className="flex gap-2">
+          <form onSubmit={handleSubmit} className="flex gap-2 bg-gray-50 rounded-lg p-2">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder="Ask about bioinformatics workflows..."
-              className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 bg-white shadow-sm"
+              className="flex-1 px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-400 focus:border-blue-400 bg-white shadow-sm border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0"
               disabled={isLoading}
             />
             <Button 
               type="submit" 
               disabled={isLoading || !input.trim()}
-              className="bg-blue-500 hover:bg-blue-600 transition-colors"
+              className="bg-blue-500 hover:bg-blue-600 transition-colors rounded-full w-10 h-10 p-0 flex items-center justify-center"
             >
               <Send size={18} />
             </Button>
