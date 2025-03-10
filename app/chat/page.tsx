@@ -127,21 +127,6 @@ export default function ChatPage() {
     }
   }
 
-  const downloadReport = () => {
-    const htmlContent = messages.find(msg => msg.content.includes('<html>') || msg.content.includes('FastQC Report'))?.content;
-    if (htmlContent) {
-      const blob = new Blob([htmlContent], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'fastqc_report.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  }
-
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header />
@@ -273,40 +258,17 @@ export default function ChatPage() {
                       className="flex-1 py-2 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                       disabled={isQuerying}
                     />
-                    <div className="flex justify-end mt-2 space-x-2">
-                      <button
-                        type="submit"
-                        disabled={!inputQuery.trim() || isQuerying}
-                        className={`py-2 px-4 rounded-md font-medium ${
-                          !inputQuery.trim() || isQuerying
-                            ? "bg-gray-300 cursor-not-allowed"
-                            : "bg-blue-600 hover:bg-blue-700 text-white"
-                        } transition-colors`}
-                      >
-                        {isQuerying ? "Processing..." : "Send"}
-                      </button>
-                      {messages.some(msg => msg.content.includes('<html>') || msg.content.includes('FastQC')) && (
-                        <button
-                          className="px-4 py-2 bg-green-500 text-white rounded-md"
-                          onClick={() => {
-                            const htmlContent = messages.find(msg => msg.content.includes('<html>') || msg.content.includes('FastQC'))?.content;
-                            if (htmlContent) {
-                              const blob = new Blob([htmlContent], { type: 'text/html' });
-                              const url = URL.createObjectURL(blob);
-                              const a = document.createElement('a');
-                              a.href = url;
-                              a.download = `${uploadedFileName || 'fastqc'}_report.html`;
-                              document.body.appendChild(a);
-                              a.click();
-                              document.body.removeChild(a);
-                              URL.revokeObjectURL(url);
-                            }
-                          }}
-                        >
-                          Download Report
-                        </button>
-                      )}
-                    </div>
+                    <button
+                      type="submit"
+                      disabled={!inputQuery.trim() || isQuerying}
+                      className={`py-2 px-4 rounded-md font-medium ${
+                        !inputQuery.trim() || isQuerying
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      } transition-colors`}
+                    >
+                      {isQuerying ? "Processing..." : "Send"}
+                    </button>
                   </div>
                 </form>
               </div>

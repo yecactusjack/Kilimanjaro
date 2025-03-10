@@ -1,4 +1,3 @@
-
 "use client"
 
 import Link from "next/link"
@@ -13,10 +12,10 @@ export default function Header() {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768)
     }
-    
+
     checkMobile()
     window.addEventListener("resize", checkMobile)
-    
+
     return () => {
       window.removeEventListener("resize", checkMobile)
     }
@@ -30,7 +29,7 @@ export default function Header() {
             Goldbach Labs
           </Link>
         </div>
-        
+
         {isMobile ? (
           <div className="flex items-center">
             <button 
@@ -64,6 +63,8 @@ export default function Header() {
                   >
                     Tools
                   </Link>
+                  <Link href="/chat" className="text-black hover:text-gray-700 transition-colors" onClick={() => setMenuOpen(false)}>Chat</Link>
+                  <Link href="/upload" className="text-black hover:text-gray-700 transition-colors" onClick={() => setMenuOpen(false)}>Upload</Link>
                   <a
                     href="https://form.typeform.com/to/CUme4cwF"
                     target="_blank"
@@ -98,6 +99,8 @@ export default function Header() {
               >
                 Tools
               </Link>
+              <Link href="/chat" className="text-black hover:text-gray-700 transition-colors">Chat</Link>
+              <Link href="/upload" className="text-black hover:text-gray-700 transition-colors">Upload</Link>
               <a
                 href="https://form.typeform.com/to/CUme4cwF"
                 target="_blank"
