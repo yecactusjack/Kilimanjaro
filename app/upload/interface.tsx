@@ -1,112 +1,108 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
+import { UploadCloud } from "lucide-react";
 
-export default function UploadInterface() {
+const UploadInterface = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState(false);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [fileName, setFileName] = useState("");
+  const [uploadStatus, setUploadStatus] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const router = useRouter();
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
-      setFileName(e.target.files[0].name);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
-
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setFile(e.dataTransfer.files[0]);
-      setFileName(e.dataTransfer.files[0].name);
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFile(event.target.files[0]);
+      setUploadStatus("");
     }
   };
 
   const handleUpload = async () => {
-    if (!file) return;
+    if (!file) {
+      setUploadStatus("Please select a file first!");
+      return;
+    }
 
-    setUploading(true);
+    setIsLoading(true);
+    setUploadStatus("Uploading...");
+
     const formData = new FormData();
     formData.append("file", file);
 
     try {
       await axios.post("/api/upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+        headers: { "Content-Type": "multipart/form-data" },
       });
-      setUploadSuccess(true);
-      console.log("Uploaded file:", fileName);
-      router.push("/ask");
+
+      setUploadStatus("File uploaded successfully!");
+      console.log("Uploaded file:", file.name);
+
+      // Automatically redirect to query page after successful upload
+      setTimeout(() => {
+        router.push("/ask");
+      }, 1000);
     } catch (error) {
+      setUploadStatus("File upload failed. Please try again.");
       console.error("Upload error:", error);
     } finally {
-      setUploading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-center">Upload Your Genomic Data</h1>
-      <div className="upload-container">
-        <div className="mb-6 flex justify-center">
-          <div className="beta-badge">Beta 1.0 Kilimanjaro</div>
-        </div>
-        <Card className="border-0 shadow-none bg-transparent">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-xl font-semibold">Upload FASTQ File</CardTitle>
-            <CardDescription>Drag and drop your file or click to browse</CardDescription>
-          </CardHeader>
-          <CardContent className="px-0">
-            <div
-              className="upload-dropzone"
-              onDragOver={handleDragOver}
-              onDrop={handleDrop}
-              onClick={() => document.getElementById("fileInput")?.click()}
-            >
+    <div className="max-w-lg mx-auto">
+      <Card className="shadow-lg border-0">
+        <CardContent className="p-8">
+          <div className="flex flex-col items-center justify-center">
+            <UploadCloud className="h-16 w-16 text-blue-500 mb-4" />
+            <h2 className="text-2xl font-bold mb-6 text-center">Upload your file</h2>
+
+            <div className="w-full mb-6 border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-blue-500 transition-colors cursor-pointer">
               <input
-                id="fileInput"
                 type="file"
-                accept=".fastq,.fq,.fastq.gz,.fq.gz"
                 onChange={handleFileChange}
                 className="hidden"
+                id="file-upload"
               />
-              {fileName ? (
-                <div>
-                  <p className="text-primary font-medium">{fileName}</p>
-                  <p className="text-sm text-muted-foreground mt-2">File selected</p>
-                </div>
-              ) : (
-                <div>
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                  </svg>
-                  <p className="text-lg mb-2 font-medium">Drop your FASTQ file here</p>
-                  <p className="text-sm text-muted-foreground">or click to browse</p>
-                </div>
-              )}
+              <label htmlFor="file-upload" className="cursor-pointer w-full block">
+                {file ? (
+                  <p className="text-blue-500 font-medium">{file.name}</p>
+                ) : (
+                  <div>
+                    <p className="text-gray-500 mb-2">Drag and drop or click to browse</p>
+                    <p className="text-xs text-gray-400">Support for FASTQ, FASTA, and other bioinformatics files</p>
+                  </div>
+                )}
+              </label>
             </div>
-            <div className="mt-6">
-              <Button 
-                onClick={handleUpload} 
-                disabled={!file || uploading} 
-                className="w-full py-6 text-base font-medium"
-              >
-                {uploading ? "Uploading..." : "Upload and Analyze"}
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+
+            <Button 
+              onClick={handleUpload}
+              disabled={isLoading || !file}
+              className="w-full bg-blue-600 hover:bg-blue-700 transition-colors py-6 text-lg"
+            >
+              {isLoading ? "Uploading..." : "Upload and Analyze"}
+            </Button>
+
+            {uploadStatus && (
+              <div className={`mt-4 p-2 rounded-md w-full text-center ${
+                uploadStatus.includes("failed") 
+                  ? "bg-red-50 text-red-600" 
+                  : uploadStatus.includes("success")
+                    ? "bg-green-50 text-green-600"
+                    : "bg-blue-50 text-blue-600"
+              }`}>
+                {uploadStatus}
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
-}
+};
+
+export default UploadInterface;
