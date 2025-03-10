@@ -71,8 +71,8 @@ main {
 
 /* Clean section dividers */
 .section-divider {
-  @apply w-full h-px bg-gray-200 my-16;
-  max-width: 85%;
+  @apply w-full h-px bg-gray-200 my-20;
+  max-width: 80%;
   margin-left: auto;
   margin-right: auto;
 }
