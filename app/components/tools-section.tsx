@@ -57,14 +57,14 @@ export default function ToolsSection() {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Tools we plan on integrating in our MVP</h2>
         
-        <div className="flex flex-wrap justify-center gap-2 mb-8">
+        <div className="flex flex-wrap justify-center gap-3 mb-8">
           {tools.map(tool => (
             <button
               key={tool.id}
               onClick={() => setSelectedTool(tool)}
-              className={`px-4 py-2 rounded-full border ${
+              className={`px-5 py-2.5 rounded-full border transition-all duration-200 ${
                 selectedTool?.id === tool.id 
-                  ? 'bg-black text-white' 
+                  ? 'bg-black text-white font-medium' 
                   : 'bg-white text-black border-black hover:bg-gray-50'
               }`}
             >
@@ -74,13 +74,13 @@ export default function ToolsSection() {
         </div>
         
         {selectedTool && (
-          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="text-lg font-bold">{selectedTool.name}</h3>
-              <p className="text-gray-700">{selectedTool.description}</p>
+          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm max-w-3xl mx-auto">
+            <div className="p-5 border-b border-gray-200">
+              <h3 className="text-xl font-bold">{selectedTool.name}</h3>
+              <p className="text-gray-700 mt-2">{selectedTool.description}</p>
             </div>
-            <div className="p-4">
-              <p>{selectedTool.detail}</p>
+            <div className="p-5">
+              <p className="leading-relaxed">{selectedTool.detail}</p>
             </div>
           </div>
         )}
