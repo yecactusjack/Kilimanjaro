@@ -45,10 +45,9 @@ export default function ToolShowcase() {
   const [selectedTool, setSelectedTool] = useState(tools[0])
 
   return (
-    <section id="tools" className="py-20 md:py-28 bg-white text-black my-8">
-      <div className="aesthetic-divider"></div>
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
+    <section id="tools" className="py-8 md:py-10 bg-white text-black">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <h2 className="text-xl md:text-2xl font-bold text-center mb-6">Tools we plan on integrating in our MVP</h2>
         <div className="flex flex-wrap justify-center gap-4 mb-8">
           {tools.map((tool) => (
             <motion.button

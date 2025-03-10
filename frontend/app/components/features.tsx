@@ -34,10 +34,9 @@ export default function Features() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
 
   return (
-    <section id="features" className="py-20 md:py-28 my-8 bg-white text-black">
-      <div className="aesthetic-divider border-b border-gray-300 mb-8"></div> {/* Added styling for divider */}
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black">Bioinformatics, Simplified by Intelligence</h2>
+    <section id="features" className="py-8 md:py-10 bg-white text-black">
+      <div className="container mx-auto px-4 max-w-3xl">
+        <h2 className="text-xl md:text-2xl font-bold text-center mb-6 text-black">Bioinformatics, Simplified by Intelligence</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
             <motion.div
