@@ -1,85 +1,60 @@
-
-"use client"
-
 "use client"
 
 import { useState } from "react"
 
 export default function ToolShowcase() {
-  const [selectedTool, setSelectedTool] = useState("MultiQC")
-  
-  const tools = [
-    {
-      id: "FastQC",
-      name: "FastQC",
-      description: "Quality control tool for sequencing data",
-      details: "Provides quality control checks on raw sequence data coming from high throughput sequencing pipelines."
-    },
-    {
-      id: "Bowtie2",
-      name: "Bowtie2",
-      description: "Read alignment",
-      details: "An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences."
-    },
-    {
-      id: "Kraken2",
-      name: "Kraken2",
-      description: "Taxonomic classification",
-      details: "Taxonomic classification system using exact k-mer matches to achieve high accuracy and fast classification speeds."
-    },
-    {
-      id: "Porechop",
-      name: "Porechop",
-      description: "Adapter trimming for Oxford Nanopore reads",
-      details: "Tool for finding and removing adapters from Oxford Nanopore reads."
-    },
-    {
-      id: "MultiQC",
-      name: "MultiQC",
-      description: "Aggregate results from bioinformatics analyses",
-      details: "Searches a directory for analysis logs and compiles a HTML report with plots to visualize quality control results across many samples."
-    },
-    {
-      id: "Krona",
-      name: "Krona",
-      description: "Interactive visualization of taxonomic data",
-      details: "Interactive metagenomic visualization in a web browser."
-    }
-  ]
-
-  const currentTool = tools.find(tool => tool.id === selectedTool) || tools[0]
+  const [selectedTool, setSelectedTool] = useState("Krona")
 
   return (
-    <section id="tools" className="py-16 border-b">
-      <div className="container mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
-        
-        <div className="flex flex-wrap justify-center gap-3 mb-8">
-          {tools.map((tool) => (
-            <button
-              key={tool.id}
-              onClick={() => setSelectedTool(tool.id)}
-              className={`px-4 py-2 border rounded-full transition-colors ${
-                selectedTool === tool.id 
-                  ? 'bg-black text-white' 
-                  : 'bg-white hover:bg-gray-50'
-              }`}
-            >
-              {tool.name}
-            </button>
-          ))}
-        </div>
-        
-        <div className="border rounded-lg">
-          <div className="p-6 border-b">
-            <h3 className="text-xl font-bold">{currentTool.name}</h3>
-            <p className="text-gray-600">{currentTool.description}</p>
-          </div>
-          <div className="p-6">
-            <p>{currentTool.details}</p>
-          </div>
-        </div>
+    <div className="mt-12 max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4">Bioinformatics Tools</h2>
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        {["Krona", "IGV", "BLAST"].map((tool) => (
+          <button
+            key={tool}
+            className={`p-3 rounded-md ${
+              selectedTool === tool 
+                ? "bg-primary text-white" 
+                : "bg-gray-100 hover:bg-gray-200"
+            }`}
+            onClick={() => setSelectedTool(tool)}
+          >
+            {tool}
+          </button>
+        ))}
       </div>
-    </section>
+
+      <div className="bg-gray-100 p-6 rounded-lg">
+        {selectedTool === "Krona" && (
+          <div>
+            <h3 className="font-bold mb-2">Krona Interactive Visualization</h3>
+            <p className="mb-4">Create hierarchical, interactive visualizations of your metagenomic data.</p>
+            <div className="bg-gray-200 h-64 flex items-center justify-center">
+              [Krona Visualization Placeholder]
+            </div>
+          </div>
+        )}
+
+        {selectedTool === "IGV" && (
+          <div>
+            <h3 className="font-bold mb-2">Integrated Genome Viewer</h3>
+            <p className="mb-4">Explore genomic data and annotations in a responsive visual interface.</p>
+            <div className="bg-gray-200 h-64 flex items-center justify-center">
+              [IGV Visualization Placeholder]
+            </div>
+          </div>
+        )}
+
+        {selectedTool === "BLAST" && (
+          <div>
+            <h3 className="font-bold mb-2">BLAST Sequence Alignment</h3>
+            <p className="mb-4">Find regions of similarity between biological sequences.</p>
+            <div className="bg-gray-200 h-64 flex items-center justify-center">
+              [BLAST Results Placeholder]
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }

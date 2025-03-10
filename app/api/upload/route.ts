@@ -13,10 +13,11 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("Uploading file:", file.name);
+    console.log("Uploading file:", file.name, "Size:", file.size);
     
     // Create a new FormData to send to the external API
     const externalFormData = new FormData();
+    // Make sure the key is 'file' as required by the external API
     externalFormData.append('file', file);
     
     // Forward the file to the external API

@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef } from "react"
@@ -34,7 +35,6 @@ export default function UploadInterface() {
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault()
-
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const droppedFile = e.dataTransfer.files[0]
       setFile(droppedFile)
@@ -54,30 +54,30 @@ export default function UploadInterface() {
     setIsUploading(true)
     setUploadError(null)
 
+    // Create form data with the required "file" key
     const formData = new FormData()
     formData.append("file", file)
 
     try {
-      // Send file to API
-      await axios.post("http://206.1.35.40:3002/upload", formData, {
+      // Use our API route instead of directly calling the external API
+      // This helps avoid CORS issues in the browser
+      const response = await axios.post("/api/upload", formData, {
         headers: { "Content-Type": "multipart/form-data" }
       })
 
       setUploadComplete(true)
 
-      // Redirect to chat after short delay
+      // Redirect to ask page after short delay
       setTimeout(() => {
-        window.location.href = "/chat"
+        window.location.href = "/ask"
       }, 2000)
     } catch (error) {
       console.error("Error uploading file:", error);
       let errorMessage = "Failed to upload file. Please try again.";
 
       if (error.response) {
-        // The server responded with a status code outside the 2xx range
         errorMessage = `Server error: ${error.response.status} - ${error.response.data?.message || error.message}`;
       } else if (error.request) {
-        // The request was made but no response was received
         errorMessage = "No response from server. Please check your connection.";
       }
 
@@ -87,19 +87,8 @@ export default function UploadInterface() {
     }
   }
 
-  const handleRemoveFile = () => {
-    setFile(null)
-    setFileName("")
-    setFileSize("")
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""
-    }
-  }
-
   return (
     <div className="max-w-2xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">Upload Your Bioinformatics File</h1>
-
       <Card className="p-8 border-dashed">
         <div 
           className="flex flex-col items-center justify-center"
@@ -137,18 +126,20 @@ export default function UploadInterface() {
                   <FileText size={20} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-sm font-medium truncate">{fileName}</h3>
-                  <p className="text-xs text-gray-500">{fileSize}</p>
+                  <div className="font-medium">{fileName}</div>
+                  <div className="text-sm text-gray-500">{fileSize}</div>
                 </div>
-                {!isUploading && !uploadComplete && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    onClick={handleRemoveFile}
-                  >
-                    <X size={16} />
-                  </Button>
-                )}
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={() => {
+                    setFile(null)
+                    setFileName("")
+                    setFileSize("")
+                  }}
+                >
+                  <X size={18} />
+                </Button>
               </div>
 
               {uploadError && (
@@ -174,8 +165,6 @@ export default function UploadInterface() {
           )}
         </div>
       </Card>
-
-      {/* Removed "Need help with your file?" section */}
     </div>
   )
 }
