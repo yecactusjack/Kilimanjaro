@@ -113,8 +113,8 @@ export default function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 border-t bg-gray-50">
-          <form onSubmit={handleSubmit} className="flex gap-2 bg-gray-50 rounded-lg p-2">
+        <div className="p-4 border-t bg-gray-50 flex justify-between items-center"> {/* Added flex and justify-between for better alignment */}
+          <form onSubmit={handleSubmit} className="flex gap-2 bg-gray-50 rounded-lg p-2 w-full"> {/* Added w-full to take full width */}
             <input
               type="text"
               value={input}
@@ -131,6 +131,7 @@ export default function ChatInterface() {
               <Send size={18} />
             </Button>
           </form>
+          <a href="https://form.typeform.com/to/CUme4cwF" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">Feedback</a> {/* Added feedback link */}
         </div>
       </Card>
 
