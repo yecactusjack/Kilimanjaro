@@ -85,7 +85,7 @@ export default function ChatPage() {
         },
         body: JSON.stringify({
           query: inputQuery,
-          filename: uploadedFileName
+          fileName: uploadedFileName
         })
       })
 
