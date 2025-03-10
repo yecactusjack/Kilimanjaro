@@ -1,0 +1,73 @@
+
+Build Error
+Failed to compile
+
+Next.js (14.2.16) is outdated (learn more)
+./app/components/footer.tsx
+Error: 
+  × the name `Footer` is defined multiple times
+    ╭─[/home/runner/workspace/app/components/footer.tsx:1:1]
+  1 │ export default function Footer() {
+    ·                         ───┬──
+    ·                            ╰── previous definition of `Footer` here
+  2 │   return (
+  3 │     <footer id="feedback" className="py-10 border-t">
+  4 │       <div className="container mx-auto text-center">
+  5 │         <h2 className="text-2xl font-bold mb-4">Send Us Feedback</h2>
+  6 │         <p className="text-gray-600 mb-5">We're constantly improving our platform based on user feedback.</p>
+  7 │         <a href="mailto:feedback@goldbachlabs.com" className="text-blue-600 hover:text-blue-800 font-medium">feedback@goldbachlabs.com</a>
+  8 │         <div className="mt-10 text-sm text-gray-500">
+  9 │           &copy; 2024 Goldbach Labs. All rights reserved.
+ 10 │         </div>
+ 11 │       </div>
+ 12 │     </footer>
+ 13 │   )
+ 14 │ }
+ 15 │ export default function Footer() {
+    ·                         ───┬──
+    ·                            ╰── `Footer` redefined here
+ 16 │   const currentYear = new Date().getFullYear()
+ 17 │   
+ 18 │   return (
+    ╰────
+
+  × the name `default` is exported multiple times
+    ╭─[/home/runner/workspace/app/components/footer.tsx:1:1]
+  1 │ ╭─▶ export default function Footer() {
+  2 │ │     return (
+  3 │ │       <footer id="feedback" className="py-10 border-t">
+  4 │ │         <div className="container mx-auto text-center">
+  5 │ │           <h2 className="text-2xl font-bold mb-4">Send Us Feedback</h2>
+  6 │ │           <p className="text-gray-600 mb-5">We're constantly improving our platform based on user feedback.</p>
+  7 │ │           <a href="mailto:feedback@goldbachlabs.com" className="text-blue-600 hover:text-blue-800 font-medium">feedback@goldbachlabs.com</a>
+  8 │ │           <div className="mt-10 text-sm text-gray-500">
+  9 │ │             &copy; 2024 Goldbach Labs. All rights reserved.
+ 10 │ │           </div>
+ 11 │ │         </div>
+ 12 │ │       </footer>
+ 13 │ │     )
+ 14 │ ├─▶ }
+    · ╰──── previous exported here
+ 15 │ ╭─▶ export default function Footer() {
+ 16 │ │     const currentYear = new Date().getFullYear()
+ 17 │ │     
+ 18 │ │     return (
+ 19 │ │       <footer className="bg-black text-white py-6">
+ 20 │ │         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-start md:items-center">
+ 21 │ │           <div>
+ 22 │ │             <h3 className="font-bold text-lg">Goldbach Labs</h3>
+ 23 │ │             <p className="text-sm text-gray-400">Revolutionizing Bioinformatics Pipelines</p>
+ 24 │ │           </div>
+ 25 │ │           <div className="mt-4 md:mt-0">
+ 26 │ │             <p className="text-sm">© {currentYear} Goldbach Labs. All rights reserved.</p>
+ 27 │ │           </div>
+ 28 │ │         </div>
+ 29 │ │       </footer>
+ 30 │ │     )
+ 31 │ ├─▶ }
+    · ╰──── exported more than once
+    ╰────
+
+Error: 
+  ☞ Exported identifiers must be unique
+This error occurred during the build process and can only be dismissed by fixing the error.
