@@ -7,10 +7,10 @@ export default function Hero() {
     <div className="py-16 md:py-24 bg-white">
       <div className="container mx-auto px-4 text-center">
         <h1 className="text-4xl md:text-6xl font-bold text-black mb-6">
-          Bioinformatics Made Simple
+          AI-Powered Document Analysis
         </h1>
         <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-10">
-          Upload, analyze, and interpret biological data with powerful tools and AI assistance
+          Upload, analyze, and extract insights from your documents with powerful AI assistance
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-4">
           <Button asChild className="bg-black text-white hover:bg-gray-800 px-8 py-6 text-lg rounded-none">

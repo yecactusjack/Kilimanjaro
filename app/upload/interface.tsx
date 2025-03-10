@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState } from "react"
@@ -53,143 +54,124 @@ export default function Interface() {
             Upload History
           </TabsTrigger>
         </TabsList>
-
+        
         <TabsContent value="upload" className="mt-6">
-          <Card className="p-6 border-black">
-            <div className="flex flex-col items-center">
-              <div 
-                className="w-full h-48 border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors mb-4"
-                onClick={() => document.getElementById("file-upload")?.click()}
-              >
-                <Upload size={40} className="text-gray-400 mb-2" />
-                <p className="text-lg text-gray-500">Drag and drop your file here or click to browse</p>
-                <p className="text-sm text-gray-400 mt-2">Supported formats: FASTQ, FASTA, BAM, SAM, VCF</p>
-                <input 
-                  id="file-upload" 
-                  type="file" 
-                  className="hidden" 
-                  onChange={handleFileChange}
-                  accept=".fastq,.fasta,.bam,.sam,.vcf,.fastq.gz,.fasta.gz"
-                />
-              </div>
-
-              {file && (
-                <div className="w-full bg-gray-50 p-4 flex justify-between items-center mb-4">
-                  <div>
-                    <p className="font-medium">{file.name}</p>
-                    <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+          <Card className="border-black rounded-none p-6">
+            <div className="mb-6">
+              <h3 className="text-xl font-bold mb-2">Upload Your File</h3>
+              <p className="text-gray-500">
+                Supported formats: PDF, TXT, CSV, XLSX, DOCX
+              </p>
+            </div>
+            
+            <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+              {file ? (
+                <div className="flex flex-col items-center">
+                  <div className="p-2 bg-gray-100 rounded-lg mb-2">
+                    <Upload className="h-6 w-6 text-gray-500" />
                   </div>
-                  <Button 
-                    variant="default" 
-                    className="bg-black text-white hover:bg-gray-800 rounded-none"
-                    onClick={handleUpload}
-                    disabled={isUploading}
+                  <p className="text-sm font-medium">{file.name}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                  </p>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setFile(null)}
+                    className="mt-2 text-red-500 hover:text-red-700"
                   >
-                    {isUploading ? "Uploading..." : "Upload"}
+                    Remove
                   </Button>
                 </div>
-              )}
-
-              {uploadStatus === "success" && (
-                <div className="w-full flex items-center p-4 bg-green-50 text-green-700 mb-4">
-                  <CheckCircle className="mr-2" size={20} />
-                  <p>File uploaded successfully! You can now analyze it.</p>
-                </div>
-              )}
-
-              {uploadStatus === "error" && (
-                <div className="w-full flex items-center p-4 bg-red-50 text-red-700 mb-4">
-                  <AlertCircle className="mr-2" size={20} />
-                  <p>{errorMessage || "An error occurred during upload."}</p>
-                </div>
-              )}
-
-              {uploadStatus === "success" && (
-                <div className="w-full mt-4">
-                  <h3 className="text-xl font-bold mb-4">Analysis Options</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Quality Control</p>
-                        <p className="text-sm text-gray-600 mt-1">Run FastQC to check sequence quality</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Trimming</p>
-                        <p className="text-sm text-gray-600 mt-1">Trim adapters and low-quality bases</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Alignment</p>
-                        <p className="text-sm text-gray-600 mt-1">Align sequences to a reference genome</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Variant Calling</p>
-                        <p className="text-sm text-gray-600 mt-1">Identify variants in your sequence</p>
-                      </div>
-                    </Button>
-                  </div>
+              ) : (
+                <div>
+                  <input
+                    type="file"
+                    id="file-upload"
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept=".pdf,.txt,.csv,.xlsx,.docx"
+                  />
+                  <label
+                    htmlFor="file-upload"
+                    className="cursor-pointer flex flex-col items-center"
+                  >
+                    <div className="p-2 bg-gray-100 rounded-lg mb-2">
+                      <Upload className="h-6 w-6 text-gray-500" />
+                    </div>
+                    <p className="text-sm font-medium">
+                      Click to upload or drag and drop
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Max file size: 50MB
+                    </p>
+                  </label>
                 </div>
               )}
             </div>
+            
+            {uploadStatus === "success" && (
+              <div className="flex items-center p-3 mb-6 bg-green-50 text-green-700 rounded-lg">
+                <CheckCircle className="h-5 w-5 mr-2" />
+                <span>File uploaded successfully!</span>
+              </div>
+            )}
+            
+            {uploadStatus === "error" && (
+              <div className="flex items-center p-3 mb-6 bg-red-50 text-red-700 rounded-lg">
+                <AlertCircle className="h-5 w-5 mr-2" />
+                <span>{errorMessage}</span>
+              </div>
+            )}
+            
+            <Button
+              onClick={handleUpload}
+              disabled={!file || isUploading}
+              className="w-full rounded-none bg-black text-white hover:bg-gray-800"
+            >
+              {isUploading ? "Uploading..." : "Upload File"}
+            </Button>
           </Card>
         </TabsContent>
-
+        
         <TabsContent value="history" className="mt-6">
           <Card className="p-6 border-black">
             <h3 className="text-xl font-bold mb-4">Previous Uploads</h3>
-            {/* Sample upload history */}
             <div className="space-y-4">
               <div className="p-4 bg-gray-50 flex justify-between items-center">
                 <div>
-                  <p className="font-medium">sample_1.fastq.gz</p>
+                  <p className="font-medium">document.pdf</p>
                   <p className="text-sm text-gray-500">Uploaded on March 10, 2025</p>
                 </div>
                 <Button 
                   variant="outline" 
                   className="border-black rounded-none"
                 >
-                  View Analysis
+                  View File
                 </Button>
               </div>
               <div className="p-4 bg-gray-50 flex justify-between items-center">
                 <div>
-                  <p className="font-medium">genome_assembly.fasta</p>
+                  <p className="font-medium">spreadsheet.xlsx</p>
                   <p className="text-sm text-gray-500">Uploaded on March 8, 2025</p>
                 </div>
                 <Button 
                   variant="outline" 
                   className="border-black rounded-none"
                 >
-                  View Analysis
+                  View File
                 </Button>
               </div>
               <div className="p-4 bg-gray-50 flex justify-between items-center">
                 <div>
-                  <p className="font-medium">variants.vcf</p>
+                  <p className="font-medium">report.docx</p>
                   <p className="text-sm text-gray-500">Uploaded on March 5, 2025</p>
                 </div>
                 <Button 
                   variant="outline" 
                   className="border-black rounded-none"
                 >
-                  View Analysis
+                  View File
                 </Button>
               </div>
             </div>

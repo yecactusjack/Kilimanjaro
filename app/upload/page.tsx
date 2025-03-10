@@ -14,9 +14,9 @@ export default function UploadPage() {
               <ArrowLeft className="mr-2 h-5 w-5" /> Back to Home
             </Link>
           </Button>
-          <h1 className="text-3xl font-bold text-black">Upload and Analyze Your File</h1>
+          <h1 className="text-3xl font-bold text-black">Upload Files</h1>
           <p className="text-gray-600 mt-2">
-            Upload your bioinformatics files and get instant analysis with HiveMind
+            Upload your files and get started with our AI-powered analysis
           </p>
         </div>
 
