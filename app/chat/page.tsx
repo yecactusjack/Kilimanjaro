@@ -229,9 +229,6 @@ export default function ChatPage() {
                     <h2 className="text-xl font-semibold">
                       File Analysis: {uploadedFileName}
                     </h2>
-                    <span className="px-2 py-1 text-xs font-medium bg-blue-500 text-white rounded-full">
-                      Beta 1.0 Kilimanjaro
-                    </span>
                   </div>
                 </div>
 

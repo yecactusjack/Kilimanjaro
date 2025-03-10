@@ -26,11 +26,19 @@ export default function Header() {
             Features
           </Link>
           <Link
-            href="#tools"
-            className="text-gray-700 hover:text-gray-900 transition-colors"
+            href="/tools"
+            className="text-sm font-medium transition-colors hover:text-primary"
           >
             Tools
           </Link>
+          <a 
+            href="https://form.typeform.com/to/CUme4cwF" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-sm font-medium transition-colors hover:text-primary"
+          >
+            Feedback
+          </a>
         </nav>
       </div>
     </header>
