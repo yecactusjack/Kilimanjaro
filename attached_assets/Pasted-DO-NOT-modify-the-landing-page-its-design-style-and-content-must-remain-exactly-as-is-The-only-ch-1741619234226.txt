@@ -1,0 +1,61 @@
+DO NOT modify the landing page—its design, style, and content must remain exactly as is. The only changes should occur after the user clicks "Get Started."
+
+New Functionality (to be added post-"Get Started"):
+
+Navigation:
+
+When the user clicks the "Get Started" button on the landing page, navigate them to a new page. This page will host the new ChatGPT-like interface.
+ChatGPT-like Interface Design:
+
+Overall Layout:
+Use a clean, modern, and consistent design that matches the existing pages (fonts, colors, spacing, etc.).
+The interface should have a central chat conversation area where chat bubbles display the conversation.
+Chat Conversation Area:
+Display user messages and responses from the server in chat bubbles.
+Implement a loading indicator (e.g., "Processing…") while awaiting API responses.
+Input Section:
+Provide a text input field for the user to type in queries (for example: “Run fastqc on this”).
+Include a submit button next to the input field.
+File Upload Functionality:
+Integrate a file uploader into the chat interface (this can be positioned at the top of the chat area or as a separate panel within the chat page).
+Support drag-and-drop as well as a button for file selection.
+The uploader must accept any bioinformatics file format (such as FASTQ, BAM, SAM, VCF, etc.).
+Once a file is uploaded, display the file name in the interface. This file name (e.g., "1_control_psbA3_2019_minq7.fastq") must be captured for later use.
+API Integration:
+
+File Upload Endpoint:
+When a file is uploaded, send a POST request to:
+http://206.1.35.40:3002/upload
+Query Submission Endpoint:
+When the user submits a query, construct a JSON payload exactly as follows:
+json
+Copy
+Edit
+{
+  "query": "Run fastqc on this",
+  "fileName": "exact_name_of_uploaded_file"
+}
+Send this JSON payload as a POST request to:
+http://206.1.35.40:3002/ask
+Response Handling:
+Display the response from the API in the chat conversation area as a new chat bubble.
+If the API request fails, display an error message in the chat area.
+Technical Considerations:
+
+Use Next.js (v14.2.16) with TypeScript.
+Mark any component that uses React hooks (such as useState or useEffect) with "use client" at the top.
+Maintain the existing design (colors, fonts, layout) across this new interface so it is consistent with your current pages.
+Ensure modularity by breaking the interface into components (e.g., ChatBubble, ChatInput, FileUploader).
+Include proper error handling for both file uploads and API calls.
+Provide clear documentation (or a README) with instructions on running the project (npm install, npm run dev, etc.).
+Output Expectations:
+
+Post-"Get Started" Page:
+A fully functional ChatGPT-like interface that appears only after clicking the "Get Started" button.
+Integrated file upload that accepts any bioinformatics file format and sends the file to the specified /upload endpoint.
+A query submission process that sends a JSON payload with the query and the uploaded file name to the /ask endpoint.
+Consistent UI/UX that matches your existing landing page design with no changes to any other parts of the app.
+Important:
+
+Do not modify the landing page or any other existing functionality.
+Only implement the new chat interface and related API integrations as described above.
