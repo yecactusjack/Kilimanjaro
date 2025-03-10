@@ -13,6 +13,8 @@ export async function POST(request: Request) {
       );
     }
 
+    console.log("Uploading file:", file.name);
+
     // Forward the request to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/upload", {
       method: "POST",
@@ -22,26 +24,25 @@ export async function POST(request: Request) {
     // Check if the external API request was successful
     if (!externalResponse.ok) {
       const errorText = await externalResponse.text();
+      console.error("External API upload error:", externalResponse.status, errorText);
       return NextResponse.json(
         { error: `External API error: ${externalResponse.status} - ${errorText}` },
         { status: externalResponse.status }
       );
     }
 
-    // Get the response from the external API
-    const responseText = await externalResponse.text();
-    let data;
+    // Try to get JSON response from the external API
     try {
-      data = JSON.parse(responseText);
+      const data = await externalResponse.json();
+      return NextResponse.json(data);
     } catch (e) {
+      // If response is not JSON, try to get text
+      const text = await externalResponse.text();
       return NextResponse.json(
-        { error: 'Invalid JSON response from external API', rawResponse: responseText },
-        { status: 500 }
+        { message: 'File uploaded successfully', rawResponse: text },
+        { status: 200 }
       );
     }
-
-    // Return the external API response
-    return NextResponse.json(data);
   } catch (error) {
     console.error('Upload error:', error);
     return NextResponse.json(

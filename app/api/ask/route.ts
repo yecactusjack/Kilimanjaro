@@ -12,7 +12,13 @@ export async function POST(request: Request) {
       );
     }
 
-    console.log("Sending query to external API:", body);
+    // Format the request exactly as shown in Postman
+    const requestBody = {
+      query: body.query,
+      filename: body.filename || ""
+    };
+
+    console.log("Sending query to external API:", requestBody);
     
     // Forward the request to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/ask", {
@@ -20,15 +26,13 @@ export async function POST(request: Request) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({
-        query: body.query,
-        filename: body.filename || body.fileName // Support both filename and fileName properties
-      })
+      body: JSON.stringify(requestBody)
     });
 
     // Check if the external API request was successful
     if (!externalResponse.ok) {
       const errorText = await externalResponse.text();
+      console.error("External API error:", externalResponse.status, errorText);
       return NextResponse.json(
         { error: `External API error: ${externalResponse.status} - ${errorText}` },
         { status: externalResponse.status }
@@ -36,19 +40,18 @@ export async function POST(request: Request) {
     }
 
     // Get the response from the external API
-    const responseText = await externalResponse.text();
-    let data;
+    const responseData = await externalResponse.text();
+    
     try {
-      data = JSON.parse(responseText);
+      // Try to parse as JSON
+      const jsonData = JSON.parse(responseData);
+      return NextResponse.json(jsonData);
     } catch (e) {
-      return NextResponse.json(
-        { error: 'Invalid JSON response from external API', rawResponse: responseText },
-        { status: 500 }
-      );
+      // If it's not JSON, return as text
+      return NextResponse.json({ 
+        message: responseData 
+      });
     }
-
-    // Return the external API response
-    return NextResponse.json(data);
   } catch (error) {
     console.error('Ask error:', error);
     return NextResponse.json(

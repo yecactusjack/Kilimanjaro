@@ -16,6 +16,8 @@ export default function ChatPage() {
   ])
   const [inputQuery, setInputQuery] = useState("")
   const messagesEndRef = useRef<HTMLDivElement>(null)
+  const processingMessage = {type: "system", content: "Processing your query..."};
+
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -69,7 +71,7 @@ export default function ChatPage() {
     // Add user message to the chat
     setMessages(prev => [...prev, {type: "user", content: inputQuery}])
     setInputQuery("")
-    setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
+    setMessages(prev => [...prev, processingMessage])
 
     try {
       console.log("Sending query with file:", inputQuery, uploadedFileName);
@@ -95,24 +97,16 @@ export default function ChatPage() {
       console.log("Query response:", data);
 
       // Remove the "Processing" message
-      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
+      setMessages(prev => prev.filter(msg => msg !== processingMessage));
 
-      // Add the bot response
-      setMessages(prev => [...prev, {
-        type: "bot", 
-        content: data.response || "I couldn't process that query."
-      }])
-
-      // Scroll to bottom
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+      // Add the AI response to the chat
+      const responseContent = data.message || data.answer || data.response || JSON.stringify(data);
+      setMessages(prev => [...prev, {type: "system", content: responseContent || "Sorry, I couldn't process that query. Please try again."}])
     } catch (error) {
       console.error("Query error:", error);
-      // Add error message to chat
-      const errorMessage = {
-        type: "system",
-        content: `Error processing query: ${error instanceof Error ? error.message : 'Failed to connect to server'}`
-      }
-      setMessages(prev => [...prev, errorMessage])
+      // Remove the "Processing" message and show error
+      setMessages(prev => prev.filter(msg => msg !== processingMessage));
+      setMessages(prev => [...prev, {type: "system", content: `Error: ${error.message || "Failed to process query"}`}]);
     }
 
     setInputQuery("")
