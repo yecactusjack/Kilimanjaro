@@ -1,0 +1,47 @@
+Role: You are an expert web designer and full-stack developer with a strong focus on clean, minimalistic design.
+
+Task: Create a single-page website concept that highlights the mission and offerings of a company called “Goldbach Labs.” The site should have a polished, professional look, using a minimal color palette (white, black, and subtle accent colors) and clean typography.
+
+Website Goals:
+
+Present a bold hero section with a headline, sub-headline, and a prominent call-to-action button (e.g., “Get Started”).
+Showcase a Mission Statement that explains what the company does in concise, engaging language.
+Provide feature cards or sections illustrating the key benefits or capabilities (e.g., “Natural Language Interface,” “Automated Pipeline Selection,” “Accessibility,” etc.).
+End with a clear call-to-action (like “Back to Kilimanjaro” or “Learn More”) to guide users.
+Desired Style & Layout:
+
+Hero Section:
+Large, bold headline centered on the page.
+Sub-headline or tagline beneath, explaining the core benefit.
+A call-to-action button (“Get Started”) that stands out.
+A second, smaller button or link (e.g., “Back to Kilimanjaro”) for secondary navigation.
+Mission Statement:
+A white background with a subtle dividing line or a simple layout that draws the user’s eye.
+A short paragraph describing how modern bioinformatics workflows are complex and how Goldbach Labs’ solution makes them simpler and more efficient.
+Key Features or Services:
+A row or grid of feature cards, each containing an icon, a short heading, and a concise description (e.g., “Natural Language Interface,” “Automated Pipeline Selection,” “Accessibility,” etc.).
+Use minimal icons or simple line art.
+Typography & Colors:
+Main colors: white background, black text, subtle accent color (e.g., a soft blue) for buttons and highlights.
+Fonts: Clean, sans-serif typeface (e.g., Inter, Helvetica, or similar).
+Responsive Design:
+Ensure the layout adapts nicely on mobile devices (stacked sections, properly sized fonts/buttons).
+Footer or Final Call-to-Action:
+Possibly a simple, centered statement or button to learn more about the company or link to another resource.
+Code & Structure:
+
+Generate HTML5 and CSS (and optionally JavaScript) that follows modern best practices.
+Make sure the code is well-commented to explain key layout decisions.
+If using a framework like React, Next.js, or Vue, structure the components accordingly. If using plain HTML/CSS/JS, ensure the structure is semantic and easy to read.
+Output:
+
+Provide a detailed HTML file (or React component structure) that includes the hero section, mission statement, features section, and a final CTA.
+Include a CSS snippet or a styled-components approach that demonstrates how to achieve the clean, minimal aesthetic.
+Provide brief explanations (inline or in a separate section) on how to customize text, colors, and images.
+Additional Notes:
+
+Focus on clarity and simplicity.
+Use consistent spacing and alignment to create a polished look.
+Ensure the website conveys a feeling of professionalism and innovation.
+You can include placeholder images or icons where needed.
+Provide instructions on how to change or add new sections as the company evolves.
