@@ -34,17 +34,13 @@ export default function ChatPage() {
 
     try {
       const formData = new FormData()
+      // Using the default file key name that the server expects
       formData.append("file", file)
 
       const response = await fetch("http://206.1.35.40:3002/upload", {
         method: "POST",
         body: formData,
-        // Adding proper headers for CORS
-        headers: {
-          // Removing Content-Type to let the browser set it with boundary for multipart/form-data
-          'Accept': 'application/json',
-        },
-        // Ensure credentials are included if needed
+        // Don't set Content-Type header - browser will set it automatically with boundary
         credentials: 'include',
       })
 
