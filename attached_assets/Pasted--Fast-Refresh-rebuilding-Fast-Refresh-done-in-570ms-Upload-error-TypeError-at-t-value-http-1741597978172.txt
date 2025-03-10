@@ -1,0 +1,26 @@
+[Fast Refresh] rebuilding
+[Fast Refresh] done in 570ms
+Upload error: 
+TypeError {}
+
+at t.value (https://b4841736-dace-4941-be5f-5d7cd668f625-00-1ugxst5bni6bz.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://b4841736-dace-4941-be5f-5d7cd668f625-00-1ugxst5bni6bz.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://b4841736-dace-4941-be5f-5d7cd668f625-00-1ugxst5bni6bz.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://b4841736-dace-4941-be5f-5d7cd668f625-00-1ugxst5bni6bz.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+Failed to fetch
+at window.fetch (https://b4841736-dace-4941-be5f-5d7cd668f625-00-1ugxst5bni6bz.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:218642)
+at handleUpload (webpack-internal:///(app-pages-browser)/./app/chat/page.tsx:47:36)
+at HTMLUnknownElement.callCallback (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:20565:14)
+at Object.invokeGuardedCallbackImpl (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:20614:16)
+at invokeGuardedCallback (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:20689:29)
+at invokeGuardedCallbackAndCatchFirstError (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:20703:25)
+at executeDispatch (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32128:3)
+at processDispatchQueueItemsInOrder (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32160:7)
+at processDispatchQueue (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32173:5)
+at dispatchEventsForPlugins (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32184:3)
+at eval (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32374:12)
+at batchedUpdates$1 (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:24953:12)
+at batchedUpdates (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:28844:12)
+at dispatchEventForPluginEventSystem (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:32373:3)
+at dispatchEvent (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:30141:5)
+at dispatchDiscreteEvent (webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:30112:5)
