@@ -5,6 +5,7 @@ import { Upload, CheckCircle, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Link from "next/link"
 
 export default function Interface() {
   const [file, setFile] = useState<File | null>(null)
@@ -55,7 +56,7 @@ export default function Interface() {
         </TabsList>
 
         <TabsContent value="upload" className="mt-6">
-          <Card className="p-6 border-black">
+          <Card className="p-6 border-black rounded-none">
             <div className="flex flex-col items-center">
               <div 
                 className="w-full h-48 border-2 border-dashed border-gray-300 rounded-none flex flex-col items-center justify-center cursor-pointer hover:bg-gray-50 transition-colors mb-4"
@@ -63,88 +64,63 @@ export default function Interface() {
               >
                 <Upload size={40} className="text-gray-400 mb-2" />
                 <p className="text-lg text-gray-500">Drag and drop your file here or click to browse</p>
-                <p className="text-sm text-gray-400 mt-2">Supported formats: FASTQ, FASTA, BAM, SAM, VCF</p>
+                <p className="text-sm text-gray-400 mt-2">
+                  Supported formats: FASTQ, FASTA, BAM, SAM, VCF, BED, GTF, GFF, BCF, PAF, MAF, TXT, CSV
+                </p>
                 <input 
                   id="file-upload" 
                   type="file" 
                   className="hidden" 
                   onChange={handleFileChange}
-                  accept=".fastq,.fasta,.bam,.sam,.vcf,.fastq.gz,.fasta.gz"
+                  accept=".fastq,.fasta,.bam,.sam,.vcf,.bed,.gtf,.gff,.bcf,.paf,.maf,.txt,.csv,.fastq.gz,.fasta.gz"
                 />
               </div>
 
               {file && (
-                <div className="w-full bg-gray-50 p-4 flex justify-between items-center mb-4">
-                  <div>
-                    <p className="font-medium">{file.name}</p>
-                    <p className="text-sm text-gray-500">{(file.size / 1024 / 1024).toFixed(2)} MB</p>
+                <div className="w-full mb-4">
+                  <div className="flex items-center justify-between p-3 bg-gray-50 border border-gray-200 rounded-none">
+                    <span className="font-medium truncate max-w-[250px]">{file.name}</span>
+                    <Button 
+                      onClick={() => setFile(null)} 
+                      variant="ghost" 
+                      size="sm"
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      Remove
+                    </Button>
                   </div>
-                  <Button 
-                    variant="default" 
-                    className="bg-black text-white hover:bg-gray-800 rounded-none"
-                    onClick={handleUpload}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? "Uploading..." : "Upload"}
-                  </Button>
                 </div>
               )}
 
+              <Button 
+                onClick={handleUpload} 
+                disabled={!file || isUploading}
+                className="w-full rounded-none bg-black text-white hover:bg-gray-800"
+              >
+                {isUploading ? "Uploading..." : "Upload File"}
+              </Button>
+
               {uploadStatus === "success" && (
-                <div className="w-full flex items-center p-4 bg-green-50 text-green-700 mb-4">
-                  <CheckCircle className="mr-2" size={20} />
-                  <p>File uploaded successfully! You can now analyze it.</p>
+                <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-none w-full">
+                  <div className="flex items-center">
+                    <CheckCircle className="text-green-500 mr-2" size={18} />
+                    <span>File uploaded successfully!</span>
+                  </div>
+                  <div className="mt-2">
+                    <p>You can now analyze this file:</p>
+                    <Button asChild className="mt-2 rounded-none bg-black text-white hover:bg-gray-800">
+                      <Link href="/chat">
+                        Go to Analysis Tools
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               )}
 
               {uploadStatus === "error" && (
-                <div className="w-full flex items-center p-4 bg-red-50 text-red-700 mb-4">
-                  <AlertCircle className="mr-2" size={20} />
-                  <p>{errorMessage || "An error occurred during upload."}</p>
-                </div>
-              )}
-
-              {uploadStatus === "success" && (
-                <div className="w-full mt-4">
-                  <h3 className="text-xl font-bold mb-4">Analysis Options</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Quality Control</p>
-                        <p className="text-sm text-gray-600 mt-1">Run FastQC to check sequence quality</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Trimming</p>
-                        <p className="text-sm text-gray-600 mt-1">Trim adapters and low-quality bases</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Alignment</p>
-                        <p className="text-sm text-gray-600 mt-1">Align sequences to a reference genome</p>
-                      </div>
-                    </Button>
-                    <Button 
-                      variant="outline" 
-                      className="p-6 h-auto text-left flex items-start border-black rounded-none"
-                    >
-                      <div>
-                        <p className="font-bold">Variant Calling</p>
-                        <p className="text-sm text-gray-600 mt-1">Identify variants in your sequence</p>
-                      </div>
-                    </Button>
-                  </div>
+                <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-none w-full flex items-center">
+                  <AlertCircle className="text-red-500 mr-2" size={18} />
+                  <span>{errorMessage || "An error occurred during upload."}</span>
                 </div>
               )}
             </div>
@@ -152,46 +128,9 @@ export default function Interface() {
         </TabsContent>
 
         <TabsContent value="history" className="mt-6">
-          <Card className="p-6 border-black">
-            <h3 className="text-xl font-bold mb-4">Previous Uploads</h3>
-            {/* Sample upload history */}
-            <div className="space-y-4">
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
-                <div>
-                  <p className="font-medium">sample_1.fastq.gz</p>
-                  <p className="text-sm text-gray-500">Uploaded on March 10, 2025</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="border-black rounded-none"
-                >
-                  View Analysis
-                </Button>
-              </div>
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
-                <div>
-                  <p className="font-medium">genome_assembly.fasta</p>
-                  <p className="text-sm text-gray-500">Uploaded on March 8, 2025</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="border-black rounded-none"
-                >
-                  View Analysis
-                </Button>
-              </div>
-              <div className="p-4 bg-gray-50 flex justify-between items-center">
-                <div>
-                  <p className="font-medium">variants.vcf</p>
-                  <p className="text-sm text-gray-500">Uploaded on March 5, 2025</p>
-                </div>
-                <Button 
-                  variant="outline" 
-                  className="border-black rounded-none"
-                >
-                  View Analysis
-                </Button>
-              </div>
+          <Card className="p-6 border-black rounded-none">
+            <div className="text-center py-8">
+              <p className="text-gray-500">No upload history available.</p>
             </div>
           </Card>
         </TabsContent>
