@@ -37,15 +37,12 @@ export default function ChatPage() {
       // Using the default key name "file" that the server expects
       formData.append("file", file)
 
-      // Improved fetch with more robust error handling and CORS settings
-      const response = await fetch("http://206.1.35.40:3002/upload", {
+      // Use localhost endpoint instead of the remote one
+      const response = await fetch("http://0.0.0.0:3001/upload", {
         method: "POST",
         body: formData,
-        // Let browser handle Content-Type for multipart/form-data with proper boundary
-        credentials: 'include',
-        // Add mode: 'cors' to explicitly request CORS support
+        // Simplify the request configuration
         mode: 'cors',
-        // Add cache: 'no-cache' to prevent caching issues
         cache: 'no-cache',
       })
 
@@ -88,8 +85,8 @@ export default function ChatPage() {
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
 
     try {
-      // Use the correct ask endpoint
-      const response = await fetch("http://localhost:3001/ask", {
+      // Use the correct ask endpoint with 0.0.0.0 instead of localhost
+      const response = await fetch("http://0.0.0.0:3001/ask", {
         method: "POST",
         headers: {
           'Content-Type': 'application/json'
