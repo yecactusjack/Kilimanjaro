@@ -25,7 +25,7 @@ export default function Hero() {
         </motion.h1>
         <motion.div className="flex justify-center mb-4">
           <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
-            Beta 1.0
+            Beta 1.0 Kilimanjaro
           </span>
         </motion.div>
         <motion.p
