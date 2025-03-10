@@ -9,10 +9,13 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen bg-white text-black">
       <Header />
-      <main className="flex-grow space-y-8">
+      <main className="flex-grow">
         <Hero />
+        <div className="aesthetic-divider mx-auto w-[80%]"></div>
         <MissionStatement />
+        <div className="aesthetic-divider mx-auto w-[80%]"></div>
         <Features />
+        <div className="aesthetic-divider mx-auto w-[80%]"></div>
         <ToolShowcase />
       </main>
       <Footer />

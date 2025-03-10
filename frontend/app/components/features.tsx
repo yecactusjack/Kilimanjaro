@@ -34,8 +34,8 @@ export default function Features() {
   const [hoveredFeature, setHoveredFeature] = useState<number | null>(null)
 
   return (
-    <section id="features" className="py-12 md:py-16 lg:py-20 my-8 bg-white text-black">
-      <div className="aesthetic-divider"></div>
+    <section id="features" className="py-20 md:py-28 my-8 bg-white text-black">
+      <div className="aesthetic-divider border-b border-gray-300 mb-8"></div> {/* Added styling for divider */}
       <div className="container mx-auto px-4">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black">Bioinformatics, Simplified by Intelligence</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -45,7 +45,7 @@ export default function Features() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="bg-white p-6 border border-black transition-all"
+              className="bg-white p-6 border border-gray-200 rounded-lg shadow-md transition-all hover:shadow-lg"
               onMouseEnter={() => setHoveredFeature(index)}
               onMouseLeave={() => setHoveredFeature(null)}
             >

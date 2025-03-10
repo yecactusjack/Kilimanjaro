@@ -24,7 +24,7 @@ export default function Hero() {
           Bioinformatics Assistant
         </motion.h1>
         <motion.div className="flex justify-center mb-4">
-          <span className="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-medium">
+          <span className="bg-blue-500 text-white px-6 py-1.5 rounded-full text-sm font-medium shadow-md">
             Beta 1.0 Kilimanjaro
           </span>
         </motion.div>
