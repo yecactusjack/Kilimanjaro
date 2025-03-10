@@ -70,8 +70,18 @@ export default function UploadInterface() {
         window.location.href = "/chat"
       }, 2000)
     } catch (error) {
-      console.error("Error uploading file:", error)
-      setUploadError("Failed to upload file. Please try again.")
+      console.error("Error uploading file:", error);
+      let errorMessage = "Failed to upload file. Please try again.";
+
+      if (error.response) {
+        // The server responded with a status code outside the 2xx range
+        errorMessage = `Server error: ${error.response.status} - ${error.response.data?.message || error.message}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorMessage = "No response from server. Please check your connection.";
+      }
+
+      setUploadError(errorMessage);
     } finally {
       setIsUploading(false)
     }

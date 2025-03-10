@@ -1,10 +1,7 @@
-
 "use client";
 
 import { useState } from "react";
 import axios from "axios";
-
-"use client"
 
 const AskPage = () => {
   const [fileName, setFileName] = useState("");
@@ -12,21 +9,28 @@ const AskPage = () => {
   const [result, setResult] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
 
   const handleAsk = async () => {
-    if (!fileName || !query) {
-      setMessage("Please enter both fileName and query.");
+    if (!fileName || !query || !file) {
+      setMessage("Please enter both fileName and query, and select a file.");
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true); 
     setMessage("Processing your request...");
 
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("query", query);
+    formData.append("fileName", fileName);
+
+
     try {
-      // Use relative API URL instead of hardcoded localhost
-      const response = await axios.post("/api/ask", {
-        query: query,
-        fileName: fileName,
+      const response = await axios.post("/api/ask", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       setResult(response.data.htmlContent);
@@ -37,7 +41,7 @@ const AskPage = () => {
       setMessage(error.response?.data?.error || "Error processing request. Please try again.");
       setResult(null);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false); 
     }
   };
 
@@ -49,6 +53,11 @@ const AskPage = () => {
         placeholder="Enter File Name"
         value={fileName}
         onChange={(e) => setFileName(e.target.value)}
+        className="mt-3 border p-2 w-full"
+      />
+      <input
+        type="file"
+        onChange={(e) => setFile(e.target.files?.[0])}
         className="mt-3 border p-2 w-full"
       />
       <input
