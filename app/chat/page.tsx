@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
@@ -50,7 +51,7 @@ export default function ChatPage() {
 
       const data = await response.json()
       console.log("Uploaded file:", file.name)
-
+      
       setUploadStatus("File uploaded successfully!")
       setUploadedFileName(file.name)
       setShowChatInterface(true)
@@ -64,20 +65,20 @@ export default function ChatPage() {
 
   const handleSubmitQuery = async (e: FormEvent) => {
     e.preventDefault()
-
+    
     if (!inputQuery.trim() || !uploadedFileName) return
 
     // Add user message to chat
     setMessages(prev => [...prev, {type: "user", content: inputQuery}])
-
+    
     // Add processing message
     setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
-
+    
     setIsQuerying(true)
-
+    
     try {
       console.log("Sending query with file:", inputQuery, uploadedFileName)
-
+      
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
@@ -96,10 +97,10 @@ export default function ChatPage() {
       }
 
       const data = await response.json()
-
+      
       // Remove the processing message
       setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-
+      
       // Add the response
       setMessages(prev => [...prev, {
         type: "system", 
@@ -107,10 +108,10 @@ export default function ChatPage() {
       }])
     } catch (error) {
       console.error("Query error:", error)
-
+      
       // Remove the processing message
       setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
-
+      
       // Add error message
       setMessages(prev => [...prev, {
         type: "system", 
@@ -119,7 +120,7 @@ export default function ChatPage() {
     } finally {
       setIsQuerying(false)
       setInputQuery("")
-
+      
       // Scroll to bottom
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
@@ -130,7 +131,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header />
-      <main className="flex-grow py-12 px-4 md:px-8 lg:px-12 mx-auto w-full max-w-7xl">
+      <main className="flex-grow py-10">
         <div className="container mx-auto px-4">
           <motion.h1 
             initial={{ opacity: 0, y: -20 }}
@@ -162,7 +163,7 @@ export default function ChatPage() {
               <p className="text-gray-600 mb-6">
                 Supported formats: All bioinformatics file formats accepted.
               </p>
-
+              
               <div className="flex flex-col space-y-4">
                 <label className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors">
                   <input 
@@ -175,7 +176,7 @@ export default function ChatPage() {
                     {file ? file.name : "Click or drag to upload file"}
                   </div>
                 </label>
-
+                
                 <button 
                   onClick={handleUpload}
                   disabled={!file || isUploading}
@@ -187,7 +188,7 @@ export default function ChatPage() {
                 >
                   {isUploading ? "Uploading..." : "Upload and Analyze"}
                 </button>
-
+                
                 {uploadStatus && (
                   <div className={`text-sm p-2 rounded ${
                     uploadStatus.includes("Error") 
@@ -214,7 +215,7 @@ export default function ChatPage() {
                     File Analysis: {uploadedFileName}
                   </h2>
                 </div>
-
+                
                 <div className="h-96 overflow-y-auto p-4 bg-gray-50">
                   {messages.map((message, index) => (
                     <div 
@@ -245,7 +246,7 @@ export default function ChatPage() {
                   ))}
                   <div ref={messagesEndRef} />
                 </div>
-
+                
                 <form onSubmit={handleSubmitQuery} className="p-4 border-t">
                   <div className="flex space-x-2">
                     <input
