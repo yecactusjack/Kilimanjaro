@@ -14,39 +14,34 @@ export async function POST(request: Request) {
     }
 
     console.log("Uploading file:", file.name);
-
-    // Forward the request to the external API
+    
+    // Create a new FormData to send to the external API
+    const externalFormData = new FormData();
+    externalFormData.append('file', file);
+    
+    // Forward the file to the external API
     const externalResponse = await fetch("http://206.1.35.40:3002/upload", {
       method: "POST",
-      body: formData,
+      body: externalFormData
     });
-
-    // Check if the external API request was successful
+    
+    // Handle the response from the external API
     if (!externalResponse.ok) {
       const errorText = await externalResponse.text();
-      console.error("External API upload error:", externalResponse.status, errorText);
+      console.error("External API error:", externalResponse.status, errorText);
       return NextResponse.json(
-        { error: `External API error: ${externalResponse.status} - ${errorText}` },
+        { error: `External API error: ${externalResponse.status}` },
         { status: externalResponse.status }
       );
     }
-
-    // Try to get JSON response from the external API
-    try {
-      const data = await externalResponse.json();
-      return NextResponse.json(data);
-    } catch (e) {
-      // If response is not JSON, try to get text
-      const text = await externalResponse.text();
-      return NextResponse.json(
-        { message: 'File uploaded successfully', rawResponse: text },
-        { status: 200 }
-      );
-    }
+    
+    const responseData = await externalResponse.json();
+    return NextResponse.json(responseData);
+    
   } catch (error) {
-    console.error('Upload error:', error);
+    console.error("Upload error:", error);
     return NextResponse.json(
-      { error: 'Error processing upload', message: error instanceof Error ? error.message : String(error) },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }

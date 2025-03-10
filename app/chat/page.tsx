@@ -1,3 +1,4 @@
+
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
@@ -15,9 +16,8 @@ export default function ChatPage() {
     {type: "system", content: "Welcome to Goldbach Labs. How can I help you with your bioinformatics query?"}
   ])
   const [inputQuery, setInputQuery] = useState("")
+  const [isQuerying, setIsQuerying] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const processingMessage = {type: "system", content: "Processing your query..."};
-
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -37,83 +37,94 @@ export default function ChatPage() {
 
     try {
       const formData = new FormData()
-      // Using the default key name "file" that the server expects
       formData.append("file", file)
 
-      // Use relative URL to avoid CORS issues
       const response = await fetch("/api/upload", {
         method: "POST",
-        body: formData,
-        // Simplify the request configuration
+        body: formData
       })
 
       if (!response.ok) {
-        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`)
+        const errorData = await response.json()
+        throw new Error(`Server responded with status: ${response.status} - ${errorData.error || 'Unknown error'}`)
       }
 
       const data = await response.json()
-      setIsUploading(false)
-      setUploadStatus("File uploaded successfully!")
-      setShowChatInterface(true)
-      setUploadedFileName(file.name) // Store the filename for queries
       console.log("Uploaded file:", file.name)
+      
+      setUploadStatus("File uploaded successfully!")
+      setUploadedFileName(file.name)
+      setShowChatInterface(true)
     } catch (error) {
-      setIsUploading(false)
-      setUploadStatus(`Error uploading file: ${error.message}`)
       console.error("Upload error:", error)
+      setUploadStatus(`Error uploading file: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    } finally {
+      setIsUploading(false)
     }
   }
 
-  const handleSendQuery = async (e: FormEvent) => {
+  const handleSubmitQuery = async (e: FormEvent) => {
     e.preventDefault()
-    if (!inputQuery.trim()) return
+    
+    if (!inputQuery.trim() || !uploadedFileName) return
 
-    // Add user message to the chat
+    // Add user message to chat
     setMessages(prev => [...prev, {type: "user", content: inputQuery}])
-    setInputQuery("")
-    setMessages(prev => [...prev, processingMessage])
-
+    
+    // Add processing message
+    setMessages(prev => [...prev, {type: "system", content: "Processing your query..."}])
+    
+    setIsQuerying(true)
+    
     try {
-      console.log("Sending query with file:", inputQuery, uploadedFileName);
-
+      console.log("Sending query with file:", inputQuery, uploadedFileName)
+      
       const response = await fetch("/api/ask", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           query: inputQuery,
           filename: uploadedFileName
         })
-      });
+      })
 
       if (!response.ok) {
-        const errorText = await response.text();
-        console.error("Query API error:", response.status, errorText);
-        throw new Error(`Server responded with status: ${response.status} - ${response.statusText}`);
+        const errorData = await response.json()
+        console.error("Query API error:", response.status, JSON.stringify(errorData))
+        throw new Error(`Server responded with ${response.status}: ${errorData.error || 'Unknown error'}`)
       }
 
-      const data = await response.json();
-      console.log("Query response:", data);
-
-      // Remove the "Processing" message
-      setMessages(prev => prev.filter(msg => msg !== processingMessage));
-
-      // Add the AI response to the chat
-      const responseContent = data.message || data.answer || data.response || JSON.stringify(data);
-      setMessages(prev => [...prev, {type: "system", content: responseContent || "Sorry, I couldn't process that query. Please try again."}])
+      const data = await response.json()
+      
+      // Remove the processing message
+      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
+      
+      // Add the response
+      setMessages(prev => [...prev, {
+        type: "system", 
+        content: data.htmlContent || data.message || "Analysis complete."
+      }])
     } catch (error) {
-      console.error("Query error:", error);
-      // Remove the "Processing" message and show error
-      setMessages(prev => prev.filter(msg => msg !== processingMessage));
-      setMessages(prev => [...prev, {type: "system", content: `Error: ${error.message || "Failed to process query"}`}]);
-    }
-
-    setInputQuery("")
-
-    // Scroll to bottom of messages
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
+      console.error("Query error:", error)
+      
+      // Remove the processing message
+      setMessages(prev => prev.filter(msg => msg.content !== "Processing your query..."))
+      
+      // Add error message
+      setMessages(prev => [...prev, {
+        type: "system", 
+        content: `Error: ${error instanceof Error ? error.message : 'Failed to process query'}`
+      }])
+    } finally {
+      setIsQuerying(false)
+      setInputQuery("")
+      
+      // Scroll to bottom
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
+      }, 100)
     }
   }
 
@@ -142,99 +153,114 @@ export default function ChatPage() {
               <p className="text-gray-600 mb-6">
                 Supported formats: FASTA, FASTQ, VCF, SAM, BAM, and other bioinformatics formats.
               </p>
-
-              <div className="border-2 border-dashed border-gray-300 rounded-md p-6 mb-4 text-center cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => document.getElementById('file-upload')?.click()}
-              >
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <div className="text-gray-500">
-                  {file ? (
-                    <p className="text-black font-medium">{file.name}</p>
-                  ) : (
-                    <>
-                      <p className="mb-2">Drag and drop your file here, or click to browse</p>
-                      <p className="text-sm text-gray-400">Max file size: 50MB</p>
-                    </>
-                  )}
-                </div>
+              
+              <div className="flex flex-col space-y-4">
+                <label className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors">
+                  <input 
+                    type="file" 
+                    className="hidden" 
+                    onChange={handleFileChange}
+                    accept=".fasta,.fastq,.vcf,.sam,.bam"
+                  />
+                  <div className="text-gray-500">
+                    {file ? file.name : "Click or drag to upload file"}
+                  </div>
+                </label>
+                
+                <button 
+                  onClick={handleUpload}
+                  disabled={!file || isUploading}
+                  className={`py-2 px-4 rounded-md font-medium ${
+                    !file || isUploading 
+                      ? "bg-gray-300 cursor-not-allowed" 
+                      : "bg-blue-600 hover:bg-blue-700 text-white"
+                  } transition-colors`}
+                >
+                  {isUploading ? "Uploading..." : "Upload and Analyze"}
+                </button>
+                
+                {uploadStatus && (
+                  <div className={`text-sm p-2 rounded ${
+                    uploadStatus.includes("Error") 
+                      ? "bg-red-100 text-red-700" 
+                      : uploadStatus.includes("success") 
+                        ? "bg-green-100 text-green-700"
+                        : "bg-blue-100 text-blue-700"
+                  }`}>
+                    {uploadStatus}
+                  </div>
+                )}
               </div>
-
-              <button
-                onClick={handleUpload}
-                disabled={isUploading || !file}
-                className={`w-full py-2 px-4 font-semibold rounded-md shadow-sm ${
-                  isUploading || !file 
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                    : 'bg-black text-white hover:bg-gray-800'
-                }`}
-              >
-                {isUploading ? "Processing..." : "Upload and Analyze"}
-              </button>
-
-              {uploadStatus && (
-                <p className={`mt-4 text-center ${
-                  uploadStatus.includes("successfully") 
-                    ? "text-green-600" 
-                    : uploadStatus.includes("Uploading") 
-                      ? "text-blue-600" 
-                      : "text-red-600"
-                }`}>
-                  {uploadStatus}
-                </p>
-              )}
             </motion.div>
           ) : (
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className="max-w-3xl mx-auto bg-white rounded-lg shadow-md overflow-hidden"
+              className="max-w-3xl mx-auto"
             >
-              <div className="border-b p-4">
-                <h2 className="font-bold text-lg">Analysis Chat Interface</h2>
-                <p className="text-sm text-gray-600">File: {file?.name}</p>
-              </div>
-
-              <div className="h-96 overflow-y-auto p-4 bg-gray-50">
-                {messages.map((message, index) => (
-                  <div
-                    key={index}
-                    className={`mb-4 ${
-                      message.type === "user" ? "text-right" : "text-left"
-                    }`}
-                  >
-                    <div
-                      className={`inline-block p-3 rounded-lg ${
-                        message.type === "user"
-                          ? "bg-black text-white"
-                          : "bg-gray-200 text-gray-800"
-                      }`}
-                      dangerouslySetInnerHTML={{ __html: message.content }}
-                    />
-                  </div>
-                ))}
-                <div ref={messagesEndRef} />
-              </div>
-
-              <form onSubmit={handleSendQuery} className="p-4 border-t">
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={inputQuery}
-                    onChange={(e) => setInputQuery(e.target.value)}
-                    placeholder="Type your query about the uploaded file..."
-                    className="flex-grow p-2 border rounded-md"
-                  />
-                  <button type="submit" className="bg-black text-white px-4 py-2 rounded-md">
-                    Send
-                  </button>
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div className="p-4 bg-blue-600 text-white">
+                  <h2 className="text-xl font-semibold">
+                    File Analysis: {uploadedFileName}
+                  </h2>
                 </div>
-              </form>
+                
+                <div className="h-96 overflow-y-auto p-4 bg-gray-50">
+                  {messages.map((message, index) => (
+                    <div 
+                      key={index} 
+                      className={`mb-4 ${
+                        message.type === "user" 
+                          ? "text-right" 
+                          : "text-left"
+                      }`}
+                    >
+                      <div 
+                        className={`inline-block p-3 rounded-lg ${
+                          message.type === "user"
+                            ? "bg-blue-600 text-white"
+                            : "bg-gray-200 text-gray-800"
+                        }`}
+                      >
+                        {message.content.startsWith("<!DOCTYPE") ? (
+                          <div
+                            dangerouslySetInnerHTML={{ __html: message.content }}
+                            className="max-w-2xl overflow-x-auto"
+                          />
+                        ) : (
+                          message.content
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <div ref={messagesEndRef} />
+                </div>
+                
+                <form onSubmit={handleSubmitQuery} className="p-4 border-t">
+                  <div className="flex space-x-2">
+                    <input
+                      type="text"
+                      value={inputQuery}
+                      onChange={(e) => setInputQuery(e.target.value)}
+                      placeholder="Enter a command or query about your file..."
+                      className="flex-1 py-2 px-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      disabled={isQuerying}
+                    />
+                    <button
+                      type="submit"
+                      disabled={!inputQuery.trim() || isQuerying}
+                      className={`py-2 px-4 rounded-md font-medium ${
+                        !inputQuery.trim() || isQuerying
+                          ? "bg-gray-300 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      } transition-colors`}
+                    >
+                      {isQuerying ? "Processing..." : "Send"}
+                    </button>
+                  </div>
+                </form>
+              </div>
             </motion.div>
           )}
         </div>

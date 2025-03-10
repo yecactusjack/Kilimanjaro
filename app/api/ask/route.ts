@@ -14,8 +14,8 @@ export async function POST(request: Request) {
 
     // Format the request exactly as shown in Postman
     const requestBody = {
-      query: body.query,
-      filename: body.filename || ""
+      "query": body.query,
+      "filename": body.filename
     };
 
     console.log("Sending query to external API:", requestBody);
@@ -39,23 +39,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get the response from the external API
-    const responseData = await externalResponse.text();
+    // Process the successful response
+    const responseData = await externalResponse.json();
+    return NextResponse.json(responseData);
     
-    try {
-      // Try to parse as JSON
-      const jsonData = JSON.parse(responseData);
-      return NextResponse.json(jsonData);
-    } catch (e) {
-      // If it's not JSON, return as text
-      return NextResponse.json({ 
-        message: responseData 
-      });
-    }
   } catch (error) {
-    console.error('Ask error:', error);
+    console.error("Query error:", error);
     return NextResponse.json(
-      { error: 'Error processing query', message: error instanceof Error ? error.message : String(error) },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
