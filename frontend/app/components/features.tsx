@@ -2,11 +2,11 @@
 export default function Features() {
   return (
     <section id="features" className="py-16 border-b">
-      <div className="container mx-auto">
+      <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-12">Bioinformatics, Simplified by Intelligence</h2>
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Feature 1 */}
-          <div className="border rounded-lg p-6">
+          <div className="border rounded-lg p-6 bg-white shadow-sm">
             <div className="w-10 h-10 flex items-center justify-center text-blue-500 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                 <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -19,7 +19,7 @@ export default function Features() {
           </div>
           
           {/* Feature 2 */}
-          <div className="border rounded-lg p-6">
+          <div className="border rounded-lg p-6 bg-white shadow-sm">
             <div className="w-10 h-10 flex items-center justify-center text-blue-500 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                 <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path>
@@ -32,7 +32,7 @@ export default function Features() {
           </div>
           
           {/* Feature 3 */}
-          <div className="border rounded-lg p-6">
+          <div className="border rounded-lg p-6 bg-white shadow-sm">
             <div className="w-10 h-10 flex items-center justify-center text-blue-500 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                 <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
@@ -47,7 +47,7 @@ export default function Features() {
           </div>
           
           {/* Feature 4 */}
-          <div className="border rounded-lg p-6">
+          <div className="border rounded-lg p-6 bg-white shadow-sm">
             <div className="w-10 h-10 flex items-center justify-center text-blue-500 mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                 <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
