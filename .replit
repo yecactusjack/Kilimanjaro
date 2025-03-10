@@ -13,7 +13,7 @@ from = "/*"
 to = "/index.html"
 
 [workflows]
-runButton = "Next.js Dev"
+runButton = "Dev Server"
 
 [[workflows.workflow]]
 name = "Run"
@@ -38,6 +38,14 @@ author = 32621205
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm run dev -- -p 3001 -H 0.0.0.0"
+
+[[workflows.workflow]]
+name = "Dev Server"
+author = 32621205
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "kill -9 $(lsof -t -i:3000) 2>/dev/null || true && npm run dev"
 
 [[ports]]
 localPort = 3000
