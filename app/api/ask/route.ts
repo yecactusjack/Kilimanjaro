@@ -12,10 +12,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Format the request exactly as shown in Postman
+    // Format the request exactly as shown in Postman - MUST match the format
     const requestBody = {
-      "query": body.query,
-      "filename": body.filename
+      "query": `"${body.query}"`,
+      "filename": `"${body.filename}"`
     };
 
     console.log("Sending query to external API:", requestBody);
@@ -29,27 +29,31 @@ export async function POST(request: Request) {
       body: JSON.stringify(requestBody)
     });
 
+    // Save the response text - don't try to parse JSON immediately
+    const responseText = await response.text();
+    console.log("Raw API response:", responseText);
+    
     if (!response.ok) {
-      let errorMessage;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.error || `External API error: ${response.status}`;
-      } catch (e) {
-        const errorText = await response.text();
-        errorMessage = `External API error: ${response.status} - ${errorText}`;
-      }
-      
-      console.error("Query API error:", response.status, errorMessage);
+      console.error("Query API error:", response.status, responseText);
       return NextResponse.json(
-        { error: errorMessage },
+        { error: `External API error: ${response.status} - ${responseText}` },
         { status: response.status }
       );
     }
 
-    // Process the successful response
-    const responseData = await response.json();
-    console.log("Got successful response:", responseData);
-    return NextResponse.json(responseData);
+    try {
+      // Try to parse the response as JSON
+      const responseData = JSON.parse(responseText);
+      console.log("Got successful response:", responseData);
+      return NextResponse.json(responseData);
+    } catch (parseError) {
+      // If it's not valid JSON, return the raw text
+      console.log("Response is not JSON, returning as text content");
+      return NextResponse.json({ 
+        status: "success",
+        content: responseText 
+      });
+    }
     
   } catch (error: any) {
     console.error("Query error:", error);

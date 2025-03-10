@@ -35,11 +35,24 @@ export async function POST(request: Request) {
     }
     
     try {
-      const responseData = await response.json();
-      return NextResponse.json(responseData);
+      // First try to get the response as text
+      const responseText = await response.text();
+      console.log("Raw upload response:", responseText);
+      
+      try {
+        // Then try to parse it as JSON
+        const jsonData = JSON.parse(responseText);
+        return NextResponse.json(jsonData);
+      } catch (jsonError) {
+        // If it's not valid JSON, return success with the filename
+        console.log("Response is not JSON, returning filename");
+        return NextResponse.json(
+          { filename: file.name, message: "File uploaded successfully" },
+          { status: 200 }
+        );
+      }
     } catch (parseError) {
       console.error("Error parsing response:", parseError);
-      const responseText = await response.text();
       return NextResponse.json(
         { filename: file.name, message: "File uploaded successfully" },
         { status: 200 }
