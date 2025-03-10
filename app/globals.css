@@ -11,13 +11,24 @@
   @apply container mx-auto px-4;
 }
 
-/* Improve overall spacing */
+/* Improve overall spacing and section separation */
 section {
-  @apply relative;
+  @apply relative border-b border-gray-100;
+  padding: 4rem 0;
 }
 
 main {
   @apply min-h-screen;
+}
+
+/* Clean section dividers */
+.section-divider {
+  @apply w-full h-px bg-gray-200 my-12;
+}
+
+/* Ensure consistent padding in page layouts */
+.page-layout {
+  @apply py-10;
 }
 
 :root {

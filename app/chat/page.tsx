@@ -10,12 +10,12 @@ export const metadata = {
 
 export default function ChatPage() {
   return (
-    <>
-      <div className="container mx-auto py-8 px-4 border-b border-gray-200">
+    <div className="bg-white">
+      <div className="container mx-auto py-10 px-4 border-b border-gray-200">
         <ChatInterface />
       </div>
       <ToolsSection />
       <Footer />
-    </>
+    </div>
   )
 }

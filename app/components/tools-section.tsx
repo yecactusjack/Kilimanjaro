@@ -53,7 +53,7 @@ export default function ToolsSection() {
   ]
 
   return (
-    <section className="border-t border-gray-200 py-12">
+    <section className="border-t border-gray-200 py-12 bg-white">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center mb-8">Tools we plan on integrating in our MVP</h2>
         
@@ -65,7 +65,7 @@ export default function ToolsSection() {
               className={`px-4 py-2 rounded-full border ${
                 selectedTool?.id === tool.id 
                   ? 'bg-black text-white' 
-                  : 'bg-white text-black hover:bg-gray-100'
+                  : 'bg-white text-black border-black hover:bg-gray-50'
               }`}
             >
               {tool.name}
@@ -74,7 +74,7 @@ export default function ToolsSection() {
         </div>
         
         {selectedTool && (
-          <div className="border border-gray-200 rounded-lg overflow-hidden">
+          <div className="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
             <div className="p-4 border-b border-gray-200">
               <h3 className="text-lg font-bold">{selectedTool.name}</h3>
               <p className="text-gray-700">{selectedTool.description}</p>
