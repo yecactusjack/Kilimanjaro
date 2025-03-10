@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 export default function Footer() {
   return (
     <footer className="py-6 border-t border-gray-100 bg-white">
@@ -7,10 +9,10 @@ export default function Footer() {
             <p className="text-sm text-gray-500">&copy; 2023 Goldbach Labs. All rights reserved.</p>
           </div>
           <div className="flex space-x-4">
-            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">Privacy Policy</a>
-            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">Terms of Service</a>
-            <a href="#" className="text-sm text-gray-500 hover:text-blue-600">Contact</a>
-            <a href="https://form.typeform.com/to/CUme4cwF" className="text-sm text-gray-500 hover:text-blue-600">Feedback</a>
+            <Link href="#" className="text-sm text-gray-500 hover:text-blue-600">Privacy Policy</Link>
+            <Link href="#" className="text-sm text-gray-500 hover:text-blue-600">Terms of Service</Link>
+            <Link href="#" className="text-sm text-gray-500 hover:text-blue-600">Contact</Link>
+            <a href="https://form.typeform.com/to/CUme4cwF" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 hover:text-blue-600">Feedback</a>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import MissionStatement from "@/app/components/mission-statement"
 import Features from "@/app/components/features"
 import ToolsSection from "@/app/components/tools-section"
 import Footer from "@/app/components/footer"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -20,9 +21,9 @@ export default function Home() {
           <ToolsSection />
         </div>
         <div className="text-center py-10 mt-8"> {/* Increased vertical padding */}
-          <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium transition-all hover:bg-blue-700">
+          <Link href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium transition-all hover:bg-blue-700">
             Beta 1.0 Kilimanjaro
-          </a>
+          </Link>
         </div>
       </main>
       <Footer />
