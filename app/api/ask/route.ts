@@ -39,12 +39,12 @@ export async function POST(request: Request) {
     // First check the content type of the response
     const contentType = externalResponse.headers.get('Content-Type');
     
-    if (contentType && contentType.includes('application/json')) {
-      // If it's JSON, parse and return directly
+    try {
+      // Try to parse as JSON first regardless of content type
       const responseData = await externalResponse.json();
       return NextResponse.json(responseData);
-    } else {
-      // If not JSON, get as text and wrap in a JSON response
+    } catch (e) {
+      // If JSON parsing fails, get as text and wrap in a JSON response
       const responseText = await externalResponse.text();
       return NextResponse.json({ response: responseText });
     }

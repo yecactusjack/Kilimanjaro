@@ -71,7 +71,7 @@ export default function AskInterface() {
     try {
       // Direct API call to the external service
       const response = await axios.post(
-        "http://206.1.35.40:3002/ask",
+        "/api/ask",
         {
           query: input.trim(),
           fileName: fileName
@@ -85,6 +85,7 @@ export default function AskInterface() {
       )
 
       console.log("Request sent:", { query: input.trim(), fileName: fileName });
+      console.log("Response received:", response.data);
 
       // Handle the response properly depending on its structure
       let responseData;
@@ -94,7 +95,7 @@ export default function AskInterface() {
         responseData = { response: response.data };
       }
       // Set the HTML content for download.  Assuming response.data now contains HTML or a suitable structure.
-      setHtmlContent(responseData.html || responseData.response); // Adjust based on actual API response
+      setHtmlContent(responseData.html || responseData.response || JSON.stringify(responseData)); // Adjust based on actual API response
 
 
       const botMessage: Message = {
