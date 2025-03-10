@@ -12,10 +12,13 @@ export default function Home() {
       <Header />
       <main className="flex-1">
         <Hero />
+        <div className="section-divider"></div>
         <MissionStatement />
+        <div className="section-divider"></div>
         <Features />
+        <div className="section-divider"></div>
         <ToolsSection />
-        <div className="text-center py-8">
+        <div className="text-center py-8 mt-8">
           <a href="#" className="inline-block px-6 py-2 bg-blue-600 text-white rounded-md text-sm font-medium transition-all hover:bg-blue-700">
             Beta 1.0 Kilimanjaro
           </a>

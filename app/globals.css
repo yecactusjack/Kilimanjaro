@@ -71,67 +71,10 @@ main {
 
 /* Clean section dividers */
 .section-divider {
-  @apply w-full h-px bg-gray-200 my-12;
-}
-
-/* Ensure consistent padding in page layouts */
-.page-layout {
-  @apply py-10;
-}
-
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  h1, h2 {
-    font-size: calc(1.2em + 1vw);
-  }
-
-  .py-12 {
-    padding-top: 2rem;
-    padding-bottom: 2rem;
-  }
-}
-
-/* Add separator styles */
-.page-section {
-  @apply py-12 border-b border-gray-200;
-}
-
-.page-container {
-  @apply container mx-auto px-4;
-}
-
-/* Improve overall spacing and section separation */
-section {
-  @apply relative border-b border-gray-100;
-  padding: 4rem 0;
-}
-
-main {
-  @apply min-h-screen;
-}
-
-/* Clean section dividers */
-.section-divider {
-  @apply w-full h-px bg-gray-200 my-12;
+  @apply w-full h-px bg-gray-200 my-16;
+  max-width: 85%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Ensure consistent padding in page layouts */

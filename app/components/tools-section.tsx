@@ -1,85 +1,70 @@
-
 "use client"
 
 import { useState } from "react"
 
-const tools = [
-  {
-    id: "fastqc",
-    name: "FastQC",
-    description: "Adapter trimmer for Oxford Nanopore reads"
-  },
-  {
-    id: "bowtie2",
-    name: "Bowtie2",
-    description: "Aligns DNA sequences to reference genomes"
-  },
-  {
-    id: "kraken2",
-    name: "Kraken2",
-    description: "Taxonomic classification system for metagenomic data"
-  },
-  {
-    id: "porechop",
-    name: "Porechop",
-    description: "Adapter trimmer for Oxford Nanopore reads"
-  },
-  {
-    id: "multiqc",
-    name: "MultiQC",
-    description: "Aggregate results from bioinformatics analyses"
-  },
-  {
-    id: "krona",
-    name: "Krona",
-    description: "Interactive visualization for metagenomic data"
-  }
-]
-
 export default function ToolsSection() {
-  const [activeTool, setActiveTool] = useState("porechop")
+  const [activeTool, setActiveTool] = useState('Porechop')
 
-  const activateToolDescription = (id: string) => {
-    setActiveTool(id)
-  }
-
-  const getToolDescription = () => {
-    const tool = tools.find(t => t.id === activeTool)
-    return (
-      <div className="p-6 border border-gray-100 rounded-md">
-        <h3 className="text-xl font-bold mb-3">{tool?.name}</h3>
-        <p className="text-gray-700">{tool?.description}</p>
-        <p className="mt-4 text-gray-600">
-          {activeTool === "porechop" && "Finds and removes adapters from Oxford Nanopore reads, including in the middle of reads."}
-          {activeTool === "fastqc" && "A quality control tool for high throughput sequence data."}
-          {activeTool === "bowtie2" && "An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences."}
-          {activeTool === "kraken2" && "A taxonomic classification system using exact k-mer matches."}
-          {activeTool === "multiqc" && "Aggregate results from bioinformatics analyses across many samples into a single report."}
-          {activeTool === "krona" && "Allows hierarchical data to be explored with zooming, multi-layered pie charts."}
-        </p>
-      </div>
-    )
+  const tools = {
+    'FastQC': {
+      title: 'FastQC',
+      description: 'Quality control tool for high throughput sequence data',
+      details: 'Provides quality control checks on raw sequence data coming from high throughput sequencing pipelines.'
+    },
+    'Bowtie2': {
+      title: 'Bowtie2',
+      description: 'Fast and sensitive read alignment',
+      details: 'An ultrafast and memory-efficient tool for aligning sequencing reads to long reference sequences.'
+    },
+    'Kraken2': {
+      title: 'Kraken2',
+      description: 'Taxonomic classification system',
+      details: 'Assigns taxonomic labels to short DNA sequences with high accuracy and speed.'
+    },
+    'Porechop': {
+      title: 'Porechop',
+      description: 'Adapter trimmer for Oxford Nanopore reads',
+      details: 'Finds and removes adapters from Oxford Nanopore reads, including in the middle of reads.'
+    },
+    'MultiQC': {
+      title: 'MultiQC',
+      description: 'Aggregate analysis reports',
+      details: 'Searches for analysis logs and compiles them into a single HTML report for easy visualization.'
+    },
+    'Krona': {
+      title: 'Krona',
+      description: 'Interactive metagenomic visualization',
+      details: 'Creates interactive hierarchical data visualizations, particularly useful for metagenomic classifications.'
+    }
   }
 
   return (
-    <section id="tools" className="py-24 bg-white">
+    <section id="tools" className="py-20 bg-white">
       <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-12 text-center">Tools we plan on integrating in our MVP</h2>
-        
+        <h2 className="text-3xl font-bold text-center mb-12">Tools we plan on integrating in our MVP</h2>
+
         <div className="flex flex-wrap justify-center gap-2 mb-8">
-          {tools.map((tool) => (
+          {Object.keys(tools).map((toolName) => (
             <button
-              key={tool.id}
-              onClick={() => activateToolDescription(tool.id)}
-              className={`tool-button ${activeTool === tool.id ? 'active' : ''}`}
+              key={toolName}
+              onClick={() => setActiveTool(toolName)}
+              className={`px-4 py-2 rounded-full ${
+                activeTool === toolName ? 'bg-black text-white' : 'bg-white text-black border border-gray-300'
+              }`}
             >
-              {tool.name}
+              {toolName}
             </button>
           ))}
         </div>
-        
-        <div className="max-w-2xl mx-auto">
-          {getToolDescription()}
+
+        <div className="max-w-4xl mx-auto bg-white rounded-lg border border-gray-200">
+          <div className="p-4 border-b border-gray-200">
+            <h3 className="text-xl font-bold">{tools[activeTool].title}</h3>
+            <p>{tools[activeTool].description}</p>
+          </div>
+          <div className="p-4">
+            <p>{tools[activeTool].details}</p>
+          </div>
         </div>
       </div>
     </section>
